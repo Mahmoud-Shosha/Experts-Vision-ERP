@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,7 +69,7 @@ public class FormsViewController {
 		return response.response(multiplePages, HttpStatus.OK);
 	}
 	
-	@GetMapping("/filteredPages/{pageNo}")
+	@PostMapping("/filteredPages/{pageNo}")
 	public ResponseEntity<Object> getFormsViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
 																		@RequestBody FormsViewFilter labelsViewFilter) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
