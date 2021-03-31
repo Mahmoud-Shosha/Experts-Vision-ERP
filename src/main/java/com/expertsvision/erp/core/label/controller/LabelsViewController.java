@@ -66,7 +66,7 @@ public class LabelsViewController {
 		return response.response(multiplePages, HttpStatus.OK);
 	}
 	
-	@GetMapping("/filteredPages/{pageNo}")
+	@PostMapping("/filteredPages/{pageNo}")
 	public ResponseEntity<Object> getLabelsViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
 																		@RequestBody LabelsViewFilter labelsViewFilter) {
 		MultiplePages<LabelsView> multiplePages = labelsViewService.getLabelsViewFilteredMultiplePages(pageNo, labelsViewFilter);
