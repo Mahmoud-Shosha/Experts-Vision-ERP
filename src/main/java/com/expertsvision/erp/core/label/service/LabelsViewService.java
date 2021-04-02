@@ -15,6 +15,8 @@ public interface LabelsViewService {
 	
 	LabelsView getLabelsView(LabelsViewPK labelsViewPK);
 	
+	Long getLabelsViewSinglePageNo(LabelsViewPK labelsViewPK);
+	
 	void addLabelsView(UsersView loginUser, LabelsView labelsView);
 	
 	void updateLabelsView(UsersView loginUser, LabelsView labelsView);

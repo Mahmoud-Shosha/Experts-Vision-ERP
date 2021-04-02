@@ -1,7 +1,8 @@
 package com.expertsvision.erp.core.label.controller;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,15 @@ public class LabelsViewController {
 												@PathVariable("langNo") Integer langNo) {
 		LabelsView labelsView = labelsViewService.getLabelsView(new LabelsViewPK(langNo, labelCode));
 		return response.response(labelsView, HttpStatus.OK);
+	}
+	
+	@GetMapping("pageNo/{labelCode}/{langNo}")
+	public ResponseEntity<Object> getLabelsViewSinglePageNo(@PathVariable("labelCode") String labelCode,
+												@PathVariable("langNo") Integer langNo) {
+		long singlePageNo = labelsViewService.getLabelsViewSinglePageNo(new LabelsViewPK(langNo, labelCode));
+		Map<String, Long> singlePageNoMap = new HashMap<>();
+		singlePageNoMap.put("page_no", singlePageNo);
+		return response.response(singlePageNoMap, HttpStatus.OK);
 	}
 	
 	@GetMapping("/page/{pageNo}")

@@ -14,6 +14,8 @@ public interface FormsViewDAO {
 	
 	FormsView getFormsView(UsersView loginUser, Integer formNo);
 	
+	Long getFormsViewSinglePageNo(UsersView loginUser, Integer formNo);
+	
 	List<FormsView> getFormsViewMainTree(UsersView loginUser);
 		
 	List<String> updateFormsView(UsersView loginUser, FormsView FormsView);

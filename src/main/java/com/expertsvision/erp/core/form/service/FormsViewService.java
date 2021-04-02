@@ -14,6 +14,8 @@ public interface FormsViewService {
 	
 	FormsView getFormsView(UsersView loginUser, Integer formNo);
 	
+	Long getFormsViewSinglePageNo(UsersView loginUser, Integer formNo);
+	
 	List<FormsView> getFormsViewMainTree(UsersView loginUser);
 		
 	void updateFormsView(UsersView loginUser, FormsView formsView);
