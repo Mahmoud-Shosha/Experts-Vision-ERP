@@ -1,7 +1,8 @@
 package com.expertsvision.erp.core.form.controller;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,15 @@ public class FormsViewController {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		FormsView formsView = formsViewService.getFormsView(loginUser, formNo);
 		return response.response(formsView, HttpStatus.OK);
+	}
+	
+	@GetMapping("pageNo/{formNo}")
+	public ResponseEntity<Object> getFormsViewSinglePageNo(@PathVariable("formNo") Integer formNo) {
+		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		long singlePageNo = formsViewService.getFormsViewSinglePageNo(loginUser, formNo);
+		Map<String, Long> singlePageNoMap = new HashMap<>();
+		singlePageNoMap.put("page_no", singlePageNo);
+		return response.response(singlePageNoMap, HttpStatus.OK);
 	}
 	
 	@GetMapping("/page/{pageNo}")

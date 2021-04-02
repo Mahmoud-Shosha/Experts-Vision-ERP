@@ -16,6 +16,8 @@ public interface LabelsViewDAO {
 	
 	LabelsView getLabelsView(LabelsViewPK labelsViewPK);
 	
+	Long getLabelsViewSinglePageNo(LabelsViewPK labelsViewPK);
+	
 	List<String> addLabelsView(UsersView loginUser, LabelsView labelsView);
 	
 	List<String> updateLabelsView(UsersView loginUser, LabelsView labelsView);

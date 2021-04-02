@@ -2,6 +2,7 @@ package com.expertsvision.erp.core.form.service;
 
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,21 @@ public class FormsViewServiceImpl implements FormsViewService {
 			throw new ValidationException("not_exist", "form");
 		}
 		return formsView;
+	}
+	
+	@Override
+	public Long getFormsViewSinglePageNo(UsersView loginUser, Integer formNo) {
+//		coreValidationService.activeModuleAndForm(Forms.FORMS);
+		Long singlePageNo = null;
+		try {
+			singlePageNo = formsViewDAO.getFormsViewSinglePageNo(loginUser, formNo);
+		} catch (HibernateException e) {
+			throw new UnauthorizedException("resource");
+		}
+		if (singlePageNo == null) {
+			throw new ValidationException("not_exist", "form");
+		}
+		return singlePageNo;
 	}
 	
 	@Override

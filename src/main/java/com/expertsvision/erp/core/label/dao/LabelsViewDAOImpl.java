@@ -48,6 +48,17 @@ public class LabelsViewDAOImpl implements LabelsViewDAO {
 	}
 	
 	@Override
+	public Long getLabelsViewSinglePageNo(LabelsViewPK labelsViewPK) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT * FROM get_labels_view_single_page_no('%s', %s)";
+		sql = String.format(sql, labelsViewPK.getLabelCode(), labelsViewPK.getLangNo());
+		@SuppressWarnings("unchecked")
+		Query<BigInteger> query = session.createNativeQuery(sql);
+		List<BigInteger> singlePageNoList = query.getResultList();
+		return singlePageNoList.get(0) == null ? null : singlePageNoList.get(0).longValue();
+	}
+	
+	@Override
 	public SinglePage<LabelsView> getLabelsViewSinglePage( long pageNo) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "SELECT * FROM get_labels_view_single_page(%s)";

@@ -58,6 +58,20 @@ public class LabelsViewServiceImpl implements LabelsViewService {
 		return labelsView;
 	}
 	
+	@Override
+	public Long getLabelsViewSinglePageNo(LabelsViewPK labelsViewPK) {
+		Long singlePageNo = null;
+		try {
+			singlePageNo = labelsViewDAO.getLabelsViewSinglePageNo(labelsViewPK);
+		} catch (HibernateException e) {
+			throw new UnauthorizedException("resource");
+		}
+		if (singlePageNo == null) {
+			throw new ValidationException("not_exist", "label");
+		}
+		return singlePageNo;
+	}
+	
 	
 	@Override
 	public SinglePage<LabelsView> getLabelsViewSinglePage(long pageNo) {
