@@ -14,7 +14,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name="labels_view")
-@IdClass(LabelsViewPK.class)
+@IdClass(LabelsPK.class)
 @NamedQuery(name="LabelsView.findAll", query="SELECT l FROM LabelsView l")
 public class LabelsView implements Serializable {
 	private static final long serialVersionUID = 1L;

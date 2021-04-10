@@ -7,5 +7,8 @@
 		<class>com.expertsvision.erp.core.message.entity.MessagesView</class>
 		<class>com.expertsvision.erp.core.user.entity.UsersView</class>
 		<class>com.expertsvision.erp.core.form.entity.FormsView</class>
+		<class>com.expertsvision.erp.core.privilege.entity.FormPrivilage</class>
+		<class>com.expertsvision.erp.core.privilege.entity.FormPrivilageView</class>
+		<class>com.expertsvision.erp.core.label.entity.Label</class>
 	</persistence-unit>
 </persistence>

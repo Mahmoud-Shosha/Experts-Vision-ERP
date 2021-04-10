@@ -8,43 +8,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.label.entity.LabelsView;
-import com.expertsvision.erp.core.label.entity.LabelsViewPK;
+import com.expertsvision.erp.core.label.entity.LabelsPK;
 
 @Service
-public class InMemoryLabelsViewService {
+public class InMemoryLabelsService {
 	
 	
-	private LabelsViewService labelsViewService;
+	private LabelsService labelsViewService;
 	
-	private  Map<LabelsViewPK, LabelsView> labelsViewMap;
+	private  Map<LabelsPK, LabelsView> labelsViewMap;
 	
 	@Autowired
-	public InMemoryLabelsViewService(LabelsViewService labelsViewService) {
+	public InMemoryLabelsService(LabelsService labelsViewService) {
 		this.labelsViewService = labelsViewService;
 		List<LabelsView> labelsViewList = labelsViewService.getLabelsViewList();
-		Map<LabelsViewPK, LabelsView> NewLabelsViewMap = convertToLabelMap(labelsViewList);
+		Map<LabelsPK, LabelsView> NewLabelsViewMap = convertToLabelMap(labelsViewList);
 		synchronized (this) {
 			labelsViewMap = NewLabelsViewMap;
 		}
 	}
 	
-	public LabelsView getLabelsView(LabelsViewPK labelsViewPK) {
+	public LabelsView getLabelsView(LabelsPK labelsViewPK) {
 		LabelsView labelsView = labelsViewMap.get(labelsViewPK);
 		return labelsView;
 	}
 	
 	public void updateLabelsView() {		
 		List<LabelsView> labelsViewList = labelsViewService.getLabelsViewList();
-		Map<LabelsViewPK, LabelsView> NewLabelsViewMap = convertToLabelMap(labelsViewList);
+		Map<LabelsPK, LabelsView> NewLabelsViewMap = convertToLabelMap(labelsViewList);
 		synchronized (this) {
 			labelsViewMap = NewLabelsViewMap;
 		}
 	}
 	
-	private Map<LabelsViewPK, LabelsView> convertToLabelMap(List<LabelsView> labelsViewList) {
-		Map<LabelsViewPK, LabelsView> NewLabelsViewMap = new HashMap<LabelsViewPK, LabelsView>();
+	private Map<LabelsPK, LabelsView> convertToLabelMap(List<LabelsView> labelsViewList) {
+		Map<LabelsPK, LabelsView> NewLabelsViewMap = new HashMap<LabelsPK, LabelsView>();
 		for (LabelsView labelsView : labelsViewList) {
-			NewLabelsViewMap.put(new LabelsViewPK(labelsView.getLangNo(), labelsView.getLabelCode()), labelsView);
+			NewLabelsViewMap.put(new LabelsPK(labelsView.getLangNo(), labelsView.getLabelCode()), labelsView);
 		}
 		return NewLabelsViewMap;
 	}

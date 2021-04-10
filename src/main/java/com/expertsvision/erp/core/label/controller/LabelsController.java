@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.expertsvision.erp.core.label.dto.LabelsViewFilter;
 import com.expertsvision.erp.core.label.entity.LabelsView;
-import com.expertsvision.erp.core.label.entity.LabelsViewPK;
-import com.expertsvision.erp.core.label.service.LabelsViewService;
+import com.expertsvision.erp.core.label.entity.LabelsPK;
+import com.expertsvision.erp.core.label.service.LabelsService;
 import com.expertsvision.erp.core.response.Response;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
@@ -28,13 +28,13 @@ import com.expertsvision.erp.core.utils.SinglePage;
 
 @RestController
 @RequestMapping(value = "/public/labels")
-public class LabelsViewController {
+public class LabelsController {
 		
 	@Autowired
 	private Response response;
 	
 	@Autowired
-	private LabelsViewService labelsViewService;
+	private LabelsService labelsViewService;
 	
 	@GetMapping("")
 	public ResponseEntity<Object> getLabelsViewList() {
@@ -45,14 +45,14 @@ public class LabelsViewController {
 	@GetMapping("/{labelCode}/{langNo}")
 	public ResponseEntity<Object> getLabelsView(@PathVariable("labelCode") String labelCode,
 												@PathVariable("langNo") Integer langNo) {
-		LabelsView labelsView = labelsViewService.getLabelsView(new LabelsViewPK(langNo, labelCode));
+		LabelsView labelsView = labelsViewService.getLabelsView(new LabelsPK(langNo, labelCode));
 		return response.response(labelsView, HttpStatus.OK);
 	}
 	
 	@GetMapping("pageNo/{labelCode}/{langNo}")
 	public ResponseEntity<Object> getLabelsViewSinglePageNo(@PathVariable("labelCode") String labelCode,
 												@PathVariable("langNo") Integer langNo) {
-		long singlePageNo = labelsViewService.getLabelsViewSinglePageNo(new LabelsViewPK(langNo, labelCode));
+		long singlePageNo = labelsViewService.getLabelsViewSinglePageNo(new LabelsPK(langNo, labelCode));
 		Map<String, Long> singlePageNoMap = new HashMap<>();
 		singlePageNoMap.put("page_no", singlePageNo);
 		return response.response(singlePageNoMap, HttpStatus.OK);
@@ -65,7 +65,7 @@ public class LabelsViewController {
 	}
 	
 	@GetMapping("/lastPage")
-	public ResponseEntity<Object> getMessagesViewLastPage() {
+	public ResponseEntity<Object> getLabelsViewLastPage() {
 		SinglePage<LabelsView> singlePage = labelsViewService.getLabelsViewLastPage();
 		return response.response(singlePage, HttpStatus.OK);
 	}
@@ -84,24 +84,24 @@ public class LabelsViewController {
 	}
 	
 	@PostMapping("")
-	public ResponseEntity<Object> addLabelsView(@RequestBody LabelsView labelsView) {
+	public ResponseEntity<Object> addLabel(@RequestBody LabelsView labelsView) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		labelsViewService.addLabelsView(loginUser, labelsView);
+		labelsViewService.addLabel(loginUser, labelsView);
 		return response.response("added", "label", HttpStatus.OK);
 	}
 	
 	@PutMapping("")
-	public ResponseEntity<Object> updateLabelsView(@RequestBody LabelsView labelsView) {
+	public ResponseEntity<Object> updateLabel(@RequestBody LabelsView labelsView) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		labelsViewService.updateLabelsView(loginUser, labelsView);
+		labelsViewService.updateLabel(loginUser, labelsView);
 		return response.response("updated", "label", HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{labelCode}/{langNo}")
-	public ResponseEntity<Object> deleteLabelsView(@PathVariable("labelCode") String labelCode,
+	public ResponseEntity<Object> deleteLabel(@PathVariable("labelCode") String labelCode,
 												   @PathVariable("langNo") Integer langNo) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		labelsViewService.deleteLabelsView(loginUser, new LabelsViewPK(langNo, labelCode));
+		labelsViewService.deleteLabel(loginUser, new LabelsPK(langNo, labelCode));
 		return response.response("deleted", "label", HttpStatus.OK);
 	}
 

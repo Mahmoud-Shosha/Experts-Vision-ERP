@@ -6,7 +6,7 @@ import java.io.Serializable;
  * The primary key class for the labels_view database view.
  * 
  */
-public class LabelsViewPK implements Serializable {
+public class LabelsPK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
@@ -15,11 +15,11 @@ public class LabelsViewPK implements Serializable {
 	private String labelCode;
 	
 
-	public LabelsViewPK() {
+	public LabelsPK() {
 	}
 	
 	
-	public LabelsViewPK(Integer langNo, String labelCode) {
+	public LabelsPK(Integer langNo, String labelCode) {
 		super();
 		this.langNo = langNo;
 		this.labelCode = labelCode;
@@ -48,10 +48,10 @@ public class LabelsViewPK implements Serializable {
 		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof LabelsViewPK)) {
+		if (!(other instanceof LabelsPK)) {
 			return false;
 		}
-		LabelsViewPK castOther = (LabelsViewPK)other;
+		LabelsPK castOther = (LabelsPK)other;
 		return 
 			this.langNo.equals(castOther.langNo)
 			&& this.labelCode.equals(castOther.labelCode);

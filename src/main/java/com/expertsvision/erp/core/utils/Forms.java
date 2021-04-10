@@ -3,7 +3,7 @@ package com.expertsvision.erp.core.utils;
 public enum Forms {
 	
 	LANGUAGE(99),
-	LABELS(99),
+	LABELS(23),
 	MESSAGES(99),
 	MODULES(99),
 	FORMS(99),
