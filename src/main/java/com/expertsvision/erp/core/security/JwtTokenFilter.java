@@ -20,8 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.expertsvision.erp.core.label.entity.LabelsViewPK;
-import com.expertsvision.erp.core.label.service.InMemoryLabelsViewService;
+import com.expertsvision.erp.core.label.entity.LabelsPK;
+import com.expertsvision.erp.core.label.service.InMemoryLabelsService;
 import com.expertsvision.erp.core.message.entity.MessagesViewPK;
 import com.expertsvision.erp.core.message.service.InMemoryMessagesViewService;
 import com.expertsvision.erp.core.user.entity.UsersView;
@@ -40,7 +40,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	private InMemoryUsersViewService inMemoryUsersViewService;
 	
 	@Autowired
-	private InMemoryLabelsViewService inMemoryLabelsViewService;
+	private InMemoryLabelsService inMemoryLabelsViewService;
 	
 	@Autowired
 	private InMemoryMessagesViewService inMemoryMessagesViewService;
@@ -88,8 +88,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	
 	
 	private void handleInactiveUser (HttpServletResponse response) throws IOException {
-		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(1, "user")).getLabelDesc();
-		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(2, "user")).getLabelDesc();
+		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, "user")).getLabelDesc();
+		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, "user")).getLabelDesc();
 		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, "is_inactive")).getMessageDesc();
 		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, "is_inactive")).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();
@@ -103,8 +103,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	}
 	
 	private void handleUnauthorized (HttpServletResponse response) throws IOException {
-		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(1, "resource")).getLabelDesc();
-		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(2, "resource")).getLabelDesc();
+		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, "resource")).getLabelDesc();
+		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, "resource")).getLabelDesc();
 		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, "donot_have_privileges")).getMessageDesc();
 		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, "donot_have_privileges")).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();

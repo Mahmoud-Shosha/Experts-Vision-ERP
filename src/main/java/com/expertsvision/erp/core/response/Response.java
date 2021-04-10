@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.expertsvision.erp.core.label.entity.LabelsViewPK;
-import com.expertsvision.erp.core.label.service.InMemoryLabelsViewService;
+import com.expertsvision.erp.core.label.entity.LabelsPK;
+import com.expertsvision.erp.core.label.service.InMemoryLabelsService;
 import com.expertsvision.erp.core.message.entity.MessagesViewPK;
 import com.expertsvision.erp.core.message.service.InMemoryMessagesViewService;
 
@@ -17,7 +17,7 @@ import com.expertsvision.erp.core.message.service.InMemoryMessagesViewService;
 public class Response {
 
 	@Autowired
-	private InMemoryLabelsViewService inMemoryLabelsViewService;
+	private InMemoryLabelsService inMemoryLabelsViewService;
 	
 	@Autowired
 	private InMemoryMessagesViewService inMemoryMessagesViewService;
@@ -40,8 +40,8 @@ public class Response {
 	}
 	
 	public ResponseEntity<Object> response(String messageCode, String labelCode, HttpStatus httpStatus) {
-		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(1, labelCode)).getLabelDesc();
-		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(2, labelCode)).getLabelDesc();
+		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, labelCode)).getLabelDesc();
+		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, labelCode)).getLabelDesc();
 		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, messageCode)).getMessageDesc();
 		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, messageCode)).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();
@@ -53,8 +53,8 @@ public class Response {
 	}
 	
 	public ResponseEntity<Object> response(String messageCode, String labelCode, Object value, HttpStatus httpStatus) {
-		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(1, labelCode)).getLabelDesc();
-		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(2, labelCode)).getLabelDesc();
+		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, labelCode)).getLabelDesc();
+		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, labelCode)).getLabelDesc();
 		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, messageCode)).getMessageDesc();
 		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, messageCode)).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();
@@ -66,10 +66,10 @@ public class Response {
 	}
 	
 	public ResponseEntity<Object> response(String messageCode, String labelCode, String valueCode, HttpStatus httpStatus) {
-		String valueAr = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(1, valueCode)).getLabelDesc();
-		String valueEn = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(2, valueCode)).getLabelDesc();
-		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(1, labelCode)).getLabelDesc();
-		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsViewPK(2, labelCode)).getLabelDesc();
+		String valueAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, valueCode)).getLabelDesc();
+		String valueEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, valueCode)).getLabelDesc();
+		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, labelCode)).getLabelDesc();
+		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, labelCode)).getLabelDesc();
 		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, messageCode)).getMessageDesc();
 		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, messageCode)).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();
