@@ -6,7 +6,7 @@ import java.io.Serializable;
  * The primary key class for the messages_view database view.
  * 
  */
-public class MessagesViewPK implements Serializable {
+public class MessagesPK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
@@ -15,11 +15,11 @@ public class MessagesViewPK implements Serializable {
 	private String messageCode;
 	
 
-	public MessagesViewPK() {
+	public MessagesPK() {
 	}
 
 
-	public MessagesViewPK(Integer langNo, String messageCode) {
+	public MessagesPK(Integer langNo, String messageCode) {
 		super();
 		this.langNo = langNo;
 		this.messageCode = messageCode;
@@ -53,10 +53,10 @@ public class MessagesViewPK implements Serializable {
 		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof MessagesViewPK)) {
+		if (!(other instanceof MessagesPK)) {
 			return false;
 		}
-		MessagesViewPK castOther = (MessagesViewPK)other;
+		MessagesPK castOther = (MessagesPK)other;
 		return 
 			this.langNo.equals(castOther.langNo)
 			&& this.messageCode.equals(castOther.messageCode);

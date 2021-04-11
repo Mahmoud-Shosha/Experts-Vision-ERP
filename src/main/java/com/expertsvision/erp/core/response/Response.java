@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.label.entity.LabelsPK;
 import com.expertsvision.erp.core.label.service.InMemoryLabelsService;
-import com.expertsvision.erp.core.message.entity.MessagesViewPK;
-import com.expertsvision.erp.core.message.service.InMemoryMessagesViewService;
+import com.expertsvision.erp.core.message.entity.MessagesPK;
+import com.expertsvision.erp.core.message.service.InMemoryMessagesService;
 
 @Service
 public class Response {
@@ -20,7 +20,7 @@ public class Response {
 	private InMemoryLabelsService inMemoryLabelsViewService;
 	
 	@Autowired
-	private InMemoryMessagesViewService inMemoryMessagesViewService;
+	private InMemoryMessagesService inMemoryMessagesViewService;
 	
 	
 	public ResponseEntity<Object> response(Object list, HttpStatus httpStatus) {
@@ -29,8 +29,8 @@ public class Response {
 	}
 	
 	public ResponseEntity<Object> response(String messageCode, HttpStatus httpStatus) {
-		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, messageCode)).getMessageDesc();
-		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, messageCode)).getMessageDesc();
+		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesPK(1, messageCode)).getMessageDesc();
+		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesPK(2, messageCode)).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();
 		message.put("message", new HashMap<String, String>());
 		message.get("message").put("ar", messageAr);
@@ -42,8 +42,8 @@ public class Response {
 	public ResponseEntity<Object> response(String messageCode, String labelCode, HttpStatus httpStatus) {
 		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, labelCode)).getLabelDesc();
 		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, labelCode)).getLabelDesc();
-		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, messageCode)).getMessageDesc();
-		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, messageCode)).getMessageDesc();
+		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesPK(1, messageCode)).getMessageDesc();
+		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesPK(2, messageCode)).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();
 		message.put("message", new HashMap<String, String>());
 		message.get("message").put("ar", messageAr.replace("#1", labelAr));
@@ -55,8 +55,8 @@ public class Response {
 	public ResponseEntity<Object> response(String messageCode, String labelCode, Object value, HttpStatus httpStatus) {
 		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, labelCode)).getLabelDesc();
 		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, labelCode)).getLabelDesc();
-		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, messageCode)).getMessageDesc();
-		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, messageCode)).getMessageDesc();
+		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesPK(1, messageCode)).getMessageDesc();
+		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesPK(2, messageCode)).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();
 		message.put("message", new HashMap<String, String>());
 		message.get("message").put("ar", messageAr.replace("#1", labelAr).replace("#v1", value.toString()));
@@ -70,8 +70,8 @@ public class Response {
 		String valueEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, valueCode)).getLabelDesc();
 		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, labelCode)).getLabelDesc();
 		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, labelCode)).getLabelDesc();
-		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, messageCode)).getMessageDesc();
-		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, messageCode)).getMessageDesc();
+		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesPK(1, messageCode)).getMessageDesc();
+		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesPK(2, messageCode)).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();
 		message.put("message", new HashMap<String, String>());
 		System.out.println(valueAr + valueEn);

@@ -8,46 +8,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.message.entity.MessagesView;
-import com.expertsvision.erp.core.message.entity.MessagesViewPK;
+import com.expertsvision.erp.core.message.entity.MessagesPK;
 
 
 @Service
-public class InMemoryMessagesViewService {
+public class InMemoryMessagesService {
 	
 	
 	
-	private MessagesViewService messagesViewService;
+	private MessagesService messagesViewService;
 	
-	private Map<MessagesViewPK, MessagesView> messagesViewMap;
+	private Map<MessagesPK, MessagesView> messagesViewMap;
 	
 	
 	@Autowired
-	public InMemoryMessagesViewService(MessagesViewService messagesViewService) {
+	public InMemoryMessagesService(MessagesService messagesViewService) {
 		this.messagesViewService = messagesViewService;
 		List<MessagesView> messgaesViewList = messagesViewService.getMessagesViewList();
-		Map<MessagesViewPK, MessagesView> newMessagesViewMap = convertToMessageMap(messgaesViewList);
+		Map<MessagesPK, MessagesView> newMessagesViewMap = convertToMessageMap(messgaesViewList);
 		synchronized (this) {
 			messagesViewMap = newMessagesViewMap;
 		}
 	}
 	
-	public MessagesView getMessagesView(MessagesViewPK messagePK) {
+	public MessagesView getMessagesView(MessagesPK messagePK) {
 		MessagesView messagesView = messagesViewMap.get(messagePK);
 		return messagesView;
 	}
 	
 	public void updateMessagesView() {
 		List<MessagesView> messagesViewList = messagesViewService.getMessagesViewList();
-		Map<MessagesViewPK, MessagesView> newMessagesViewMap = convertToMessageMap(messagesViewList);
+		Map<MessagesPK, MessagesView> newMessagesViewMap = convertToMessageMap(messagesViewList);
 		synchronized (this) {
 			messagesViewMap = newMessagesViewMap;
 		}
 	}
 	
-	private Map<MessagesViewPK, MessagesView> convertToMessageMap(List<MessagesView> messagesViewList) {
-		Map<MessagesViewPK, MessagesView> messagesViewMap = new HashMap<MessagesViewPK, MessagesView>();
+	private Map<MessagesPK, MessagesView> convertToMessageMap(List<MessagesView> messagesViewList) {
+		Map<MessagesPK, MessagesView> messagesViewMap = new HashMap<MessagesPK, MessagesView>();
 		for (MessagesView messagesView : messagesViewList) {
-			messagesViewMap.put(new MessagesViewPK(messagesView.getLangNo(), messagesView.getMessageCode()), messagesView);
+			messagesViewMap.put(new MessagesPK(messagesView.getLangNo(), messagesView.getMessageCode()), messagesView);
 		}
 		return messagesViewMap;
 	}

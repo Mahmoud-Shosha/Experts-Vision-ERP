@@ -169,9 +169,9 @@ public class LabelsDAOImpl implements LabelsDAO {
 	}
 	
 	@Override
-	public void deleteLabel(LabelsPK labelsViewPK) {
+	public void deleteLabel(LabelsPK labelsPK) {
 		Session session = sessionFactory.getCurrentSession();
-		Label DBLabel = session.get(Label.class, labelsViewPK);
+		Label DBLabel = session.get(Label.class, labelsPK);
 		session.delete(DBLabel);
 	}
 
