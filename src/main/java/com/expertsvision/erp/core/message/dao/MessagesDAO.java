@@ -4,29 +4,31 @@ import java.util.List;
 
 import com.expertsvision.erp.core.message.dto.MessagesViewFilter;
 import com.expertsvision.erp.core.message.entity.MessagesView;
-import com.expertsvision.erp.core.message.entity.MessagesViewPK;
-import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.core.message.entity.Message;
+import com.expertsvision.erp.core.message.entity.MessagesPK;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
 
-public interface MessagesViewDAO {
+public interface MessagesDAO {
 	
 	List<MessagesView> getMessagesViewList();
 	
-	MessagesView getMessagesView(MessagesViewPK MessagesViewPK);
-	
-	List<String> addMessagesView(UsersView loginUser, MessagesView MessagesView);
-	
-	List<String> updateMessagesView(UsersView loginUser, MessagesView MessagesView);
-	
-	List<String> deleteMessagesView(UsersView loginUser, MessagesViewPK messagesViewPK);
+	MessagesView getMessagesView(MessagesPK MessagesViewPK);
 	
 	SinglePage<MessagesView> getMessagesViewSinglePage(long pageNo);
 	
 	SinglePage<MessagesView> getMessagesViewLastPage();
 	
+	Long getMessagesViewSinglePageNo(MessagesPK messagesPK);
+	
 	MultiplePages<MessagesView> getMessagesViewMultiplePages(long pageNo);
 	
 	MultiplePages<MessagesView> getMessagesViewFilteredMultiplePages(long pageNo, MessagesViewFilter messagesViewFilter);
+	
+	void addMessage(Message message);
+	
+	void updateMessage(Message message);
+	
+	void deleteMessage(MessagesPK messagesPK);
 	
 }

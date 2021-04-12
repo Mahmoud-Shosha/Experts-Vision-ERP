@@ -14,7 +14,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name="messages_view")
-@IdClass(MessagesViewPK.class)
+@IdClass(MessagesPK.class)
 @NamedQuery(name="MessagesView.findAll", query="SELECT m FROM MessagesView m")
 public class MessagesView implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -22,8 +22,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.expertsvision.erp.core.label.entity.LabelsPK;
 import com.expertsvision.erp.core.label.service.InMemoryLabelsService;
-import com.expertsvision.erp.core.message.entity.MessagesViewPK;
-import com.expertsvision.erp.core.message.service.InMemoryMessagesViewService;
+import com.expertsvision.erp.core.message.entity.MessagesPK;
+import com.expertsvision.erp.core.message.service.InMemoryMessagesService;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.user.service.InMemoryUsersViewService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +43,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	private InMemoryLabelsService inMemoryLabelsViewService;
 	
 	@Autowired
-	private InMemoryMessagesViewService inMemoryMessagesViewService;
+	private InMemoryMessagesService inMemoryMessagesViewService;
 	
 
 	@Override
@@ -90,8 +90,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	private void handleInactiveUser (HttpServletResponse response) throws IOException {
 		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, "user")).getLabelDesc();
 		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, "user")).getLabelDesc();
-		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, "is_inactive")).getMessageDesc();
-		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, "is_inactive")).getMessageDesc();
+		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesPK(1, "is_inactive")).getMessageDesc();
+		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesPK(2, "is_inactive")).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();
 		message.put("message", new HashMap<String, String>());
 		message.get("message").put("ar", messageAr.replace("#1", labelAr));
@@ -105,8 +105,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	private void handleUnauthorized (HttpServletResponse response) throws IOException {
 		String labelAr = inMemoryLabelsViewService.getLabelsView(new LabelsPK(1, "resource")).getLabelDesc();
 		String labelEn = inMemoryLabelsViewService.getLabelsView(new LabelsPK(2, "resource")).getLabelDesc();
-		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(1, "donot_have_privileges")).getMessageDesc();
-		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesViewPK(2, "donot_have_privileges")).getMessageDesc();
+		String messageAr = inMemoryMessagesViewService.getMessagesView(new MessagesPK(1, "donot_have_privileges")).getMessageDesc();
+		String messageEn = inMemoryMessagesViewService.getMessagesView(new MessagesPK(2, "donot_have_privileges")).getMessageDesc();
 		Map<String, Map<String, String>> message = new HashMap<String, Map<String, String>>();
 		message.put("message", new HashMap<String, String>());
 		message.get("message").put("ar", messageAr.replace("#1", labelAr));
