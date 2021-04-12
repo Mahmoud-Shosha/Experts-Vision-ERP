@@ -57,7 +57,7 @@ public class MessagesDAOImpl implements MessagesDAO {
 			messagesViewList = query.getResultList();
 		}
 		if (pageNo <= 0 || messagesViewList.isEmpty()) {
-			sql = "SELECT COUNT(*) messages";
+			sql = "SELECT COUNT(*) FROM messages";
 			@SuppressWarnings("unchecked")
 			Query<BigInteger> query2 = session.createNativeQuery(sql);
 			long count = query2.getSingleResult().longValue();

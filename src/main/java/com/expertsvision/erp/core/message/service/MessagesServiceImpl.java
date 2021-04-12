@@ -176,7 +176,7 @@ public class MessagesServiceImpl implements MessagesService {
 		Map<String, Object> conditions = new HashMap<>();
 		conditions.put("message_code", messagesViewPK.getMessageCode());
 		conditions.put("lang_no", messagesViewPK.getLangNo());
-		if (!generalDAO.isEntityExist("messages", conditions)) throw new ValidationException("not_exist", "messsage");
+		if (!generalDAO.isEntityExist("messages", conditions)) throw new ValidationException("not_exist", "message");
 		// delete the message
 		messagesDAO.deleteMessage(messagesViewPK);
 	}
