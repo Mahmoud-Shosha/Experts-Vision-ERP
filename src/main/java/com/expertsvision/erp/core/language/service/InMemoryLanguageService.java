@@ -10,16 +10,16 @@ import org.springframework.stereotype.Service;
 import com.expertsvision.erp.core.language.entity.LanguageView;
 
 @Service
-public class InMemoryLanguageViewService {
+public class InMemoryLanguageService {
 	
 
-	private LanguageViewService languageViewService;
+	private LanguageService languageViewService;
 	
 	private Map<Integer, LanguageView> languageViewMap;
 	
 	
 	@Autowired
-	public InMemoryLanguageViewService(LanguageViewService languageViewService) {
+	public InMemoryLanguageService(LanguageService languageViewService) {
 		this.languageViewService = languageViewService;
 		List<LanguageView> languageViewList = languageViewService.getLanguageViewList();
 		Map<Integer, LanguageView> newLanguageViewMap = convertToLanguageViewMap(languageViewList);

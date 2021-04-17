@@ -70,5 +70,77 @@ public class GeneralDAOImpl implements GeneralDAO {
 		List<Object> resultList = query.getResultList();
 		return !resultList.isEmpty();
 	}
+	
+	@Override
+	public void runEntityQuery(String tableName, Map<String, Object> setters, Map<String, Object> conditions) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "UPDATE " + tableName +" ";
+		Set<String> settersList =  setters.keySet();
+		Set<String> conditionsList =  conditions.keySet();
+		Object setterValue = null;
+		Object conditionValue = null;
+		if (settersList.isEmpty()) throw new RuntimeException("You should have at least one setter in the setters");
+		for (String setter : settersList) {
+			setterValue = setters.get(setter);
+			try {
+				Long.parseLong(setterValue.toString());
+				try {
+					sql += " SET " + setter + " = " + Utils.escapeLiteral(null, setterValue==null?"":setterValue.toString().strip(), true) + " and ";
+				} catch (SQLException e) {
+					throw new UnauthorizedException("resource");
+				}
+			} catch (NumberFormatException e1) {
+				try {
+					Double.parseDouble(setterValue.toString());
+					try {
+						sql += " SET " + setter + " = " + Utils.escapeLiteral(null, setterValue==null?"":setterValue.toString().strip(), true) + " and ";
+					} catch (SQLException e2) {
+						throw new UnauthorizedException("resource");
+					}
+				} catch (NumberFormatException e3) {
+					try {
+						sql += " SET " + setter + " = '" + Utils.escapeLiteral(null, setterValue==null?"":setterValue.toString().strip(), true) + "' and ";
+					} catch (SQLException e2) {
+						throw new UnauthorizedException("resource");
+					}
+				}
+				
+			}
+			
+		}
+		sql = sql.substring(0, sql.length() - 4);
+		sql += " WHERE ";
+		for (String condition : conditionsList) {
+			conditionValue = conditions.get(condition);
+			try {
+				Long.parseLong(conditionValue.toString());
+				try {
+					sql += condition + " = " + Utils.escapeLiteral(null, conditionValue==null?"":conditionValue.toString().strip(), true) + " and ";
+				} catch (SQLException e) {
+					throw new UnauthorizedException("resource");
+				}
+			} catch (NumberFormatException e1) {
+				try {
+					Double.parseDouble(conditionValue.toString());
+					try {
+						sql += condition + " = " + Utils.escapeLiteral(null, conditionValue==null?"":conditionValue.toString().strip(), true) + " and ";
+					} catch (SQLException e2) {
+						throw new UnauthorizedException("resource");
+					}
+				} catch (NumberFormatException e3) {
+					try {
+						sql += condition + " = '" + Utils.escapeLiteral(null, conditionValue==null?"":conditionValue.toString().strip(), true) + "' and ";
+					} catch (SQLException e2) {
+						throw new UnauthorizedException("resource");
+					}
+				}
+				
+			}
+			
+		}
+		sql = sql.substring(0, sql.length() - 4);
+		Query query = session.createNativeQuery(sql);
+		query.executeUpdate();
+	}
 
 }

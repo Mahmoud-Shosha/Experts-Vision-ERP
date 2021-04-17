@@ -11,5 +11,6 @@
 		<class>com.expertsvision.erp.core.privilege.entity.FormPrivilageView</class>
 		<class>com.expertsvision.erp.core.label.entity.Label</class>
 		<class>com.expertsvision.erp.core.message.entity.Message</class>
+		<class>com.expertsvision.erp.core.language.entity.Language</class>
 	</persistence-unit>
 </persistence>
