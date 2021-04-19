@@ -12,5 +12,7 @@
 		<class>com.expertsvision.erp.core.label.entity.Label</class>
 		<class>com.expertsvision.erp.core.message.entity.Message</class>
 		<class>com.expertsvision.erp.core.language.entity.Language</class>
+		<class>com.expertsvision.erp.core.module.entity.Module</class>
+		<class>com.expertsvision.erp.core.form.entity.Form</class>
 	</persistence-unit>
 </persistence>

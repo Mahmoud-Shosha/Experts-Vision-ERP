@@ -164,4 +164,12 @@ public class FormsView implements Serializable {
 		this.parentFormFName = parentFormFName;
 	}
 
+	@Override
+	public String toString() {
+		return "FormsView [active=" + active + ", formDName=" + formDName + ", formFName=" + formFName + ", formNo="
+				+ formNo + ", formOrder=" + formOrder + ", main=" + main + ", moduleNo=" + moduleNo + ", moduleNoDName="
+				+ moduleNoDName + ", moduleNoFName=" + moduleNoFName + ", parentForm=" + parentForm
+				+ ", parentFormDName=" + parentFormDName + ", parentFormFName=" + parentFormFName + "]";
+	}
+
 }

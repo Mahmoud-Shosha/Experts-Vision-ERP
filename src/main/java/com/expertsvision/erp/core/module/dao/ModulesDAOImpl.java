@@ -10,52 +10,52 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.expertsvision.erp.core.module.dto.ModulesViewFilter;
 import com.expertsvision.erp.core.module.entity.ModulesView;
-import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.core.module.entity.Module;
 import com.expertsvision.erp.core.utils.GenerateSql;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
 
 @Repository 	
-@Transactional
-public class ModulesViewDAOImpl implements ModulesViewDAO {
+public class ModulesDAOImpl implements ModulesDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<ModulesView> getModulesViewList(UsersView loginUser) {
+	public List<ModulesView> getModulesViewList() {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT * FROM get_modules_view_list(%s)";
-		sql = String.format(sql, loginUser.getUserId());
+		String sql = "SELECT * FROM modules_view";
 		Query<ModulesView> query = session.createNativeQuery(sql, ModulesView.class);
 		List<ModulesView> modulesViewList = query.getResultList();
 		return modulesViewList;
 	}
 	
 	@Override
-	public ModulesView getModulesView(UsersView loginUser, Integer moduleNo) {
+	public ModulesView getModulesView(Integer moduleNo) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT * FROM get_modules_view(%s, %s)";
-		sql = String.format(sql, loginUser.getUserId(), moduleNo);
+		String sql = "SELECT * FROM modules_view WHERE module_no = :moduleNo";
 		Query<ModulesView> query = session.createNativeQuery(sql, ModulesView.class);
+		query.setParameter("moduleNo", moduleNo);
 		List<ModulesView> modulesViewList = query.getResultList();
 		return modulesViewList.isEmpty()? null : modulesViewList.get(0);
 	}
 	
 	@Override
-	public SinglePage<ModulesView> getModulesViewSinglePage(UsersView loginUser, long pageNo) {
+	public SinglePage<ModulesView> getModulesViewSinglePage(long pageNo) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT * FROM get_modules_view_single_page(%s, %s)";
-		sql = String.format(sql, loginUser.getUserId(), pageNo);
-		Query<ModulesView> query = session.createNativeQuery(sql, ModulesView.class);
-		List<ModulesView> modulesViewList = query.getResultList();
-		if (modulesViewList.isEmpty()) {
-			sql = "SELECT * FROM get_table_rows_count('%s')";
-			sql = String.format(sql, "modules");
+		String sql = null;
+		List<ModulesView> modulesViewList =null;
+		if (pageNo > 0) {
+			sql = "SELECT * FROM modules_view LIMIT 1 OFFSET :Offset";
+			Query<ModulesView> query = session.createNativeQuery(sql, ModulesView.class);
+			query.setParameter("Offset", pageNo - 1);
+			modulesViewList = query.getResultList();
+		}
+		if (pageNo <= 0 || modulesViewList.isEmpty()) {
+			sql = "SELECT COUNT(*) FROM modules";
 			@SuppressWarnings("unchecked")
 			Query<BigInteger> query2 = session.createNativeQuery(sql);
 			long count = query2.getSingleResult().longValue();
@@ -66,14 +66,12 @@ public class ModulesViewDAOImpl implements ModulesViewDAO {
 	}
 	
 	@Override
-	public SinglePage<ModulesView> getModulesViewLastPage(UsersView loginUser) {
+	public SinglePage<ModulesView> getModulesViewLastPage() {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT * FROM get_modules_view_last_page(%s)";
-		sql = String.format(sql, loginUser.getUserId());
+		String sql = "SELECT * FROM modules_view ORDER BY(order_no) DESC LIMIT 1";
 		Query<ModulesView> query = session.createNativeQuery(sql, ModulesView.class);
 		List<ModulesView> modulesViewList = query.getResultList();
-		sql = "SELECT * FROM get_table_rows_count('%s')";
-		sql = String.format(sql, "modules");
+		sql = "SELECT COUNT(*) FROM modules";
 		@SuppressWarnings("unchecked")
 		Query<BigInteger> query2 = session.createNativeQuery(sql);
 		long count = query2.getSingleResult().longValue();
@@ -85,18 +83,36 @@ public class ModulesViewDAOImpl implements ModulesViewDAO {
 	}
 	
 	@Override
-	public MultiplePages<ModulesView> getModulesViewMultiplePages(UsersView loginUser, long pageNo) {
+	public Long getModulesViewSinglePageNo(Integer moduleNo) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT * FROM get_modules_view_multiple_pages(%s, %s)";
-		sql = String.format(sql, loginUser.getUserId(), pageNo);
-		Query<ModulesView> query = session.createNativeQuery(sql, ModulesView.class);
-		List<ModulesView> modulesViewList = query.getResultList();
-		sql = "SELECT * FROM get_table_rows_count('%s')";
-		sql = String.format(sql, "modules");
+		String sql = "SELECT row_number FROM" +
+					 "			(SELECT module_no, ROW_NUMBER()" +
+					 "						OVER(ORDER BY (order_no)) FROM modules)" +
+					 "			AS row_number " +
+					 "WHERE module_no = :moduleNo";
+		@SuppressWarnings("unchecked")
+		Query<BigInteger> query = session.createNativeQuery(sql);
+		query.setParameter("moduleNo", moduleNo);
+		List<BigInteger> singlePageNoList = query.getResultList();
+		return singlePageNoList.isEmpty() ? null : singlePageNoList.get(0).longValue();
+	}
+	
+	@Override
+	public MultiplePages<ModulesView> getModulesViewMultiplePages(long pageNo) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = null;
+		List<ModulesView> modulesViewList = null;
+		if (pageNo > 0) {
+			sql = "SELECT * FROM modules_view LIMIT 30 OFFSET :Offset";
+			Query<ModulesView> query = session.createNativeQuery(sql, ModulesView.class);
+			query.setParameter("Offset", (pageNo - 1) * 30);
+			modulesViewList = query.getResultList();
+		}
+		sql = "SELECT COUNT(*) FROM modules";
 		@SuppressWarnings("unchecked")
 		Query<BigInteger> query2 = session.createNativeQuery(sql);
 		long count = query2.getSingleResult().longValue();
-		if (modulesViewList.isEmpty()) {
+		if (pageNo <= 0 || modulesViewList.isEmpty()) {
 			return new MultiplePages<ModulesView>(null, pageNo, (long)Math.ceil(count/30.0));
 		} else {
 			return new MultiplePages<ModulesView>(modulesViewList, pageNo, (long)Math.ceil(count/30.0));
@@ -104,7 +120,10 @@ public class ModulesViewDAOImpl implements ModulesViewDAO {
 	}
 	
 	@Override
-	public MultiplePages<ModulesView> getModulesViewFilteredMultiplePages(UsersView loginUser, long pageNo, ModulesViewFilter ModuleViewFilter) {
+	public MultiplePages<ModulesView> getModulesViewFilteredMultiplePages(long pageNo, ModulesViewFilter ModuleViewFilter) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = null;
+		List<ModulesView> modulesViewList = null;
 		Map<String, Object> filters = new HashMap<String, Object>();
 		filters.put("active", ModuleViewFilter.getActive());
 		filters.put("module_d_name", ModuleViewFilter.getModuleDName());
@@ -112,17 +131,17 @@ public class ModulesViewDAOImpl implements ModulesViewDAO {
 		filters.put("module_no", ModuleViewFilter.getModuleNo());
 		filters.put("shortcut", ModuleViewFilter.getShortcut());
 		String filterQuery = GenerateSql.generateFilterQuery("modules_view", filters);
-		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT * FROM get_modules_view_filtered_multiple_pages(%s, %s, '%s')";
-		sql = String.format(sql, loginUser.getUserId(), pageNo, filterQuery);
-		Query<ModulesView> query = session.createNativeQuery(sql, ModulesView.class);
-		List<ModulesView> modulesViewList = query.getResultList();
-		sql = "SELECT * FROM get_query_rows_count('%s')";
-		sql = String.format(sql, filterQuery);
+		if (pageNo > 0) {
+			sql = filterQuery + " LIMIT 30 OFFSET :Offset";
+			Query<ModulesView> query = session.createNativeQuery(sql, ModulesView.class);
+			query.setParameter("Offset", (pageNo - 1) * 30);
+			modulesViewList = query.getResultList();
+		}
+		sql = "SELECT COUNT(*) FROM (" + filterQuery + ") As filteredRowsCount";
 		@SuppressWarnings("unchecked")
 		Query<BigInteger> query2 = session.createNativeQuery(sql);
 		long count = query2.getSingleResult().longValue();
-		if (modulesViewList.isEmpty()) {
+		if (pageNo <= 0 || modulesViewList.isEmpty()) {
 			return new MultiplePages<ModulesView>(null, pageNo, (long)Math.ceil(count/30.0));
 		} else {
 			return new MultiplePages<ModulesView>(modulesViewList, pageNo, (long)Math.ceil(count/30.0));
@@ -131,16 +150,16 @@ public class ModulesViewDAOImpl implements ModulesViewDAO {
 	
 	
 	@Override
-	public List<String> updateModulesView(UsersView loginUser, ModulesView modulesView) {
+	public void updateModules(Module module) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT UNNEST(update_modules_view(%s, %s, '%s', '%s', '%s', %s, %s))";
-		sql = String.format(sql, loginUser.getUserId(), modulesView.getModuleNo(), modulesView.getModuleDName(),
-														modulesView.getModuleFName(), modulesView.getShortcut(),
-														modulesView.getActive(), modulesView.getOrderNo());
-		javax.persistence.Query query = session.createNativeQuery(sql);
-		@SuppressWarnings("unchecked")
-		List<String> validationList = query.getResultList();
-		return validationList;
+		Module DBModule = session.get(Module.class, module.getModuleNo());
+		DBModule.setActive(module.getActive());
+		DBModule.setModuleDName(module.getModuleDName());
+		DBModule.setModuleFName(module.getModuleFName());
+		DBModule.setModuleNo(module.getModuleNo());
+		DBModule.setOrderNo(module.getOrderNo());
+		DBModule.setShortcut(module.getShortcut());
+		session.merge(DBModule);
 	}
 
 }

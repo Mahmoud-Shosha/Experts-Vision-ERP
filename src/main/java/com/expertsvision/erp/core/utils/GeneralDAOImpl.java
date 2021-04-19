@@ -66,7 +66,7 @@ public class GeneralDAOImpl implements GeneralDAO {
 		}
 		sql = sql.substring(0, sql.length() - 4);
 		sql += " " + ((exceptCondition == null) ? "" : exceptCondition);
-		sql += "LIMIT 1";
+		sql += " LIMIT 1";
 		Query query = session.createNativeQuery(sql);
 		@SuppressWarnings("unchecked")
 		List<Object> resultList = query.getResultList();

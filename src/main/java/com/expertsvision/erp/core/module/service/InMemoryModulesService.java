@@ -9,22 +9,24 @@ import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.module.entity.ModulesView;
 import com.expertsvision.erp.core.user.entity.UsersView;
-import com.expertsvision.erp.core.utils.GeneralConstants;
 
 
 @Service
-public class InMemoryModulesViewService {
+public class InMemoryModulesService {
 	
 	
-	private ModulesViewService modulesViewService;
+	private ModulesService modulesViewService;
 	
 	private Map<Integer, ModulesView> modulesViewMap;
 	
+	private UsersView superAdmin = new UsersView();
+	
 	
 	@Autowired
-	public InMemoryModulesViewService(ModulesViewService modulesViewService) {
+	public InMemoryModulesService(ModulesService modulesViewService) {
 		this.modulesViewService = modulesViewService;
-		List<ModulesView> modulesViewList = modulesViewService.getModulesViewList(new UsersView(GeneralConstants.SUPER_USER_NO));
+		superAdmin.setSuperAdmin(true);
+		List<ModulesView> modulesViewList = modulesViewService.getModulesViewList(superAdmin);
 		Map<Integer, ModulesView> newModulesViewMap = convertToModulesViewMap(modulesViewList);
 		synchronized (this) {
 			modulesViewMap = newModulesViewMap;
@@ -37,7 +39,7 @@ public class InMemoryModulesViewService {
 	}
 	
 	public void updateModulesViewMap() {
-		List<ModulesView> modulesViewList = modulesViewService.getModulesViewList(new UsersView(GeneralConstants.SUPER_USER_NO));
+		List<ModulesView> modulesViewList = modulesViewService.getModulesViewList(superAdmin);
 		Map<Integer, ModulesView> newModulesViewMap = convertToModulesViewMap(modulesViewList);
 		synchronized (this) {
 			modulesViewMap = newModulesViewMap;
