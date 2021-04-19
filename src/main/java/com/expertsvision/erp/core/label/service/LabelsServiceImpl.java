@@ -178,7 +178,11 @@ public class LabelsServiceImpl implements LabelsService {
 		conditions.put("lang_no", labelsViewPK.getLangNo());
 		if (!generalDAO.isEntityExist("labels", conditions)) throw new ValidationException("not_exist", "label");
 		// delete the label
-		labelsViewDAO.deleteLabel(labelsViewPK);
+		try {
+			labelsViewDAO.deleteLabel(labelsViewPK);
+		} catch (Exception e) {
+			throw new ValidationException("used_somewhere", "label");
+		}
 	}
 	
 	public Label getLabelFromLabelsView(LabelsView labelsView)  {

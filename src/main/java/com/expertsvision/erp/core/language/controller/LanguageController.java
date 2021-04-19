@@ -1,7 +1,8 @@
 package com.expertsvision.erp.core.language.controller;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.expertsvision.erp.core.language.dto.LanguageViewFilter;
 import com.expertsvision.erp.core.language.entity.LanguageView;
-import com.expertsvision.erp.core.language.service.LanguageViewService;
+import com.expertsvision.erp.core.language.service.LanguageService;
 import com.expertsvision.erp.core.response.Response;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
@@ -27,70 +28,78 @@ import com.expertsvision.erp.core.utils.SinglePage;
 
 @RestController
 @RequestMapping(value = "/public/language")
-public class LanguageViewController {
+public class LanguageController {
 
 	@Autowired
 	private Response response;
 	
 	@Autowired
-	private LanguageViewService languageViewService;
+	private LanguageService languageService;
 
 	
 	@GetMapping("")
 	public ResponseEntity<Object> getLanguageViewList() {
-		List<LanguageView> languageViewList = languageViewService.getLanguageViewList();
+		List<LanguageView> languageViewList = languageService.getLanguageViewList();
 		return response.response(languageViewList, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{langNo}")
 	public ResponseEntity<Object> getLanguageView(@PathVariable("langNo") Integer langNo) {
-		LanguageView languageViewByLangNo = languageViewService.getLanguageView(langNo);
+		LanguageView languageViewByLangNo = languageService.getLanguageView(langNo);
 		return response.response(languageViewByLangNo, HttpStatus.OK);
 	}
 	
 	@GetMapping("/page/{pageNo}")
 	public ResponseEntity<Object> getLanguagesViewSinglePage(@PathVariable("pageNo") Long pageNo) {
-		SinglePage<LanguageView> singlePage = languageViewService.getLanguagesViewSinglePage(pageNo);
+		SinglePage<LanguageView> singlePage = languageService.getLanguagesViewSinglePage(pageNo);
 		return response.response(singlePage, HttpStatus.OK);
 	}
 	
 	@GetMapping("/lastPage")
 	public ResponseEntity<Object> getLanguagesViewLastPage() {
-		SinglePage<LanguageView> singlePage = languageViewService.getLanguagesViewLastPage();
+		SinglePage<LanguageView> singlePage = languageService.getLanguagesViewLastPage();
 		return response.response(singlePage, HttpStatus.OK);
+	}
+	
+	@GetMapping("pageNo/{langNo}")
+	public ResponseEntity<Object> getMessagesViewSinglePageNo(@PathVariable("langNo") Integer langNo) {
+		long singlePageNo = languageService.getLanguageViewSinglePageNo(langNo);
+		Map<String, Long> singlePageNoMap = new HashMap<>();
+		singlePageNoMap.put("page_no", singlePageNo);
+		return response.response(singlePageNoMap, HttpStatus.OK);
 	}
 	
 	@GetMapping("/pages/{pageNo}")
 	public ResponseEntity<Object> getLanguagesViewMultiplePages(@PathVariable("pageNo") Long pageNo) {
-		MultiplePages<LanguageView> multiplePages = languageViewService.getLanguagesViewMultiplePages(pageNo);
+		MultiplePages<LanguageView> multiplePages = languageService.getLanguagesViewMultiplePages(pageNo);
 		return response.response(multiplePages, HttpStatus.OK);
 	}
 	
-	@GetMapping("/filteredPages/{pageNo}")
+	@PostMapping("/filteredPages/{pageNo}")
 	public ResponseEntity<Object> getLanguagesViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
 																		@RequestBody LanguageViewFilter LanguageViewFilter) {
-		MultiplePages<LanguageView> multiplePages = languageViewService.getLanguagesViewFilteredMultiplePages(pageNo, LanguageViewFilter);
+		MultiplePages<LanguageView> multiplePages = languageService.getLanguagesViewFilteredMultiplePages(pageNo, LanguageViewFilter);
 		return response.response(multiplePages, HttpStatus.OK);
 	}
 	
 	@PostMapping("")
 	public ResponseEntity<Object> addLanguageView(@RequestBody LanguageView languageView) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		languageViewService.addLanguageView(loginUser, languageView);
+		languageService.addLanguage(loginUser, languageView);
 		return response.response("added", "language", HttpStatus.OK);
 	}
 	
 	@PutMapping("")
 	public ResponseEntity<Object> updateLanguageView(@RequestBody LanguageView languageView) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		languageViewService.updateLanguageView(loginUser, languageView);
+		languageService.updateLanguage(loginUser, languageView);
 		return response.response("updated", "language", HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{langNo}")
 	public ResponseEntity<Object> deleteLanguageView(@PathVariable("langNo")Integer langNo) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		languageViewService.deleteLanguageView(loginUser, langNo);
+		languageService.deleteLanguage(loginUser, langNo);
 		return response.response("deleted", "language", HttpStatus.OK);
 	}
 
