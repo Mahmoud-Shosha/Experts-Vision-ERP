@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.expertsvision.erp.core.exception.InactiveUserException;
 import com.expertsvision.erp.core.exception.ValidationException;
-import com.expertsvision.erp.core.form.service.FormsViewService;
+import com.expertsvision.erp.core.form.service.FormsService;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.user.service.InMemoryUsersViewService;
 
@@ -31,7 +31,7 @@ public class LoginController {
 	private JwtTokenUtil jwtTokenUtil;
 	
 	@Autowired
-	private FormsViewService formsViewService;
+	private FormsService formsViewService;
 
 	
 	@PostMapping("")
@@ -46,7 +46,7 @@ public class LoginController {
 			if (usersView.getInactive()) {
 				throw new InactiveUserException();
 			}
-
+		
 			if (!passwordEncoder.matches(loginDTO.getPassword(), usersView.getPassword())) {
 				throw new ValidationException("auth_failed");
 			}

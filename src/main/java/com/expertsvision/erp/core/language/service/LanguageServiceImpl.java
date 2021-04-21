@@ -115,7 +115,7 @@ public class LanguageServiceImpl implements LanguageService {
 		Map<String, Object> conditions = new HashMap<>();
 		Map<String, Object> setters = new HashMap<>();
 		conditions.put("lang_no", language.getLangNo());
-		if (generalDAO.isEntityExist("language", conditions)) throw new ValidationException("already_exist", "lang_code");
+		if (generalDAO.isEntityExist("language", conditions)) throw new ValidationException("already_exist", "lang_no");
 		conditions.clear();
 		conditions.put("lang_name", language.getLangName());
 		if (generalDAO.isEntityExist("language", conditions)) throw new ValidationException("already_exist", "name");
@@ -160,13 +160,15 @@ public class LanguageServiceImpl implements LanguageService {
 		if (!generalDAO.isEntityExist("language", conditions)) throw new ValidationException("not_exist", "language");
 		conditions.clear();
 		conditions.put("lang_name", language.getLangName());
-		if (generalDAO.isEntityExist("language", conditions)) throw new ValidationException("already_exist", "name");
+		String exceptionCondition = null;
+		exceptionCondition = " and lang_no != " + language.getLangNo();
+		if (generalDAO.isEntityExist("language", conditions, exceptionCondition)) throw new ValidationException("already_exist", "name");
 		conditions.clear();
 		conditions.put("report_ext", language.getReportExt());
-		if (generalDAO.isEntityExist("language", conditions)) throw new ValidationException("already_exist", "report_ext");
+		if (generalDAO.isEntityExist("language", conditions, exceptionCondition)) throw new ValidationException("already_exist", "report_ext");
 		conditions.clear();
 		conditions.put("lang_ext", language.getLangExt());
-		if (generalDAO.isEntityExist("language", conditions)) throw new ValidationException("already_exist", "lang_ext");
+		if (generalDAO.isEntityExist("language", conditions, exceptionCondition)) throw new ValidationException("already_exist", "lang_ext");
 		setters.clear();
 		setters.put("lang_dfl", false);
 		LanguageView DBLanguageView = languageDAO.getLanguageView(languageView.getLangNo());
@@ -190,10 +192,10 @@ public class LanguageServiceImpl implements LanguageService {
 		if (!generalDAO.isEntityExist("language", conditions)) throw new ValidationException("not_exist", "language");
 		conditions.clear();
 		conditions.put("lang_no", langNo);
-		if (!generalDAO.isEntityExist("labels", conditions)) throw new ValidationException("used_in_screen", "language", "label");
+		if (generalDAO.isEntityExist("labels", conditions)) throw new ValidationException("used_in_screen", "language", "label");
 		conditions.clear();
 		conditions.put("lang_no", langNo);
-		if (!generalDAO.isEntityExist("messages", conditions)) throw new ValidationException("used_in_screen", "language", "message");
+		if (generalDAO.isEntityExist("messages", conditions)) throw new ValidationException("used_in_screen", "language", "message");
 		// delete the language
 		try {
 			languageDAO.deleteLanguage(langNo);

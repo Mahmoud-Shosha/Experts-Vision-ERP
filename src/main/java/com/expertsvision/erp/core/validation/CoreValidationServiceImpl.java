@@ -11,9 +11,9 @@ import com.expertsvision.erp.core.exception.ConfirmException;
 import com.expertsvision.erp.core.exception.UnauthorizedException;
 import com.expertsvision.erp.core.exception.ValidationException;
 import com.expertsvision.erp.core.form.entity.FormsView;
-import com.expertsvision.erp.core.form.service.InMemoryFormsViewService;
+import com.expertsvision.erp.core.form.service.InMemoryFormsService;
 import com.expertsvision.erp.core.module.entity.ModulesView;
-import com.expertsvision.erp.core.module.service.InMemoryModulesViewService;
+import com.expertsvision.erp.core.module.service.InMemoryModulesService;
 import com.expertsvision.erp.core.privilege.entity.FormPrivilagePK;
 import com.expertsvision.erp.core.privilege.entity.FormPrivilageView;
 import com.expertsvision.erp.core.privilege.service.InMemoryFormPrivilageService;
@@ -25,10 +25,10 @@ import com.expertsvision.erp.core.utils.FormsActions;
 public class CoreValidationServiceImpl implements CoreValidationService {
 
 	@Autowired
-	private InMemoryModulesViewService inMemoryModulesViewService;
+	private InMemoryModulesService inMemoryModulesViewService;
 
 	@Autowired
-	private InMemoryFormsViewService inMemoryFormsViewService;
+	private InMemoryFormsService inMemoryFormsViewService;
 
 	@Autowired
 	private InMemoryFormPrivilageService inMemoryFormPrivilageService;

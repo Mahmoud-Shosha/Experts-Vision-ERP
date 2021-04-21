@@ -10,23 +10,24 @@ import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.form.entity.FormsView;
 import com.expertsvision.erp.core.user.entity.UsersView;
-import com.expertsvision.erp.core.utils.GeneralConstants;
 
 
 @Service
-public class InMemoryFormsViewService {
+public class InMemoryFormsService {
 	
 	
-	
-	private FormsViewService formsViewService;
+	private FormsService formsViewService;
 	
 	private Map<Integer, FormsView> formsViewMap;
 	
+	private UsersView superAdmin = new UsersView();
+	
 	
 	@Autowired
-	public InMemoryFormsViewService(FormsViewService formsViewService) {
+	public InMemoryFormsService(FormsService formsViewService) {
 		this.formsViewService = formsViewService;
-		List<FormsView> formsViewList = formsViewService.getFormsViewList(new UsersView(GeneralConstants.SUPER_USER_NO));
+		superAdmin.setSuperAdmin(true);
+		List<FormsView> formsViewList = formsViewService.getFormsViewList(superAdmin);
 		Map<Integer, FormsView> NewFormsViewMap = convertToFormsViewMap(formsViewList);
 		synchronized (this) {
 			formsViewMap = NewFormsViewMap;
@@ -39,7 +40,7 @@ public class InMemoryFormsViewService {
 	}
 	
 	public void updateFormsView() {
-		List<FormsView> formsViewList = formsViewService.getFormsViewList(new UsersView(GeneralConstants.SUPER_USER_NO));
+		List<FormsView> formsViewList = formsViewService.getFormsViewList(superAdmin);
 		Map<Integer, FormsView> NewFormsViewMap = convertToFormsViewMap(formsViewList);
 		synchronized (this) {
 			formsViewMap = NewFormsViewMap;
