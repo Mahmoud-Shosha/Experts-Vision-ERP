@@ -25,7 +25,7 @@ import com.expertsvision.erp.core.label.service.InMemoryLabelsService;
 import com.expertsvision.erp.core.message.entity.MessagesPK;
 import com.expertsvision.erp.core.message.service.InMemoryMessagesService;
 import com.expertsvision.erp.core.user.entity.UsersView;
-import com.expertsvision.erp.core.user.service.InMemoryUsersViewService;
+import com.expertsvision.erp.core.user.service.InMemoryUsersService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	private JwtTokenUtil jwtTokenUtil;
 	
 	@Autowired
-	private InMemoryUsersViewService inMemoryUsersViewService;
+	private InMemoryUsersService inMemoryUsersViewService;
 	
 	@Autowired
 	private InMemoryLabelsService inMemoryLabelsViewService;

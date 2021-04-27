@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.language.entity.LanguageView;
 
 @Service
+@Lazy
 public class InMemoryLanguageService {
 	
 
@@ -33,7 +35,7 @@ public class InMemoryLanguageService {
 		return languageView;
 	}
 	
-	public void updateLabelsView() {
+	public void updateLanguagesView() {
 		List<LanguageView> languageViewList = languageViewService.getLanguageViewList();
 		Map<Integer, LanguageView> newLanguageViewMap = convertToLanguageViewMap(languageViewList);
 		synchronized (this) {

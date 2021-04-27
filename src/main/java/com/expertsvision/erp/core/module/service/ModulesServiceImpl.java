@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.postgresql.core.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,10 @@ public class ModulesServiceImpl implements ModulesService {
 	
 	@Autowired
 	private CoreValidationService coreValidationService;
+	
+	@Autowired
+	@Lazy
+	private InMemoryModulesService inMemoryModulesService;
 
 	
 	@Override
@@ -123,7 +128,7 @@ public class ModulesServiceImpl implements ModulesService {
 		coreValidationService.greaterThanZero(modulesView.getModuleNo(), "module_no");
 		coreValidationService.notNull(modulesView.getModuleDName(), "name");
 		coreValidationService.notBlank(modulesView.getModuleDName(), "name");
-		if (modulesView.getModuleFName().isBlank()) modulesView.setModuleFName(null);
+		if ((modulesView.getModuleFName() != null) && modulesView.getModuleFName().isBlank()) modulesView.setModuleFName(null);
 		coreValidationService.notNull(modulesView.getShortcut(), "shortcut");
 		coreValidationService.notBlank(modulesView.getShortcut(), "shortcut");
 		coreValidationService.notNull(modulesView.getActive(), "active");
@@ -149,6 +154,7 @@ public class ModulesServiceImpl implements ModulesService {
 		if (generalDAO.isEntityExist("modules", conditions, exceptionCondition)) throw new ValidationException("already_exist", "shortcut");
 		// Update the message
 		modulesDAO.updateModules(module);
+		inMemoryModulesService.updateModulesViewMap();
 	}
 	
 	public Module getModuleFromModulesView(ModulesView modulesView)  {

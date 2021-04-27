@@ -173,6 +173,7 @@ public class LabelsDAOImpl implements LabelsDAO {
 		Session session = sessionFactory.getCurrentSession();
 		Label DBLabel = session.get(Label.class, labelsPK);
 		session.delete(DBLabel);
+		session.flush();
 	}
 
 }

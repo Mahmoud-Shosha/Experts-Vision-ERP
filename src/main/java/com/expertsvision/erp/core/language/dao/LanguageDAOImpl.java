@@ -172,6 +172,7 @@ public class LanguageDAOImpl implements LanguageDAO {
 		Session session = sessionFactory.getCurrentSession();
 		Language DBLanguage = session.get(Language.class, langNo);
 		session.delete(DBLanguage);
+		session.flush();
 	}
 
 }

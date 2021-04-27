@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.postgresql.core.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,10 @@ public class FormsServiceImpl implements FormsService {
 	
 	@Autowired
 	private CoreValidationService coreValidationService;
+	
+	@Autowired
+	@Lazy
+	private InMemoryFormsService inMemoryFormsService;
 	
 	
 	@Override
@@ -133,7 +138,7 @@ public class FormsServiceImpl implements FormsService {
 		coreValidationService.greaterThanZero(formsView.getModuleNo(), "module_no");
 		coreValidationService.notNull(formsView.getFormDName(), "name");
 		coreValidationService.notBlank(formsView.getFormDName(), "name");
-		if (formsView.getFormFName().isBlank()) formsView.setFormFName(null);
+		if ((formsView.getFormFName() != null) && formsView.getFormFName().isBlank()) formsView.setFormFName(null);
 		coreValidationService.notNull(formsView.getParentForm(), "parent_form");
 		coreValidationService.greaterThanZero(formsView.getParentForm(), "parent_form");
 		coreValidationService.notNull(formsView.getActive(), "active");
@@ -163,6 +168,7 @@ public class FormsServiceImpl implements FormsService {
 		}
 		// Update the from
 		formsDAO.updateForms(form);
+		inMemoryFormsService.updateFormsView();
 	}
 	
 	public Form getFormFromFormsView(FormsView formsView)  {

@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.expertsvision.erp.core.exception.InactiveUserException;
 import com.expertsvision.erp.core.exception.ValidationException;
-import com.expertsvision.erp.core.form.service.FormsService;
 import com.expertsvision.erp.core.user.entity.UsersView;
-import com.expertsvision.erp.core.user.service.InMemoryUsersViewService;
+import com.expertsvision.erp.core.user.service.InMemoryUsersService;
 
 @RestController
 @RequestMapping(value = "/public/login")
@@ -25,13 +24,10 @@ public class LoginController {
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private InMemoryUsersViewService inMemoryUsersViewService;
+	private InMemoryUsersService inMemoryUsersViewService;
 	
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
-	@Autowired
-	private FormsService formsViewService;
 
 	
 	@PostMapping("")
@@ -46,7 +42,7 @@ public class LoginController {
 			if (usersView.getInactive()) {
 				throw new InactiveUserException();
 			}
-		
+
 			if (!passwordEncoder.matches(loginDTO.getPassword(), usersView.getPassword())) {
 				throw new ValidationException("auth_failed");
 			}
@@ -61,7 +57,7 @@ public class LoginController {
 			res.put("group_no_d_name", usersView.getGroupNoDName());
 			res.put("group_no_f_name", usersView.getGroupNoFName());
 			res.put("token", jwtTokenUtil.generateAccessToken(usersView));
-			res.put("main_tree", formsViewService.getFormsViewMainTree(usersView));
+//			res.put("main_tree", formsViewService.getFormsViewMainTree(usersView));
 			return ResponseEntity.ok().body(res);
 			
 		} catch (InactiveUserException e) {

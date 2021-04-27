@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.postgresql.core.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,10 @@ public class MessagesServiceImpl implements MessagesService {
 	
 	@Autowired
 	private CoreValidationService coreValidationService;
+	
+	@Autowired
+	@Lazy
+	private InMemoryMessagesService inMemoryMessagesService;
 
 	
 	@Override
@@ -125,6 +130,7 @@ public class MessagesServiceImpl implements MessagesService {
 		message.setModifyDate(null);
 		message.setModifyUser(null);
 		messagesDAO.addMessage(message);
+		inMemoryMessagesService.updateMessagesView();
 	}
 	
 	@Override
@@ -165,6 +171,7 @@ public class MessagesServiceImpl implements MessagesService {
 		message.setModifyDate(new Timestamp(new Date().getTime()));
 		message.setModifyUser(loginUser.getUserId());
 		messagesDAO.updateMessage(message);
+		inMemoryMessagesService.updateMessagesView();
 	}
 	
 	@Override
@@ -183,6 +190,7 @@ public class MessagesServiceImpl implements MessagesService {
 		} catch (Exception e) {
 			throw new ValidationException("used_somewhere", "message");
 		}
+		inMemoryMessagesService.updateMessagesView();
 	}
 	
 	public Message getMessageFromMessagesView(MessagesView messagesView)  {

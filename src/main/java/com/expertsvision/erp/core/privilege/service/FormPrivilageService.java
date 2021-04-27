@@ -1,5 +1,6 @@
 package com.expertsvision.erp.core.privilege.service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.expertsvision.erp.core.privilege.entity.FormPrivilageView;
@@ -21,4 +22,14 @@ public interface FormPrivilageService {
 //
 //	MultiplePages<ModulesView> getModulesViewFilteredMultiplePages(UsersView loginUser, long pageNo, ModulesViewFilter ModuleViewFilter);
 
+	void generateFormPrivilegesForUser(UsersView loginUser, Integer userId, Timestamp addDate);
+	
+	void generateFormPrivilegesForUserFromAnotherUser(UsersView loginUser, Integer fromUserId, Integer toUserId, Timestamp addDate);
+
+	void updateFormPrivilegesForUserFromAnotherUser(UsersView loginUser, Integer fromUserId, Integer toUserId, Timestamp modifyDate);
+
+	void updateGroupUsersPrivileges(UsersView loginUser, Integer fromUserId, Integer groupNo, Timestamp modifyDate);
+	
+	void deleteBulkFormPrivilage(Integer userId);
+	
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.privilege.entity.FormPrivilagePK;
@@ -14,6 +15,7 @@ import com.expertsvision.erp.core.utils.GeneralConstants;
 
 
 @Service
+@Lazy
 public class InMemoryFormPrivilageService {
 	
 	

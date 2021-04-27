@@ -1,6 +1,8 @@
 package com.expertsvision.erp.core.user.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,12 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.expertsvision.erp.core.exception.ValidationException;
 import com.expertsvision.erp.core.response.Response;
+import com.expertsvision.erp.core.user.dto.UsersDTO;
+import com.expertsvision.erp.core.user.dto.UsersViewFilter;
 import com.expertsvision.erp.core.user.entity.UsersView;
-import com.expertsvision.erp.core.user.service.UsersViewService;
+import com.expertsvision.erp.core.user.service.UsersService;
+import com.expertsvision.erp.core.utils.MultiplePages;
+import com.expertsvision.erp.core.utils.SinglePage;
 
 @RestController
 @RequestMapping(value = "/users")
-public class UsersViewController {
+public class UsersController {
 		
 	@Autowired
 	private HttpServletRequest request;
@@ -33,24 +39,62 @@ public class UsersViewController {
 	private Response response;
 	
 	@Autowired
-	private UsersViewService usersViewService;
+	private UsersService usersViewService;
 	
 	@GetMapping("")
 	public ResponseEntity<Object> getUsersViewSubordinateList() {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		List<UsersView> usersViewList = usersViewService.getUsersViewSubordinateList(loginUser);
+		List<UsersDTO> usersViewList = usersViewService.getUsersViewSubordinateList(loginUser);
 		return response.response(usersViewList, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{userId}")
 	public ResponseEntity<Object> getUsersView(@PathVariable("userId") Integer userId) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		UsersView usersView = usersViewService.getUsersView(loginUser, userId);
+		UsersDTO usersView = usersViewService.getUsersView(loginUser, userId);
 		return response.response(usersView, HttpStatus.OK);
 	}
 	
+	@GetMapping("pageNo/{userId}")
+	public ResponseEntity<Object> getUsersViewSinglePageNo(@PathVariable("userId") Integer userId) {
+		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		long singlePageNo = usersViewService.getUserViewSinglePageNo(loginUser, userId);
+		Map<String, Long> singlePageNoMap = new HashMap<>();
+		singlePageNoMap.put("page_no", singlePageNo);
+		return response.response(singlePageNoMap, HttpStatus.OK);
+	}
+	
+	@GetMapping("/page/{pageNo}")
+	public ResponseEntity<Object> getMessagesViewSinglePage(@PathVariable("pageNo") Long pageNo) {
+		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		SinglePage<UsersDTO> singlePage = usersViewService.getUsersViewSinglePage(loginUser, pageNo);
+		return response.response(singlePage, HttpStatus.OK);
+	}
+	
+	@GetMapping("/lastPage")
+	public ResponseEntity<Object> getUsersViewLastPage() {
+		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		SinglePage<UsersDTO> singlePage = usersViewService.getUsersViewLastPage(loginUser);
+		return response.response(singlePage, HttpStatus.OK);
+	}
+	
+	@GetMapping("/pages/{pageNo}")
+	public ResponseEntity<Object> getUsersViewMultiplePages(@PathVariable("pageNo") Long pageNo) {
+		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		MultiplePages<UsersDTO> multiplePages = usersViewService.getUsersViewMultiplePages(loginUser, pageNo);
+		return response.response(multiplePages, HttpStatus.OK);
+	}
+	
+	@PostMapping("/filteredPages/{pageNo}")
+	public ResponseEntity<Object> getUsersViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
+																		@RequestBody UsersViewFilter usersViewFilter) {
+		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		MultiplePages<UsersDTO> multiplePages = usersViewService.getUsersViewFilteredMultiplePages(loginUser, pageNo, usersViewFilter);
+		return response.response(multiplePages, HttpStatus.OK);
+	}
+	
 	@PostMapping("")
-	public ResponseEntity<Object> addUsersView(@RequestBody UsersView usersView) {
+	public ResponseEntity<Object> addUser(@RequestBody UsersView usersView) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		// Get important request headers
 		String cfup = request.getHeader("COPY-FROM-USER-PRIVILEGES");
@@ -68,15 +112,15 @@ public class UsersViewController {
 			} catch (Exception e) {
 				throw new ValidationException("must_be_integer", "copy_privileges_from_user");
 			}
-			usersViewService.addUsersView(loginUser, usersView, cfupID);
+			usersViewService.addUser(loginUser, usersView, cfupID);
 		}  else {
-			usersViewService.addUsersView(loginUser, usersView, null);
+			usersViewService.addUser(loginUser, usersView, null);
 		}
 		return response.response("added", "user", HttpStatus.OK);
 	}
 	
 	@PutMapping("")
-	public ResponseEntity<Object> updateUsersView(@RequestBody UsersView usersView) {
+	public ResponseEntity<Object> updateUser(@RequestBody UsersView usersView) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		// Get important request headers
 		String cfup = request.getHeader("COPY-FROM-USER-PRIVILEGES");
@@ -107,11 +151,11 @@ public class UsersViewController {
 		} else {
 			usersViewService.updateUsersView(loginUser, usersView, null, null, null);
 		}
-		return response.response("updated", "users", HttpStatus.OK);
+		return response.response("updated", "user", HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{userId}")
-	public ResponseEntity<Object> deleteUsers(@PathVariable("userId")Integer userId) {
+	public ResponseEntity<Object> deleteUser(@PathVariable("userId")Integer userId) {
 		UsersView loginUser = (UsersView)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		usersViewService.deleteUsersView(loginUser, userId);
 		return response.response("deleted", "user", HttpStatus.OK);

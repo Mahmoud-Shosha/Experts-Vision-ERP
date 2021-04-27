@@ -2,12 +2,15 @@ package com.expertsvision.erp.core.privilege.dao;
 
 import java.util.List;
 
+import com.expertsvision.erp.core.privilege.entity.FormPrivilage;
 import com.expertsvision.erp.core.privilege.entity.FormPrivilageView;
 
 
 public interface FormPrivilageDAO {
 	
 	List<FormPrivilageView> getFormPrivilageViewList();
+	
+	List<FormPrivilageView> getFormPrivilageViewList(Integer userId);
 	
 //	LabelsView getLabelsView(LabelsViewPK labelsViewPK);
 //	
@@ -26,5 +29,11 @@ public interface FormPrivilageDAO {
 //	MultiplePages<LabelsView> getLabelsViewMultiplePages(long pageNo);
 //	
 //	MultiplePages<LabelsView> getLabelsViewFilteredMultiplePages(long pageNo, LabelsViewFilter LabelViewFilter);
+	
+	void addBulkFormPrivilage(List<FormPrivilage> prvsList);
+	
+	void updateBulkFormPrivilage(List<FormPrivilage> prvsList);
+	
+	void deleteBulkFormPrivilage(Integer userId);
 
 }

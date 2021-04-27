@@ -7,17 +7,18 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.expertsvision.erp.core.privilege.entity.FormPrivilage;
 import com.expertsvision.erp.core.privilege.entity.FormPrivilageView;
 
 @Repository 	
-@Transactional
 public class FormPrivilageDAOmpl implements FormPrivilageDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-
+	
+	// Refactor the following to functions ....
+	
 	@Override
 	public List<FormPrivilageView> getFormPrivilageViewList() {		
 		Session session = sessionFactory.getCurrentSession();
@@ -27,6 +28,14 @@ public class FormPrivilageDAOmpl implements FormPrivilageDAO {
 		return formPrivilageViewList;
 	}
 	
+	@Override
+	public List<FormPrivilageView> getFormPrivilageViewList(Integer userId) {		
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT * FROM form_privilage_view WHERE user_id = " + userId;
+		Query<FormPrivilageView> query = session.createNativeQuery(sql, FormPrivilageView.class);
+		List<FormPrivilageView> formPrivilageViewList = query.getResultList();
+		return formPrivilageViewList;
+	}
 //	
 //	@Override
 //	public LabelsView getLabelsView(LabelsViewPK labelsViewPK) {
@@ -178,5 +187,104 @@ public class FormPrivilageDAOmpl implements FormPrivilageDAO {
 //		List<String> validationList = query.getResultList();
 //		return validationList;
 //	}
+	
+	@Override
+	public void addBulkFormPrivilage(List<FormPrivilage> prvsList) {
+		if (prvsList.isEmpty()) return;
+		StringBuilder sql = new StringBuilder();
+		sql.append("INSERT INTO form_privilage (user_id, form_no, include_priv, add_priv, modify_priv," + 
+				   "                            delete_priv, view_priv, print_priv, audit_priv, post_priv," + 
+				   "							add_user, add_date, modify_user, modify_date)" + 
+				   "	        VALUES ");
+		for (FormPrivilage prv : prvsList) {
+			sql.append("(");
+			sql.append(prv.getUserId());
+			sql.append(", ");
+			sql.append(prv.getFormNo());
+			sql.append(", ");
+			sql.append(prv.getIncludePriv());
+			sql.append(", ");
+			sql.append(prv.getAddPriv());
+			sql.append(", ");
+			sql.append(prv.getModifyPriv());
+			sql.append(", ");
+			sql.append(prv.getDeletePriv());
+			sql.append(", ");
+			sql.append(prv.getViewPriv());
+			sql.append(", ");
+			sql.append(prv.getPrintPriv());
+			sql.append(", ");
+			sql.append(prv.getAuditPriv());
+			sql.append(", ");
+			sql.append(prv.getPostPriv());
+			sql.append(", ");
+			sql.append(prv.getAddUser());
+			sql.append(", '");
+			sql.append(prv.getAddDate());
+			sql.append("', ");
+			sql.append("null");
+			sql.append(", ");
+			sql.append("null");
+			sql.append("),");
+		}
+		sql.deleteCharAt(sql.lastIndexOf(","));
+		Session session = sessionFactory.getCurrentSession();
+		javax.persistence.Query query = session.createNativeQuery(sql.toString());
+		query.executeUpdate();
+	}
+	
+	@Override
+	public void updateBulkFormPrivilage(List<FormPrivilage> prvsList) {
+		if (prvsList.isEmpty()) return;
+		StringBuilder sql = new StringBuilder();
+		for (FormPrivilage prv : prvsList) {
+			sql.append("UPDATE form_privilage SET ");
+			sql.append("include_priv=");
+			sql.append(prv.getIncludePriv());
+			sql.append(", add_priv=");
+			sql.append(prv.getAddPriv());
+			sql.append(", modify_priv=");
+			sql.append(prv.getModifyPriv());
+			sql.append(", delete_priv=");
+			sql.append(prv.getDeletePriv());
+			sql.append(", view_priv=");
+			sql.append(prv.getViewPriv());
+			sql.append(", print_priv=");
+			sql.append(prv.getPrintPriv());
+			sql.append(", audit_priv=");
+			sql.append(prv.getAuditPriv());
+			sql.append(", post_priv=");
+			sql.append(prv.getPostPriv());
+			sql.append(", modify_user=");
+			sql.append(prv.getModifyUser());
+			if (prv.getModifyDate() != null) {
+				sql.append(", modify_date='");
+				sql.append(prv.getModifyDate());
+				sql.append("' WHERE user_id=");
+			} else {
+				sql.append(", modify_date=");
+				sql.append(prv.getModifyDate());
+				sql.append(" WHERE user_id=");
+			}
+			sql.append(prv.getUserId());
+			sql.append(" AND form_no=");
+			sql.append(prv.getFormNo());
+			sql.append(";");
+		}
+		Session session = sessionFactory.getCurrentSession();
+		javax.persistence.Query query = session.createNativeQuery(sql.toString());
+		query.executeUpdate();
+	}
 
+	
+	@Override
+	public void deleteBulkFormPrivilage(Integer userId) {		
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "DELETE FROM form_privilage WHERE user_id = :userId";
+		Query<FormPrivilageView> query = session.createNativeQuery(sql, FormPrivilageView.class);
+		query.setParameter("userId", userId);
+		query.executeUpdate();
+		session.flush();
+	}
+	
 }

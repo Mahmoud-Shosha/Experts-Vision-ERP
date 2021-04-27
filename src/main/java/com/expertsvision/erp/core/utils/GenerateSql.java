@@ -17,8 +17,9 @@ public class GenerateSql {
 		Object value;
 		if (!mapKeysSet.isEmpty()) query += "WHERE";
 		for (String key : mapKeysSet) {
+			if ((filters.get(key) == null) || (filters.get(key).toString().strip().equals(""))) continue;
 			try {
-				value = Utils.escapeLiteral(null, filters.get(key)==null?"":filters.get(key).toString().strip(), true);
+				value = Utils.escapeLiteral(null, filters.get(key).toString().strip(), true);
 			} catch (SQLException e) {
 				 throw new UnauthorizedException("resource");
 			}

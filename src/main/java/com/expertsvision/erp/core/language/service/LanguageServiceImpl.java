@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.postgresql.core.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,15 +26,19 @@ import com.expertsvision.erp.core.validation.CoreValidationService;
 
 @Service
 public class LanguageServiceImpl implements LanguageService {
-	
+
 	@Autowired
 	private LanguageDAO languageDAO;
-	
+
 	@Autowired
 	private GeneralDAO generalDAO;
-	
+
 	@Autowired
 	private CoreValidationService coreValidationService;
+	
+	@Autowired
+	@Lazy
+	private InMemoryLanguageService inMemoryLanguageService;
 
 	@Override
 	@Transactional
@@ -51,59 +56,60 @@ public class LanguageServiceImpl implements LanguageService {
 		}
 		return languageView;
 	}
-	
-	
-	
+
 	@Override
 	@Transactional
 	public SinglePage<LanguageView> getLanguagesViewSinglePage(long pageNo) {
 		SinglePage<LanguageView> singlePage = languageDAO.getLanguagesViewSinglePage(pageNo);
 		return singlePage;
 	}
-	
+
 	@Override
 	@Transactional
 	public SinglePage<LanguageView> getLanguagesViewLastPage() {
 		SinglePage<LanguageView> singlePage = languageDAO.getLanguagesViewLastPage();
 		return singlePage;
 	}
-	
+
 	@Override
 	@Transactional
 	public Long getLanguageViewSinglePageNo(Integer langNo) {
-		 Long singlePageNo = languageDAO.getLanguageViewSinglePageNo(langNo);
+		Long singlePageNo = languageDAO.getLanguageViewSinglePageNo(langNo);
 		if (singlePageNo == null) {
 			throw new ValidationException("not_exist", "language");
 		}
 		return singlePageNo;
 	}
-	
+
 	@Override
 	@Transactional
 	public MultiplePages<LanguageView> getLanguagesViewMultiplePages(long pageNo) {
 		MultiplePages<LanguageView> multiplePages = languageDAO.getLanguagesViewMultiplePages(pageNo);
 		return multiplePages;
 	}
-	
+
 	@Override
 	@Transactional
-	public MultiplePages<LanguageView> getLanguagesViewFilteredMultiplePages(long pageNo, LanguageViewFilter LanguageViewFilter) {
-		MultiplePages<LanguageView> multiplePages = languageDAO.getLanguagesViewFilteredMultiplePages(pageNo, LanguageViewFilter);
+	public MultiplePages<LanguageView> getLanguagesViewFilteredMultiplePages(long pageNo,
+			LanguageViewFilter LanguageViewFilter) {
+		MultiplePages<LanguageView> multiplePages = languageDAO.getLanguagesViewFilteredMultiplePages(pageNo,
+				LanguageViewFilter);
 		return multiplePages;
 	}
-	
+
 	@Override
 	@Transactional
 	public void addLanguage(UsersView loginUser, LanguageView languageView) {
 		// Check form privileges
-		if (!loginUser.getSuperAdmin()) throw new UnauthorizedException("resource");
+		if (!loginUser.getSuperAdmin())
+			throw new UnauthorizedException("resource");
 		// Non-database validation
 		coreValidationService.notNull(languageView.getLangNo(), "lang_no");
 		coreValidationService.greaterThanZero(languageView.getLangNo(), "lang_no");
 		coreValidationService.notNull(languageView.getLangName(), "name");
 		coreValidationService.notBlank(languageView.getLangName(), "name");
 		coreValidationService.notNull(languageView.getLangDir(), "lang_dir");
-		coreValidationService.inValues(languageView.getLangDir(), Arrays.asList(1,2), "lang_dir");
+		coreValidationService.inValues(languageView.getLangDir(), Arrays.asList(1, 2), "lang_dir");
 		coreValidationService.notNull(languageView.getReportExt(), "report_ext");
 		coreValidationService.notBlank(languageView.getReportExt(), "report_ext");
 		coreValidationService.notNull(languageView.getLangExt(), "lang_ext");
@@ -115,16 +121,20 @@ public class LanguageServiceImpl implements LanguageService {
 		Map<String, Object> conditions = new HashMap<>();
 		Map<String, Object> setters = new HashMap<>();
 		conditions.put("lang_no", language.getLangNo());
-		if (generalDAO.isEntityExist("language", conditions)) throw new ValidationException("already_exist", "lang_no");
+		if (generalDAO.isEntityExist("language", conditions))
+			throw new ValidationException("already_exist", "lang_no");
 		conditions.clear();
 		conditions.put("lang_name", language.getLangName());
-		if (generalDAO.isEntityExist("language", conditions)) throw new ValidationException("already_exist", "name");
+		if (generalDAO.isEntityExist("language", conditions))
+			throw new ValidationException("already_exist", "name");
 		conditions.clear();
 		conditions.put("report_ext", language.getReportExt());
-		if (generalDAO.isEntityExist("language", conditions)) throw new ValidationException("already_exist", "report_ext");
+		if (generalDAO.isEntityExist("language", conditions))
+			throw new ValidationException("already_exist", "report_ext");
 		conditions.clear();
 		conditions.put("lang_ext", language.getLangExt());
-		if (generalDAO.isEntityExist("language", conditions)) throw new ValidationException("already_exist", "lang_ext");
+		if (generalDAO.isEntityExist("language", conditions))
+			throw new ValidationException("already_exist", "lang_ext");
 		setters.clear();
 		setters.put("lang_dfl", false);
 		if (language.getLangDfl()) {
@@ -132,20 +142,22 @@ public class LanguageServiceImpl implements LanguageService {
 		}
 		// Add the language
 		languageDAO.addLanguage(language);
+		inMemoryLanguageService.updateLanguagesView();
 	}
-	
+
 	@Override
 	@Transactional
 	public void updateLanguage(UsersView loginUser, LanguageView languageView) {
 		// Check form privileges
-		if (!loginUser.getSuperAdmin()) throw new UnauthorizedException("resource");
+		if (!loginUser.getSuperAdmin())
+			throw new UnauthorizedException("resource");
 		// Non-database validation
 		coreValidationService.notNull(languageView.getLangNo(), "lang_no");
 		coreValidationService.greaterThanZero(languageView.getLangNo(), "lang_no");
 		coreValidationService.notNull(languageView.getLangName(), "name");
 		coreValidationService.notBlank(languageView.getLangName(), "name");
 		coreValidationService.notNull(languageView.getLangDir(), "lang_dir");
-		coreValidationService.inValues(languageView.getLangDir(), Arrays.asList(1,2), "lang_dir");
+		coreValidationService.inValues(languageView.getLangDir(), Arrays.asList(1, 2), "lang_dir");
 		coreValidationService.notNull(languageView.getReportExt(), "report_ext");
 		coreValidationService.notBlank(languageView.getReportExt(), "report_ext");
 		coreValidationService.notNull(languageView.getLangExt(), "lang_ext");
@@ -157,18 +169,22 @@ public class LanguageServiceImpl implements LanguageService {
 		Map<String, Object> conditions = new HashMap<>();
 		Map<String, Object> setters = new HashMap<>();
 		conditions.put("lang_no", language.getLangNo());
-		if (!generalDAO.isEntityExist("language", conditions)) throw new ValidationException("not_exist", "language");
+		if (!generalDAO.isEntityExist("language", conditions))
+			throw new ValidationException("not_exist", "language");
 		conditions.clear();
 		conditions.put("lang_name", language.getLangName());
 		String exceptionCondition = null;
 		exceptionCondition = " and lang_no != " + language.getLangNo();
-		if (generalDAO.isEntityExist("language", conditions, exceptionCondition)) throw new ValidationException("already_exist", "name");
+		if (generalDAO.isEntityExist("language", conditions, exceptionCondition))
+			throw new ValidationException("already_exist", "name");
 		conditions.clear();
 		conditions.put("report_ext", language.getReportExt());
-		if (generalDAO.isEntityExist("language", conditions, exceptionCondition)) throw new ValidationException("already_exist", "report_ext");
+		if (generalDAO.isEntityExist("language", conditions, exceptionCondition))
+			throw new ValidationException("already_exist", "report_ext");
 		conditions.clear();
 		conditions.put("lang_ext", language.getLangExt());
-		if (generalDAO.isEntityExist("language", conditions, exceptionCondition)) throw new ValidationException("already_exist", "lang_ext");
+		if (generalDAO.isEntityExist("language", conditions, exceptionCondition))
+			throw new ValidationException("already_exist", "lang_ext");
 		setters.clear();
 		setters.put("lang_dfl", false);
 		LanguageView DBLanguageView = languageDAO.getLanguageView(languageView.getLangNo());
@@ -178,33 +194,39 @@ public class LanguageServiceImpl implements LanguageService {
 			throw new ValidationException("change_true_lang_dfl");
 		}
 		// Update the language
-		languageDAO.updateLanguage(language);	
+		languageDAO.updateLanguage(language);
+		inMemoryLanguageService.updateLanguagesView();
 	}
-	
+
 	@Override
 	@Transactional
 	public void deleteLanguage(UsersView loginUser, Integer langNo) {
 		// Check form privileges
-		if (!loginUser.getSuperAdmin()) throw new UnauthorizedException("resource");
+		if (!loginUser.getSuperAdmin())
+			throw new UnauthorizedException("resource");
 		// Database validation
 		Map<String, Object> conditions = new HashMap<>();
 		conditions.put("lang_no", langNo);
-		if (!generalDAO.isEntityExist("language", conditions)) throw new ValidationException("not_exist", "language");
+		if (!generalDAO.isEntityExist("language", conditions))
+			throw new ValidationException("not_exist", "language");
 		conditions.clear();
 		conditions.put("lang_no", langNo);
-		if (generalDAO.isEntityExist("labels", conditions)) throw new ValidationException("used_in_screen", "language", "label");
+		if (generalDAO.isEntityExist("labels", conditions))
+			throw new ValidationException("used_in_screen", "language", "label");
 		conditions.clear();
 		conditions.put("lang_no", langNo);
-		if (generalDAO.isEntityExist("messages", conditions)) throw new ValidationException("used_in_screen", "language", "message");
+		if (generalDAO.isEntityExist("messages", conditions))
+			throw new ValidationException("used_in_screen", "language", "message");
 		// delete the language
 		try {
 			languageDAO.deleteLanguage(langNo);
 		} catch (Exception e) {
 			throw new ValidationException("used_somewhere", "language");
 		}
+		inMemoryLanguageService.updateLanguagesView();
 	}
-	
-	public Language getLanguageFromLanguageView(LanguageView languageView)  {
+
+	public Language getLanguageFromLanguageView(LanguageView languageView) {
 		Language language = new Language();
 		try {
 			language.setActive(languageView.getActive());
@@ -215,7 +237,7 @@ public class LanguageServiceImpl implements LanguageService {
 			language.setLangNo(languageView.getLangNo());
 			language.setReportExt(Utils.escapeLiteral(null, languageView.getReportExt(), true).toString());
 		} catch (SQLException e) {
-			 throw new UnauthorizedException("resource");
+			throw new UnauthorizedException("resource");
 		}
 		return language;
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.message.entity.MessagesView;
@@ -12,6 +13,7 @@ import com.expertsvision.erp.core.message.entity.MessagesPK;
 
 
 @Service
+@Lazy
 public class InMemoryMessagesService {
 	
 	

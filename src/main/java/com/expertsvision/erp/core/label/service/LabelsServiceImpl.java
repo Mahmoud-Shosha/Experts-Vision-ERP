@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.postgresql.core.Utils;
@@ -36,6 +37,10 @@ public class LabelsServiceImpl implements LabelsService {
 	
 	@Autowired
 	private CoreValidationService coreValidationService;
+	
+	@Autowired
+	@Lazy
+	private InMemoryLabelsService inMemoryLabelsService;
 
 	
 	@Override
@@ -125,6 +130,7 @@ public class LabelsServiceImpl implements LabelsService {
 		label.setModifyDate(null);
 		label.setModifyUser(null);
 		labelsViewDAO.addLabel(label);
+		inMemoryLabelsService.updateLabelsView();
 	}
 	
 	@Override
@@ -165,6 +171,7 @@ public class LabelsServiceImpl implements LabelsService {
 		label.setModifyDate(new Timestamp(new Date().getTime()));
 		label.setModifyUser(loginUser.getUserId());
 		labelsViewDAO.updateLabel(label);
+		inMemoryLabelsService.updateLabelsView();
 	}
 	
 	@Override
@@ -183,6 +190,7 @@ public class LabelsServiceImpl implements LabelsService {
 		} catch (Exception e) {
 			throw new ValidationException("used_somewhere", "label");
 		}
+		inMemoryLabelsService.updateLabelsView();
 	}
 	
 	public Label getLabelFromLabelsView(LabelsView labelsView)  {

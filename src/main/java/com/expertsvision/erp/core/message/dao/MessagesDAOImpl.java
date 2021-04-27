@@ -172,6 +172,7 @@ public class MessagesDAOImpl implements MessagesDAO {
 		Session session = sessionFactory.getCurrentSession();
 		Message DBMessage = session.get(Message.class, messagesPK);
 		session.delete(DBMessage);
+		session.flush();
 	}
 
 }

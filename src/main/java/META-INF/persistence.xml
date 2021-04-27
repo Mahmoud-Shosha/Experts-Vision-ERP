@@ -14,5 +14,6 @@
 		<class>com.expertsvision.erp.core.language.entity.Language</class>
 		<class>com.expertsvision.erp.core.module.entity.Module</class>
 		<class>com.expertsvision.erp.core.form.entity.Form</class>
+		<class>com.expertsvision.erp.core.user.entity.User</class>
 	</persistence-unit>
 </persistence>

@@ -5,23 +5,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
-import com.expertsvision.erp.core.utils.GeneralConstants;
+
 
 @Service
-public class InMemoryUsersViewService {
+@Lazy
+public class InMemoryUsersService {
 	
 	
-	private UsersViewService usersViewService;
+	private UsersService usersViewService;
 	
 	private  Map<Integer, UsersView> usersViewMap;
 	
 	@Autowired
-	public InMemoryUsersViewService(UsersViewService usersViewService) {
+	public InMemoryUsersService(UsersService usersViewService) {
 		this.usersViewService = usersViewService;
-		List<UsersView> usersViewList = usersViewService.getUsersViewList(new UsersView(GeneralConstants.SUPER_USER_NO));
+		List<UsersView> usersViewList = usersViewService.getAllUsersViewList();
 		Map<Integer, UsersView> NewUsersViewMap = convertToUserMap(usersViewList);
 		synchronized (this) {
 			usersViewMap = NewUsersViewMap;
@@ -34,7 +36,7 @@ public class InMemoryUsersViewService {
 	}
 	
 	public void updateUsersView() {		
-		List<UsersView> usersViewList = usersViewService.getUsersViewList(new UsersView(GeneralConstants.SUPER_USER_NO));
+		List<UsersView> usersViewList = usersViewService.getAllUsersViewList();
 		Map<Integer, UsersView> NewUsersViewMap = convertToUserMap(usersViewList);
 		synchronized (this) {
 			usersViewMap = NewUsersViewMap;
