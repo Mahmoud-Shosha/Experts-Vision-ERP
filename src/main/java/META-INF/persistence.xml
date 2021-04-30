@@ -15,5 +15,7 @@
 		<class>com.expertsvision.erp.core.module.entity.Module</class>
 		<class>com.expertsvision.erp.core.form.entity.Form</class>
 		<class>com.expertsvision.erp.core.user.entity.User</class>
+		<class>com.expertsvision.erp.core.usersgroups.entity.UsersGroup</class>
+		<class>com.expertsvision.erp.core.usersgroups.entity.UsersGroupsView</class>
 	</persistence-unit>
 </persistence>
