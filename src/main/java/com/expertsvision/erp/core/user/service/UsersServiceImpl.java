@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.expertsvision.erp.core.exception.ConfirmException;
+import com.expertsvision.erp.core.exception.InactiveException;
 import com.expertsvision.erp.core.exception.UnauthorizedException;
 import com.expertsvision.erp.core.exception.ValidationException;
 import com.expertsvision.erp.core.privilege.service.FormPrivilageService;
@@ -81,6 +82,14 @@ public class UsersServiceImpl implements UsersService {
 		return usersDTOsList;
 	}
 	
+	
+	@Override
+	@Transactional
+	public UsersView getUsersView(Integer userId) {
+		// Only used by system functions, like inmemory DB
+		UsersView usersView = usersViewDAO.getUsersView(userId);
+		return usersView;
+	}
 	
 	@Override
 	@Transactional
@@ -237,6 +246,7 @@ public class UsersServiceImpl implements UsersService {
 		conditions.put("group_no", user.getGroupNo());
 		if (user.getGroupNo() != null && !generalDAO.isEntityExist("users_groups", conditions)) throw new ValidationException("not_exist", "group_no");
 		if (!isUserSubordinate(loginUser, usersView.getDirectMang())) throw new UnauthorizedException("direct_manager");
+		if (usersViewDAO.getUsersView(usersView.getDirectMang()).getInactive()) throw new InactiveException("direct_manager");
 		// Add the user
 		Timestamp add_date = new Timestamp(new Date().getTime());
 		user.setAddDate(add_date);
@@ -257,6 +267,7 @@ public class UsersServiceImpl implements UsersService {
 		usersViewDAO.addUser(user);
 		if (COPY_FROM_USER_PRIVILEDGES != null) {
 			if (!isUserSubordinate(loginUser, COPY_FROM_USER_PRIVILEDGES)) throw new UnauthorizedException("copy_privileges_from_user");
+			if (usersViewDAO.getUsersView(COPY_FROM_USER_PRIVILEDGES).getInactive()) throw new InactiveException("copy_privileges_from_user");
 			formPrivilageService.generateFormPrivilegesForUserFromAnotherUser(loginUser, COPY_FROM_USER_PRIVILEDGES, user.getUserId(), add_date);
 		} else {
 			formPrivilageService.generateFormPrivilegesForUser(loginUser, user.getUserId(), add_date);
@@ -306,6 +317,7 @@ public class UsersServiceImpl implements UsersService {
 		if (user.getGroupNo() != null && !generalDAO.isEntityExist("users_groups", conditions)) throw new ValidationException("not_exist", "group_no");
 		if (!isUserSubordinate(loginUser, user.getUserId())) throw new UnauthorizedException("user");
 		if (!isUserSubordinate(loginUser, usersView.getDirectMang())) throw new UnauthorizedException("direct_manager");
+		if (usersViewDAO.getUsersView(usersView.getDirectMang()).getInactive()) throw new InactiveException("direct_manager");
 		// Update the user
 		Timestamp update_date = new Timestamp(new Date().getTime());
 		user.setModifyDate(update_date);
@@ -332,9 +344,12 @@ public class UsersServiceImpl implements UsersService {
 			throw new ValidationException("cannot_both_copy_privileges");
 		} else if (COPY_FROM_USER_PRIVILEDGES != null) {
 			if (!isUserSubordinate(loginUser, COPY_FROM_USER_PRIVILEDGES)) throw new UnauthorizedException("copy_privileges_from_user");
+			if (usersViewDAO.getUsersView(COPY_FROM_USER_PRIVILEDGES).getInactive()) throw new InactiveException("copy_privileges_from_user");
 			formPrivilageService.updateFormPrivilegesForUserFromAnotherUser(loginUser, COPY_FROM_USER_PRIVILEDGES, user.getUserId(), update_date);
 		} else if (COPY_PRIVILEGES_TO_GROUP != null) {
-			// Check that the group exists
+			conditions.clear();
+			conditions.put("group_no", COPY_PRIVILEGES_TO_GROUP);
+			if (!generalDAO.isEntityExist("users_groups", conditions)) throw new ValidationException("not_exist", "copy_privileges_to_group");
 			if (confirm) {
 				formPrivilageService.updateGroupUsersPrivileges(loginUser, user.getUserId(), COPY_PRIVILEGES_TO_GROUP, update_date);
 				return;

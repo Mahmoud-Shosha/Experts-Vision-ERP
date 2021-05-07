@@ -11,7 +11,9 @@ import com.expertsvision.erp.core.utils.SinglePage;
 
 public interface UsersGroupsService {
 	
-	List<UsersGroupsView> getAllUsersGroupsViewList(UsersView loginusersView);
+	List<UsersGroupsView> getAllUsersGroupsViewList();
+	
+	List<UsersGroupsView> getUsersGroupsViewList(UsersView loginusersView);
 	
 	UsersGroupsView getUsersGroupsView(UsersView loginUsersView, Integer groupNo);
 	

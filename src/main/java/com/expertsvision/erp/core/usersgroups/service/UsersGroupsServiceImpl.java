@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.postgresql.core.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,23 +27,33 @@ import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.core.validation.CoreValidationService;
 
-
 @Service
 public class UsersGroupsServiceImpl implements UsersGroupsService {
-	
+
 	@Autowired
 	private UsersGroupsDAO usersGroupsDAO;
 
 	@Autowired
-	private GeneralDAO generalDAO; 
-	
+	private GeneralDAO generalDAO;
+
 	@Autowired
 	private CoreValidationService coreValidationService;
 
+	@Autowired
+	@Lazy
+	private InMemoryUsersGroupsService inMemoryUsersGroupsService;
 
 	@Override
 	@Transactional
-	public List<UsersGroupsView> getAllUsersGroupsViewList(UsersView loginUsersView) {
+	public List<UsersGroupsView> getAllUsersGroupsViewList() {
+		// Only used by system functions, like inmemory DB
+		List<UsersGroupsView> usersGroupsView = usersGroupsDAO.getAllUsersGroupsViewList();
+		return usersGroupsView;
+	}
+
+	@Override
+	@Transactional
+	public List<UsersGroupsView> getUsersGroupsViewList(UsersView loginUsersView) {
 		// Check module, form, privileges
 		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
 		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
@@ -51,7 +62,7 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		List<UsersGroupsView> usersGroupsView = usersGroupsDAO.getAllUsersGroupsViewList();
 		return usersGroupsView;
 	}
-	
+
 	@Override
 	@Transactional
 	public UsersGroupsView getUsersGroupsView(UsersView loginUsersView, Integer groupNo) {
@@ -66,7 +77,7 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		}
 		return usersGroupsView;
 	}
-	
+
 	@Override
 	@Transactional
 	public SinglePage<UsersGroupsView> getUsersGroupsViewSinglePage(UsersView loginUsersView, long pageNo) {
@@ -90,7 +101,7 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		SinglePage<UsersGroupsView> singlePage = usersGroupsDAO.getUsersGroupsViewLastPage();
 		return singlePage;
 	}
-	
+
 	@Override
 	@Transactional
 	public Long getUsersGroupsViewSinglePageNo(UsersView loginUsersView, Integer groupNo) {
@@ -105,7 +116,7 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		}
 		return singlePageNo;
 	}
-	
+
 	@Override
 	@Transactional
 	public MultiplePages<UsersGroupsView> getUsersGroupsViewMultiplePages(UsersView loginUsersView, long pageNo) {
@@ -117,20 +128,21 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		MultiplePages<UsersGroupsView> multiplePages = usersGroupsDAO.getUsersGroupsViewMultiplePages(pageNo);
 		return multiplePages;
 	}
-	
+
 	@Override
 	@Transactional
-	public MultiplePages<UsersGroupsView> getUsersGroupsViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
-			   																	  UsersGroupsViewFilter usersGroupsViewFilter){
+	public MultiplePages<UsersGroupsView> getUsersGroupsViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
+			UsersGroupsViewFilter usersGroupsViewFilter) {
 		// Check module, form, privileges
 		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
 		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
 		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
 		// Return requested data
-		MultiplePages<UsersGroupsView> multiplePages = usersGroupsDAO.getUsersGroupsViewFilteredMultiplePages(pageNo, usersGroupsViewFilter);
+		MultiplePages<UsersGroupsView> multiplePages = usersGroupsDAO.getUsersGroupsViewFilteredMultiplePages(pageNo,
+				usersGroupsViewFilter);
 		return multiplePages;
 	}
-	
+
 	@Override
 	@Transactional
 	public void addUsersGroups(UsersView loginUsersView, UsersGroupsView usersGroupsView) {
@@ -151,13 +163,16 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		UsersGroup usersGroup = getUsersGroupFromUsersGroupsView(usersGroupsView);
 		Map<String, Object> conditions = new HashMap<>();
 		conditions.put("group_no", usersGroup.getGroupNo());
-		if (generalDAO.isEntityExist("users_groups", conditions)) throw new ValidationException("already_exist", "group_no");
+		if (generalDAO.isEntityExist("users_groups", conditions))
+			throw new ValidationException("already_exist", "group_no");
 		conditions.clear();
 		conditions.put("group_d_name", usersGroup.getGroupDName());
-		if (generalDAO.isEntityExist("users_groups", conditions)) throw new ValidationException("already_exist", "name");
+		if (generalDAO.isEntityExist("users_groups", conditions))
+			throw new ValidationException("already_exist", "name");
 		conditions.clear();
 		conditions.put("group_f_name", usersGroup.getGroupFName());
-		if (usersGroup.getGroupFName() != null && generalDAO.isEntityExist("users_groups", conditions)) throw new ValidationException("already_exist", "foreign_name");
+		if (usersGroup.getGroupFName() != null && generalDAO.isEntityExist("users_groups", conditions))
+			throw new ValidationException("already_exist", "foreign_name");
 		// Add the user
 		Timestamp add_date = new Timestamp(new Date().getTime());
 		usersGroup.setAddDate(add_date);
@@ -166,8 +181,9 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		usersGroup.setModifyUser(null);
 		usersGroup.setAdminGroup(false);
 		usersGroupsDAO.addUsersGroup(usersGroup);
+		inMemoryUsersGroupsService.updateUsersGroupsView();
 	}
-	
+
 	@Override
 	@Transactional
 	public void updateUsersGroups(UsersView loginUsersView, UsersGroupsView usersGroupsView) {
@@ -188,16 +204,18 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		UsersGroup usersGroup = getUsersGroupFromUsersGroupsView(usersGroupsView);
 		Map<String, Object> conditions = new HashMap<>();
 		conditions.put("group_no", usersGroup.getGroupNo());
-		if (!generalDAO.isEntityExist("users_groups", conditions)) throw new ValidationException("not_exist", "group_no");
+		if (!generalDAO.isEntityExist("users_groups", conditions))
+			throw new ValidationException("not_exist", "group_no");
 		conditions.clear();
 		conditions.put("group_d_name", usersGroup.getGroupDName());
 		String exceptionCondition = null;
 		exceptionCondition = " and group_no != " + usersGroup.getGroupNo();
-		if (generalDAO.isEntityExist("users_groups", conditions, exceptionCondition)) 
+		if (generalDAO.isEntityExist("users_groups", conditions, exceptionCondition))
 			throw new ValidationException("already_exist", "name");
 		conditions.clear();
 		conditions.put("group_f_name", usersGroup.getGroupFName());
-		if (usersGroup.getGroupFName() != null && generalDAO.isEntityExist("users_groups", conditions, exceptionCondition)) 
+		if (usersGroup.getGroupFName() != null
+				&& generalDAO.isEntityExist("users_groups", conditions, exceptionCondition))
 			throw new ValidationException("already_exist", "foreign_name");
 		// Update the user
 		Timestamp update_date = new Timestamp(new Date().getTime());
@@ -205,8 +223,9 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		usersGroup.setModifyUser(loginUsersView.getUserId());
 		usersGroup.setAdminGroup(false);
 		usersGroupsDAO.updateUsersGroup(usersGroup);
+		inMemoryUsersGroupsService.updateUsersGroupsView();
 	}
-	
+
 	@Override
 	@Transactional
 	public void deleteUsersGroups(UsersView loginUsersView, Integer groupNo) {
@@ -221,17 +240,18 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		// Database validation
 		Map<String, Object> conditions = new HashMap<>();
 		conditions.put("group_no", groupNo);
-		if (!generalDAO.isEntityExist("users_groups", conditions)) throw new ValidationException("not_exist", "group_no");
+		if (!generalDAO.isEntityExist("users_groups", conditions))
+			throw new ValidationException("not_exist", "group_no");
 		// delete the usersgroup
 		try {
 			usersGroupsDAO.deleteUsersGroup(groupNo);
 		} catch (Exception e) {
-			throw new ValidationException("used_somewhere", "user");
+			throw new ValidationException("used_somewhere", "group");
 		}
+		inMemoryUsersGroupsService.updateUsersGroupsView();
 	}
-	
-	
-	public UsersGroup getUsersGroupFromUsersGroupsView(UsersGroupsView usersGroupsView)  {
+
+	public UsersGroup getUsersGroupFromUsersGroupsView(UsersGroupsView usersGroupsView) {
 		UsersGroup usersGroup = new UsersGroup();
 		try {
 			usersGroup.setAddDate(usersGroupsView.getAddDate());

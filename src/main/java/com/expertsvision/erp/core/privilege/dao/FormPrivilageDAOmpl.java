@@ -231,6 +231,7 @@ public class FormPrivilageDAOmpl implements FormPrivilageDAO {
 		Session session = sessionFactory.getCurrentSession();
 		javax.persistence.Query query = session.createNativeQuery(sql.toString());
 		query.executeUpdate();
+		session.flush();
 	}
 	
 	@Override
@@ -274,6 +275,7 @@ public class FormPrivilageDAOmpl implements FormPrivilageDAO {
 		Session session = sessionFactory.getCurrentSession();
 		javax.persistence.Query query = session.createNativeQuery(sql.toString());
 		query.executeUpdate();
+		session.flush();
 	}
 
 	

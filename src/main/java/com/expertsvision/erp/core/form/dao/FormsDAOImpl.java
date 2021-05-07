@@ -194,6 +194,7 @@ public class FormsDAOImpl implements FormsDAO {
 		DBForm.setModuleNo(form.getModuleNo());
 		DBForm.setParentForm(form.getParentForm());
 		session.merge(DBForm);
+		session.flush();
 	}
 
 }

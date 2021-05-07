@@ -17,6 +17,8 @@ public interface UsersService {
 	
 	UsersDTO getUsersView(UsersView usersView, Integer userId);
 	
+	UsersView getUsersView(Integer userId);
+	
 	SinglePage<UsersDTO> getUsersViewSinglePage(UsersView usersView, long pageNo);
 	
 	SinglePage<UsersDTO> getUsersViewLastPage(UsersView usersView);

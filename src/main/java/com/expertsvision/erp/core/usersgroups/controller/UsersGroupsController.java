@@ -38,7 +38,7 @@ public class UsersGroupsController {
 	@GetMapping("")
 	public ResponseEntity<Object> getUsersGroupsViewSubordinateList() {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		List<UsersGroupsView> usersGroupsViewList = usersGroupsService.getAllUsersGroupsViewList(loginUser);
+		List<UsersGroupsView> usersGroupsViewList = usersGroupsService.getUsersGroupsViewList(loginUser);
 		return response.response(usersGroupsViewList, HttpStatus.OK);
 	}
 

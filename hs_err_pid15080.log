@@ -1,0 +1,33 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f375e60ad0b, pid=15080, tid=15115
+#
+# JRE version: OpenJDK Runtime Environment (15.0.2+7) (build 15.0.2+7-27)
+# Java VM: OpenJDK 64-Bit Server VM (15.0.2+7-27, mixed mode, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libjimage.so+0x4d0b]  ImageFileReader::verify_location(ImageLocation&, char const*) const+0xab
+#
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/share/apport/apport %p %s %c %d %P %E" (or dumping to /mnt/a6a1b846-fb99-469a-8cf5-146953c7f908/programming/NEW PROJECT/expertsvision/erp/core.15080)
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -XX:+ShowCodeDetailsInExceptionMessages -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:41789 -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=32965 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost -Dspring.jmx.enabled=true -Dspring.application.admin.enabled=true -Djava.security.egd=file:/dev/./urandom -XX:TieredStopAtLevel=1 -Dspring.boot.project.name=erp -javaagent:/mnt/a6a1b846-fb99-469a-8cf5-146953c7f908/programming/java/java EE/others/eclipse-jee-2021-03-R-linux-gtk-x86_64/eclipse/configuration/org.eclipse.osgi/406/0/.cp/lib/javaagent-shaded.jar -Dfile.encoding=UTF-8 com.expertsvision.erp.core.ErpApplication
+
+Host: Intel(R) Core(TM) i5 CPU       M 540  @ 2.53GHz, 4 cores, 3G, Ubuntu 20.04.1 LTS
+Time: Tue May  4 07:05:20 2021 EET elapsed time: 270.607674 seconds (0d 0h 4m 30s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f375880cf70):  JavaThread "RMI TCP Accept-32965" daemon [_thread_in_vm, id=15115, stack(0x00007f3734684000,0x00007f3734785000)]
+
+Stack: [0x00007f3734684000,0x00007f3734785000],  sp=0x00007f3734782230,  free space=1016k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libjimage.so+0x4d0b]  ImageFileReader::verify_location(ImageLocation&, char const*) const+0xab
+C  [libjimage.so+0x4f66]  ImageFileReader::find_location_index(char const*, unsigned long long*) const+0x96
+C  [libjimage.so+0x540c]  JIMAGE_FindResource+0xfc
+V  [libjvm.so+0x4ea6cc]

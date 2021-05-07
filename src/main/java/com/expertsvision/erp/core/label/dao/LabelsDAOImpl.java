@@ -154,6 +154,7 @@ public class LabelsDAOImpl implements LabelsDAO {
 	public void addLabel(Label label) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(label);
+		session.flush();
 	}
 	
 	@Override
@@ -166,6 +167,7 @@ public class LabelsDAOImpl implements LabelsDAO {
 		DBLabel.setModifyDate(label.getModifyDate());
 		DBLabel.setModifyUser(label.getModifyUser());
 		session.merge(DBLabel);
+		session.flush();
 	}
 	
 	@Override

@@ -17,5 +17,7 @@
 		<class>com.expertsvision.erp.core.user.entity.User</class>
 		<class>com.expertsvision.erp.core.usersgroups.entity.UsersGroup</class>
 		<class>com.expertsvision.erp.core.usersgroups.entity.UsersGroupsView</class>
+		<class>com.expertsvision.erp.core.flagmaster.entity.FlagMaster</class>
+		<class>com.expertsvision.erp.core.flagmaster.entity.FlagMasterView</class>
 	</persistence-unit>
 </persistence>

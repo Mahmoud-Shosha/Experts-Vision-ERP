@@ -151,6 +151,7 @@ public class LanguageDAOImpl implements LanguageDAO {
 	public void addLanguage(Language language) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(language);
+		session.flush();
 	}
 	
 	@Override
@@ -165,6 +166,7 @@ public class LanguageDAOImpl implements LanguageDAO {
 		DBLanguage.setLangNo(language.getLangNo());
 		DBLanguage.setReportExt(language.getReportExt());
 		session.merge(DBLanguage);
+		session.flush();
 	}
 	
 	@Override

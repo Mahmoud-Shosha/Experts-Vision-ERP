@@ -102,44 +102,64 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 		if (!formsView.getActive() || !modulesView.getActive()) {
 			throw new UnauthorizedException("resource");
 		}
+		while (true) {
+			formsView = inMemoryFormsViewService.getFormsView(formsView.getParentForm());
+			if (!formsView.getActive()) {
+				throw new UnauthorizedException("resource");
+			} else if (formsView.getParentForm().equals(0)) {
+				break;
+			}
+		}
 	}
 
 	public void validateHasFormPrivilege(UsersView loginUser, Forms form, FormsActions formAction) {
-		if (loginUser.getSuperAdmin() || loginUser.getAdminUser()) return;
+		if (loginUser.getSuperAdmin() || loginUser.getAdminUser())
+			return;
 		FormPrivilageView formPrivilageView = inMemoryFormPrivilageService
 				.getFormPrivilageView(new FormPrivilagePK(loginUser.getUserId(), form.getFormNo()));
 		boolean hasPriv;
 		switch (formAction) {
-			case INCLUDE:
-				hasPriv = formPrivilageView.getIncludePriv();
-				break;
-			case ADD:
-				hasPriv = formPrivilageView.getAddPriv();
-				break;
-			case AUDIT:
-				hasPriv = formPrivilageView.getAuditPriv();
-				break;
-			case DELETE:
-				hasPriv = formPrivilageView.getDeletePriv();
-				break;
-			case MODIFY:
-				hasPriv = formPrivilageView.getModifyPriv();
-				break;
-			case POST:
-				hasPriv = formPrivilageView.getPostPriv();
-				break;
-			case PRINT:
-				hasPriv = formPrivilageView.getPostPriv();
-				break;
-			case VIEW:
-				hasPriv = formPrivilageView.getViewPriv();
-				break;
-			default:
-				hasPriv = false;
-				break;
+		case INCLUDE:
+			hasPriv = formPrivilageView.getIncludePriv();
+			break;
+		case ADD:
+			hasPriv = formPrivilageView.getAddPriv();
+			break;
+		case AUDIT:
+			hasPriv = formPrivilageView.getAuditPriv();
+			break;
+		case DELETE:
+			hasPriv = formPrivilageView.getDeletePriv();
+			break;
+		case MODIFY:
+			hasPriv = formPrivilageView.getModifyPriv();
+			break;
+		case POST:
+			hasPriv = formPrivilageView.getPostPriv();
+			break;
+		case PRINT:
+			hasPriv = formPrivilageView.getPostPriv();
+			break;
+		case VIEW:
+			hasPriv = formPrivilageView.getViewPriv();
+			break;
+		default:
+			hasPriv = false;
+			break;
 		}
 		if (!hasPriv) {
 			throw new UnauthorizedException("resource");
+		}
+		FormsView formsView = inMemoryFormsViewService.getFormsView(form.getFormNo());
+		while (true) {
+			formsView = inMemoryFormsViewService.getFormsView(formsView.getParentForm());
+			formPrivilageView = inMemoryFormPrivilageService
+					.getFormPrivilageView(new FormPrivilagePK(loginUser.getUserId(), formsView.getFormNo()));
+			if (!formPrivilageView.getIncludePriv()) {
+				throw new UnauthorizedException("resource");
+			} else if (formsView.getParentForm().equals(0)) {
+				break;
+			}
 		}
 	}
 

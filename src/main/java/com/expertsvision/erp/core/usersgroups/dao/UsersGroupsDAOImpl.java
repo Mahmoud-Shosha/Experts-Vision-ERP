@@ -152,6 +152,7 @@ public class UsersGroupsDAOImpl implements UsersGroupsDAO {
 	public void addUsersGroup(UsersGroup usersGroup) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(usersGroup);
+		session.flush();
 	}
 	
 	@Override
@@ -165,6 +166,7 @@ public class UsersGroupsDAOImpl implements UsersGroupsDAO {
 		DBUsersGroup.setModifyDate(usersGroup.getModifyDate());
 		DBUsersGroup.setModifyUser(usersGroup.getModifyUser());
 		session.merge(DBUsersGroup);
+		session.flush();
 	}
 	
 	@Override

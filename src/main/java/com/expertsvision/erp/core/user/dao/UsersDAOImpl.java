@@ -31,7 +31,7 @@ public class UsersDAOImpl implements UsersDAO {
 		                                       "							   INNER JOIN subordinates s ON s.user_id = u.direct_mang)" + 
 		                                       "							   SELECT * FROM subordinates order by user_id";
 	
-
+	
 	@Override
 	public List<UsersView> getAllUsersViewList() {
 		Session session = sessionFactory.getCurrentSession();
@@ -60,6 +60,13 @@ public class UsersDAOImpl implements UsersDAO {
 		query.setParameter("userId", userId);
 		List<UsersView> usersViewList = query.getResultList();
 		return usersViewList.isEmpty()? null : usersViewList.get(0);
+	}
+	
+	@Override
+	public UsersView getUsersView(Integer userId) {
+		Session session = sessionFactory.getCurrentSession();
+		UsersView usersView = session.get(UsersView.class, userId);
+		return usersView;
 	}
 	
 	@Override
@@ -204,6 +211,7 @@ public class UsersDAOImpl implements UsersDAO {
 		DBUser.setUserFName(user.getUserFName());
 		DBUser.setUserId(user.getUserId());
 		session.merge(DBUser);
+		session.flush();
 	}
 	
 	@Override

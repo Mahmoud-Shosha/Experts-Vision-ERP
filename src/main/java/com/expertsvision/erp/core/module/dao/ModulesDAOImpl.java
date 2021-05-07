@@ -160,6 +160,7 @@ public class ModulesDAOImpl implements ModulesDAO {
 		DBModule.setOrderNo(module.getOrderNo());
 		DBModule.setShortcut(module.getShortcut());
 		session.merge(DBModule);
+		session.flush();
 	}
 
 }

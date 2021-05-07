@@ -153,6 +153,7 @@ public class MessagesDAOImpl implements MessagesDAO {
 	public void addMessage(Message message) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(message);
+		session.flush();
 	}
 	
 	@Override
@@ -165,6 +166,7 @@ public class MessagesDAOImpl implements MessagesDAO {
 		DBMessage.setModifyDate(message.getModifyDate());
 		DBMessage.setModifyUser(message.getModifyUser());
 		session.merge(DBMessage);
+		session.flush();
 	}
 	
 	@Override

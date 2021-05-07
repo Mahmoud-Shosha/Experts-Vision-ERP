@@ -19,6 +19,10 @@ public class FormsView implements Serializable {
 	@JsonProperty("active")
 	@Column(name="active")
 	private Boolean active;
+	
+	@JsonProperty("flag_code")
+	@Column(name="flag_code")
+	private String flagCode;
 
 	@JsonProperty("form_d_name")
 	@Column(name="form_d_name")
@@ -69,15 +73,23 @@ public class FormsView implements Serializable {
 	}
 
 	public Boolean getActive() {
-		return this.active;
+		return active;
 	}
 
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
 
+	public String getFlagCode() {
+		return flagCode;
+	}
+
+	public void setFlagCode(String flagCode) {
+		this.flagCode = flagCode;
+	}
+
 	public String getFormDName() {
-		return this.formDName;
+		return formDName;
 	}
 
 	public void setFormDName(String formDName) {
@@ -85,7 +97,7 @@ public class FormsView implements Serializable {
 	}
 
 	public String getFormFName() {
-		return this.formFName;
+		return formFName;
 	}
 
 	public void setFormFName(String formFName) {
@@ -93,7 +105,7 @@ public class FormsView implements Serializable {
 	}
 
 	public Integer getFormNo() {
-		return this.formNo;
+		return formNo;
 	}
 
 	public void setFormNo(Integer formNo) {
@@ -101,7 +113,7 @@ public class FormsView implements Serializable {
 	}
 
 	public Integer getFormOrder() {
-		return this.formOrder;
+		return formOrder;
 	}
 
 	public void setFormOrder(Integer formOrder) {
@@ -109,7 +121,7 @@ public class FormsView implements Serializable {
 	}
 
 	public Boolean getMain() {
-		return this.main;
+		return main;
 	}
 
 	public void setMain(Boolean main) {
@@ -117,7 +129,7 @@ public class FormsView implements Serializable {
 	}
 
 	public Integer getModuleNo() {
-		return this.moduleNo;
+		return moduleNo;
 	}
 
 	public void setModuleNo(Integer moduleNo) {
@@ -125,7 +137,7 @@ public class FormsView implements Serializable {
 	}
 
 	public String getModuleNoDName() {
-		return this.moduleNoDName;
+		return moduleNoDName;
 	}
 
 	public void setModuleNoDName(String moduleNoDName) {
@@ -133,7 +145,7 @@ public class FormsView implements Serializable {
 	}
 
 	public String getModuleNoFName() {
-		return this.moduleNoFName;
+		return moduleNoFName;
 	}
 
 	public void setModuleNoFName(String moduleNoFName) {
@@ -141,7 +153,7 @@ public class FormsView implements Serializable {
 	}
 
 	public Integer getParentForm() {
-		return this.parentForm;
+		return parentForm;
 	}
 
 	public void setParentForm(Integer parentForm) {
@@ -149,7 +161,7 @@ public class FormsView implements Serializable {
 	}
 
 	public String getParentFormDName() {
-		return this.parentFormDName;
+		return parentFormDName;
 	}
 
 	public void setParentFormDName(String parentFormDName) {
@@ -157,19 +169,23 @@ public class FormsView implements Serializable {
 	}
 
 	public String getParentFormFName() {
-		return this.parentFormFName;
+		return parentFormFName;
 	}
 
 	public void setParentFormFName(String parentFormFName) {
 		this.parentFormFName = parentFormFName;
 	}
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	@Override
 	public String toString() {
-		return "FormsView [active=" + active + ", formDName=" + formDName + ", formFName=" + formFName + ", formNo="
-				+ formNo + ", formOrder=" + formOrder + ", main=" + main + ", moduleNo=" + moduleNo + ", moduleNoDName="
-				+ moduleNoDName + ", moduleNoFName=" + moduleNoFName + ", parentForm=" + parentForm
-				+ ", parentFormDName=" + parentFormDName + ", parentFormFName=" + parentFormFName + "]";
+		return "FormsView [active=" + active + ", flagCode=" + flagCode + ", formDName=" + formDName + ", formFName="
+				+ formFName + ", formNo=" + formNo + ", formOrder=" + formOrder + ", main=" + main + ", moduleNo="
+				+ moduleNo + ", moduleNoDName=" + moduleNoDName + ", moduleNoFName=" + moduleNoFName + ", parentForm="
+				+ parentForm + ", parentFormDName=" + parentFormDName + ", parentFormFName=" + parentFormFName + "]";
 	}
 
 }

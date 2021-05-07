@@ -17,6 +17,9 @@ public class Form implements Serializable {
 	@Id
 	@Column(name="form_no")
 	private Integer formNo;
+	
+	@Column(name="flag_code")
+	private String flagCode;
 
 	@Column(name="active")
 	private Boolean active;
@@ -43,15 +46,23 @@ public class Form implements Serializable {
 	}
 
 	public Integer getFormNo() {
-		return this.formNo;
+		return formNo;
 	}
 
 	public void setFormNo(Integer formNo) {
 		this.formNo = formNo;
 	}
 
+	public String getFlagCode() {
+		return flagCode;
+	}
+
+	public void setFlagCode(String flagCode) {
+		this.flagCode = flagCode;
+	}
+
 	public Boolean getActive() {
-		return this.active;
+		return active;
 	}
 
 	public void setActive(Boolean active) {
@@ -59,7 +70,7 @@ public class Form implements Serializable {
 	}
 
 	public String getFormDName() {
-		return this.formDName;
+		return formDName;
 	}
 
 	public void setFormDName(String formDName) {
@@ -67,7 +78,7 @@ public class Form implements Serializable {
 	}
 
 	public String getFormFName() {
-		return this.formFName;
+		return formFName;
 	}
 
 	public void setFormFName(String formFName) {
@@ -75,7 +86,7 @@ public class Form implements Serializable {
 	}
 
 	public Integer getFormOrder() {
-		return this.formOrder;
+		return formOrder;
 	}
 
 	public void setFormOrder(Integer formOrder) {
@@ -83,7 +94,7 @@ public class Form implements Serializable {
 	}
 
 	public Boolean getMain() {
-		return this.main;
+		return main;
 	}
 
 	public void setMain(Boolean main) {
@@ -91,7 +102,7 @@ public class Form implements Serializable {
 	}
 
 	public Integer getModuleNo() {
-		return this.moduleNo;
+		return moduleNo;
 	}
 
 	public void setModuleNo(Integer moduleNo) {
@@ -99,18 +110,22 @@ public class Form implements Serializable {
 	}
 
 	public Integer getParentForm() {
-		return this.parentForm;
+		return parentForm;
 	}
 
 	public void setParentForm(Integer parentForm) {
 		this.parentForm = parentForm;
 	}
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	@Override
 	public String toString() {
-		return "Form [formNo=" + formNo + ", active=" + active + ", formDName=" + formDName + ", formFName=" + formFName
-				+ ", formOrder=" + formOrder + ", main=" + main + ", moduleNo=" + moduleNo + ", parentForm="
-				+ parentForm + "]";
+		return "Form [formNo=" + formNo + ", flagCode=" + flagCode + ", active=" + active + ", formDName=" + formDName
+				+ ", formFName=" + formFName + ", formOrder=" + formOrder + ", main=" + main + ", moduleNo=" + moduleNo
+				+ ", parentForm=" + parentForm + "]";
 	}
 
 }
