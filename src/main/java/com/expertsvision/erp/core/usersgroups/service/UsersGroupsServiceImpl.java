@@ -179,7 +179,6 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		usersGroup.setAddUser(loginUsersView.getUserId());
 		usersGroup.setModifyDate(null);
 		usersGroup.setModifyUser(null);
-		usersGroup.setAdminGroup(false);
 		usersGroupsDAO.addUsersGroup(usersGroup);
 		inMemoryUsersGroupsService.updateUsersGroupsView();
 	}
@@ -221,7 +220,6 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 		Timestamp update_date = new Timestamp(new Date().getTime());
 		usersGroup.setModifyDate(update_date);
 		usersGroup.setModifyUser(loginUsersView.getUserId());
-		usersGroup.setAdminGroup(false);
 		usersGroupsDAO.updateUsersGroup(usersGroup);
 		inMemoryUsersGroupsService.updateUsersGroupsView();
 	}
