@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.expertsvision.erp.core.flagdetail.dto.FlagDetailViewFilter;
+import com.expertsvision.erp.core.flagdetail.entity.FlagDetailMainTree;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetailView;
 import com.expertsvision.erp.core.flagdetail.service.FlagDetailService;
 import com.expertsvision.erp.core.response.Response;
@@ -34,12 +35,25 @@ public class FlagDetailController {
 
 	@Autowired
 	private FlagDetailService flagDetailService;
+	
+	@GetMapping("")
+	public ResponseEntity<Object> getAllFlagDetailViewList() {
+		List<FlagDetailView> flagDetailViewList = flagDetailService.getFlagDetailViewList();
+		return response.response(flagDetailViewList, HttpStatus.OK);
+	}
 
 	@GetMapping("/{flagCode}")
 	public ResponseEntity<Object> getFlagDetailViewList(@PathVariable("flagCode") String flagCode) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		List<FlagDetailView> flagDetailViewList = flagDetailService.getFlagDetailViewList(loginUser, flagCode);
 		return response.response(flagDetailViewList, HttpStatus.OK);
+	}
+	
+	@GetMapping("/flagDetailMainTree")
+	public ResponseEntity<Object> getFlagDetailMainTree() {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<FlagDetailMainTree> FlagDetailMainTree = flagDetailService.getFlagDetailMainTree(loginUser.getUserId());
+		return response.response(FlagDetailMainTree, HttpStatus.OK);
 	}
 
 	@GetMapping("/{flagCode}/{flagValue}")

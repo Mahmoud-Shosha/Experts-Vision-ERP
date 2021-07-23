@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.expertsvision.erp.core.flagdetail.dto.FlagDetailViewFilter;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetail;
+import com.expertsvision.erp.core.flagdetail.entity.FlagDetailMainTree;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetailPK;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetailView;
 import com.expertsvision.erp.core.utils.GenerateSql;
@@ -42,6 +43,17 @@ public class FlagDetailDAOImpl implements FlagDetailDAO {
 		query.setParameter("flagCode", flagCode);
 		List<FlagDetailView> fagDetailViewList = query.getResultList();
 		return fagDetailViewList;
+	}
+
+	@Override
+	public List<FlagDetailMainTree> getFlagDetailMainTree(Integer userId) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT * FROM flag_detail_main_tree WHERE user_id = :userId"
+				   + "                                    AND active = true AND (flag_priv = false OR view_priv = true)";
+		Query<FlagDetailMainTree> query = session.createNativeQuery(sql, FlagDetailMainTree.class);
+		query.setParameter("userId", userId);
+		List<FlagDetailMainTree> FlagDetailMainTree = query.getResultList();
+		return FlagDetailMainTree;
 	}
 
 	@Override
@@ -179,7 +191,8 @@ public class FlagDetailDAOImpl implements FlagDetailDAO {
 	@Override
 	public void updateFlagDetail(FlagDetail flagDetail) {
 		Session session = sessionFactory.getCurrentSession();
-		FlagDetail DBFlagDetail = session.get(FlagDetail.class, new FlagDetailPK(flagDetail.getFlagCode(), flagDetail.getFlagValue()));
+		FlagDetail DBFlagDetail = session.get(FlagDetail.class,
+				new FlagDetailPK(flagDetail.getFlagCode(), flagDetail.getFlagValue()));
 		DBFlagDetail.setActive(flagDetail.getActive());
 		DBFlagDetail.setFlagPriv(flagDetail.getFlagPriv());
 		DBFlagDetail.setFlagSr(flagDetail.getFlagSr());

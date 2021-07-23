@@ -55,9 +55,15 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 	@Transactional
 	public List<UsersGroupsView> getUsersGroupsViewList(UsersView loginUsersView) {
 		// Check module, form, privileges
-		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.USERS_GROUPS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		}
 		// Return requested data
 		List<UsersGroupsView> usersGroupsView = usersGroupsDAO.getAllUsersGroupsViewList();
 		return usersGroupsView;
@@ -67,9 +73,15 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 	@Transactional
 	public UsersGroupsView getUsersGroupsView(UsersView loginUsersView, Integer groupNo) {
 		// Check module, form, privileges
-		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.USERS_GROUPS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		}
 		// Return requested data
 		UsersGroupsView usersGroupsView = usersGroupsDAO.getUsersGroupsView(groupNo);
 		if (usersGroupsView == null) {
@@ -82,9 +94,15 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 	@Transactional
 	public SinglePage<UsersGroupsView> getUsersGroupsViewSinglePage(UsersView loginUsersView, long pageNo) {
 		// Check module, form, privileges
-		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.USERS_GROUPS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		}
 		// Return requested data
 		SinglePage<UsersGroupsView> singlePage = usersGroupsDAO.getUsersGroupsViewSinglePage(pageNo);
 		return singlePage;
@@ -94,9 +112,15 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 	@Transactional
 	public SinglePage<UsersGroupsView> getUsersGroupsViewLastPage(UsersView loginUsersView) {
 		// Check module, form, privileges
-		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.USERS_GROUPS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		}
 		// Return requested data
 		SinglePage<UsersGroupsView> singlePage = usersGroupsDAO.getUsersGroupsViewLastPage();
 		return singlePage;
@@ -106,9 +130,15 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 	@Transactional
 	public Long getUsersGroupsViewSinglePageNo(UsersView loginUsersView, Integer groupNo) {
 		// Check module, form, privileges
-		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.USERS_GROUPS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		}
 		// Return requested data
 		Long singlePageNo = usersGroupsDAO.getUserViewSinglePageNo(groupNo);
 		if (singlePageNo == null) {
@@ -121,9 +151,15 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 	@Transactional
 	public MultiplePages<UsersGroupsView> getUsersGroupsViewMultiplePages(UsersView loginUsersView, long pageNo) {
 		// Check module, form, privileges
-		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.USERS_GROUPS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		}
 		// Return requested data
 		MultiplePages<UsersGroupsView> multiplePages = usersGroupsDAO.getUsersGroupsViewMultiplePages(pageNo);
 		return multiplePages;
@@ -134,9 +170,15 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 	public MultiplePages<UsersGroupsView> getUsersGroupsViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
 			UsersGroupsViewFilter usersGroupsViewFilter) {
 		// Check module, form, privileges
-		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.USERS_GROUPS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+		}
 		// Return requested data
 		MultiplePages<UsersGroupsView> multiplePages = usersGroupsDAO.getUsersGroupsViewFilteredMultiplePages(pageNo,
 				usersGroupsViewFilter);
@@ -147,10 +189,16 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 	@Transactional
 	public void addUsersGroups(UsersView loginUsersView, UsersGroupsView usersGroupsView) {
 		// Check module, form, privileges
-		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.ADD);
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.USERS_GROUPS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.ADD);
+		}
 		// Non-database validation
 		coreValidationService.notNull(usersGroupsView.getGroupNo(), "group_no");
 		coreValidationService.greaterThanOrEqualZero(usersGroupsView.getGroupNo(), "group_no");
@@ -187,10 +235,16 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 	@Transactional
 	public void updateUsersGroups(UsersView loginUsersView, UsersGroupsView usersGroupsView) {
 		// Check module, form, privileges
-		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.MODIFY);
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.USERS_GROUPS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.MODIFY);
+		}
 		// Non-database validation
 		coreValidationService.notNull(usersGroupsView.getGroupNo(), "group_no");
 		coreValidationService.greaterThanOrEqualZero(usersGroupsView.getGroupNo(), "group_no");
@@ -228,10 +282,16 @@ public class UsersGroupsServiceImpl implements UsersGroupsService {
 	@Transactional
 	public void deleteUsersGroups(UsersView loginUsersView, Integer groupNo) {
 		// Check module, form, privileges
-		coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
-		coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.DELETE);
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.USERS_GROUPS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.USERS_GROUPS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.USERS_GROUPS, FormsActions.DELETE);
+		}
 		// Non-database validation
 		coreValidationService.notNull(groupNo, "group_no");
 		coreValidationService.greaterThanOrEqualZero(groupNo, "group_no");

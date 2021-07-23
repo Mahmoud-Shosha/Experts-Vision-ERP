@@ -3,6 +3,7 @@ package com.expertsvision.erp.core.flagdetail.service;
 import java.util.List;
 
 import com.expertsvision.erp.core.flagdetail.dto.FlagDetailViewFilter;
+import com.expertsvision.erp.core.flagdetail.entity.FlagDetailMainTree;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetailView;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
@@ -13,6 +14,8 @@ public interface FlagDetailService {
 	List<FlagDetailView> getFlagDetailViewList();
 
 	List<FlagDetailView> getFlagDetailViewList(UsersView loginUser, String flagCode);
+	
+	public List<FlagDetailMainTree> getFlagDetailMainTree(Integer userId);
 
 	FlagDetailView getFlagDetailView(UsersView loginUser, String flagCode, Integer flagValue);
 

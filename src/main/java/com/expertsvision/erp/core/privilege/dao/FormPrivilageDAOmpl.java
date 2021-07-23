@@ -9,44 +9,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.expertsvision.erp.core.privilege.entity.FormPrivilage;
+import com.expertsvision.erp.core.privilege.entity.FormPrivilagePK;
 import com.expertsvision.erp.core.privilege.entity.FormPrivilageView;
 
-@Repository 	
+@Repository
 public class FormPrivilageDAOmpl implements FormPrivilageDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+
 	// Refactor the following to functions ....
-	
+
 	@Override
-	public List<FormPrivilageView> getFormPrivilageViewList() {		
+	public List<FormPrivilageView> getFormPrivilageViewList() {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "SELECT * FROM form_privilage_view";
 		Query<FormPrivilageView> query = session.createNativeQuery(sql, FormPrivilageView.class);
 		List<FormPrivilageView> formPrivilageViewList = query.getResultList();
 		return formPrivilageViewList;
 	}
-	
+
 	@Override
-	public List<FormPrivilageView> getFormPrivilageViewList(Integer userId) {		
+	public List<FormPrivilageView> getFormPrivilageViewList(Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT * FROM form_privilage_view WHERE user_id = " + userId;
+		String sql = "SELECT * FROM form_privilage_view WHERE user_id = :userId";
 		Query<FormPrivilageView> query = session.createNativeQuery(sql, FormPrivilageView.class);
+		query.setParameter("userId", userId);
 		List<FormPrivilageView> formPrivilageViewList = query.getResultList();
 		return formPrivilageViewList;
 	}
-//	
-//	@Override
-//	public LabelsView getLabelsView(LabelsViewPK labelsViewPK) {
-//		Session session = sessionFactory.getCurrentSession();
-//		String sql = "SELECT * FROM labels_view WHERE label_code = :labelCode AND lang_no = :langNo";
-//		Query<LabelsView> query = session.createNativeQuery(sql, LabelsView.class);
-//		query.setParameter("labelCode", labelsViewPK.getLabelCode());
-//		query.setParameter("langNo", labelsViewPK.getLangNo());		
-//		List<LabelsView> labelsViewList = query.getResultList();
-//		return labelsViewList.isEmpty()? null : labelsViewList.get(0);
-//	}
+
+	@Override
+	public FormPrivilage getFormPrivilage(FormPrivilagePK FormPrivilagePK) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT * FROM form_privilage_view WHERE user_id = :userId AND form_no = :formNo";
+		Query<FormPrivilage> query = session.createNativeQuery(sql, FormPrivilage.class);
+		query.setParameter("userId", FormPrivilagePK.getUserId());
+		query.setParameter("formNo", FormPrivilagePK.getFormNo());
+		List<FormPrivilage> formPrivilageList = query.getResultList();
+		return formPrivilageList.isEmpty()? null : formPrivilageList.get(0);
+	}
 //	
 //	@Override
 //	public Long getLabelsViewSinglePageNo(LabelsViewPK labelsViewPK) {
@@ -187,15 +189,15 @@ public class FormPrivilageDAOmpl implements FormPrivilageDAO {
 //		List<String> validationList = query.getResultList();
 //		return validationList;
 //	}
-	
+
 	@Override
 	public void addBulkFormPrivilage(List<FormPrivilage> prvsList) {
-		if (prvsList.isEmpty()) return;
+		if (prvsList.isEmpty())
+			return;
 		StringBuilder sql = new StringBuilder();
-		sql.append("INSERT INTO form_privilage (user_id, form_no, include_priv, add_priv, modify_priv," + 
-				   "                            delete_priv, view_priv, print_priv, audit_priv, post_priv," + 
-				   "							add_user, add_date, modify_user, modify_date)" + 
-				   "	        VALUES ");
+		sql.append("INSERT INTO form_privilage (user_id, form_no, include_priv, add_priv, modify_priv,"
+				+ "                            delete_priv, view_priv, print_priv, audit_priv, post_priv,"
+				+ "							add_user, add_date, modify_user, modify_date)" + "	        VALUES ");
 		for (FormPrivilage prv : prvsList) {
 			sql.append("(");
 			sql.append(prv.getUserId());
@@ -233,10 +235,11 @@ public class FormPrivilageDAOmpl implements FormPrivilageDAO {
 		query.executeUpdate();
 		session.flush();
 	}
-	
+
 	@Override
 	public void updateBulkFormPrivilage(List<FormPrivilage> prvsList) {
-		if (prvsList.isEmpty()) return;
+		if (prvsList.isEmpty())
+			return;
 		StringBuilder sql = new StringBuilder();
 		for (FormPrivilage prv : prvsList) {
 			sql.append("UPDATE form_privilage SET ");
@@ -278,9 +281,27 @@ public class FormPrivilageDAOmpl implements FormPrivilageDAO {
 		session.flush();
 	}
 
-	
 	@Override
-	public void deleteBulkFormPrivilage(Integer userId) {		
+	public void updateFormPrivilage(FormPrivilage prv) {
+		Session session = sessionFactory.getCurrentSession();
+		FormPrivilage DBFormPrivilage = session.get(FormPrivilage.class,
+				new FormPrivilagePK(prv.getUserId(), prv.getFormNo()));
+		DBFormPrivilage.setAddPriv(prv.getAddPriv());
+		DBFormPrivilage.setAuditPriv(prv.getAuditPriv());
+		DBFormPrivilage.setDeletePriv(prv.getDeletePriv());
+		DBFormPrivilage.setIncludePriv(prv.getIncludePriv());
+		DBFormPrivilage.setModifyPriv(prv.getModifyPriv());
+		DBFormPrivilage.setPostPriv(prv.getPostPriv());
+		DBFormPrivilage.setPrintPriv(prv.getPrintPriv());
+		DBFormPrivilage.setViewPriv(prv.getViewPriv());
+		DBFormPrivilage.setModifyDate(prv.getModifyDate());
+		DBFormPrivilage.setModifyUser(prv.getModifyUser());
+		session.merge(DBFormPrivilage);
+		session.flush();
+	}
+
+	@Override
+	public void deleteBulkFormPrivilage(Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "DELETE FROM form_privilage WHERE user_id = :userId";
 		Query<FormPrivilageView> query = session.createNativeQuery(sql, FormPrivilageView.class);
@@ -288,5 +309,5 @@ public class FormPrivilageDAOmpl implements FormPrivilageDAO {
 		query.executeUpdate();
 		session.flush();
 	}
-	
+
 }

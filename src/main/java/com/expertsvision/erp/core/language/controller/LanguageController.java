@@ -62,7 +62,7 @@ public class LanguageController {
 	}
 	
 	@GetMapping("pageNo/{langNo}")
-	public ResponseEntity<Object> getMessagesViewSinglePageNo(@PathVariable("langNo") Integer langNo) {
+	public ResponseEntity<Object> getLanguagesViewSinglePageNo(@PathVariable("langNo") Integer langNo) {
 		long singlePageNo = languageService.getLanguageViewSinglePageNo(langNo);
 		Map<String, Long> singlePageNoMap = new HashMap<>();
 		singlePageNoMap.put("page_no", singlePageNo);

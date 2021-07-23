@@ -8,7 +8,8 @@ public enum Forms {
 	MODULES(99),
 	FORMS(99),
 	USERS(1102),
-	USERS_GROUPS(1101);
+	USERS_GROUPS(1101),
+	FORM_PRIVILEGES(1110);
 	
 	private Integer formNo;
 	

@@ -1,6 +1,7 @@
 package com.expertsvision.erp.core.flagdetail.service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +17,10 @@ import com.expertsvision.erp.core.exception.ValidationException;
 import com.expertsvision.erp.core.flagdetail.dao.FlagDetailDAO;
 import com.expertsvision.erp.core.flagdetail.dto.FlagDetailViewFilter;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetail;
+import com.expertsvision.erp.core.flagdetail.entity.FlagDetailMainTree;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetailView;
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.core.user.service.InMemoryUsersService;
 import com.expertsvision.erp.core.utils.GeneralDAO;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
@@ -34,15 +37,22 @@ public class FlagDetailServiceImpl implements FlagDetailService {
 
 	@Autowired
 	private CoreValidationService coreValidationService;
+	
+	@Autowired
+	private FlagDetailService flagDetailService;
 
 	@Autowired
 	@Lazy
 	private InMemoryFlagDetailService inMemoryFlagDetailService;
+	
+	@Autowired
+	@Lazy
+	private InMemoryUsersService inMemoryUsersService;
 
 	@Override
 	@Transactional
 	public List<FlagDetailView> getFlagDetailViewList() {
-		// Only used by system functions, like inmemory DB
+		// Return requested data
 		List<FlagDetailView> flagDetailViewList = flagDetailDAO.getFlagDetailViewList();
 		return flagDetailViewList;
 	}
@@ -56,6 +66,43 @@ public class FlagDetailServiceImpl implements FlagDetailService {
 		// Return requested data
 		List<FlagDetailView> flagDetailViewList = flagDetailDAO.getFlagDetailViewList(flagCode);
 		return flagDetailViewList;
+	}
+	
+	
+	@Override
+	@Transactional
+	public List<FlagDetailMainTree> getFlagDetailMainTree(Integer userId) {
+		UsersView loginUser = inMemoryUsersService.getUsersView(userId);
+		List<FlagDetailMainTree> FlagDetailMainTree;
+		// Return requested data
+		if (loginUser.getSuperAdmin() || loginUser.getAdminUser()) {
+			List<FlagDetailView> flagDetailViewList = flagDetailService.getFlagDetailViewList();
+			FlagDetailMainTree = new ArrayList<>();
+			FlagDetailMainTree NewFlagDetailMainTree;
+			for (FlagDetailView flagDetailView : flagDetailViewList) {
+				NewFlagDetailMainTree = new FlagDetailMainTree();
+				NewFlagDetailMainTree.setActive(true);
+//				NewFlagDetailMainTree.setAddDate(null);
+				NewFlagDetailMainTree.setAddPriv(true);
+//				NewFlagDetailMainTree.setAddUser(null);
+				NewFlagDetailMainTree.setDeletePriv(true);
+				NewFlagDetailMainTree.setFlagCode(flagDetailView.getFlagCode());
+				NewFlagDetailMainTree.setFlagPriv(flagDetailView.getFlagPriv());
+				NewFlagDetailMainTree.setFlagSr(flagDetailView.getFlagSr());
+				NewFlagDetailMainTree.setFlagValue(flagDetailView.getFlagValue());
+				NewFlagDetailMainTree.setLabelCode(flagDetailView.getLabelCode());
+//				NewFlagDetailMainTree.setModifyDate(null);
+				NewFlagDetailMainTree.setModifyPriv(true);
+//				NewFlagDetailMainTree.setModifyUser(null);
+				NewFlagDetailMainTree.setPrintPriv(true);
+				NewFlagDetailMainTree.setUserId(userId);
+				NewFlagDetailMainTree.setViewPriv(true);
+				FlagDetailMainTree.add(NewFlagDetailMainTree);
+			}
+		} else {
+			FlagDetailMainTree = flagDetailDAO.getFlagDetailMainTree(userId);
+		}
+		return FlagDetailMainTree;
 	}
 
 	@Override

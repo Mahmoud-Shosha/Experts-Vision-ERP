@@ -22,5 +22,10 @@
 		<class>com.expertsvision.erp.core.flagdetail.entity.FlagDetail</class>
 		<class>com.expertsvision.erp.core.flagdetail.entity.FlagDetailPK</class>
 		<class>com.expertsvision.erp.core.flagdetail.entity.FlagDetailView</class>
+		<class>com.expertsvision.erp.core.flagpriv.entity.FlagPriv</class>
+		<class>com.expertsvision.erp.core.flagpriv.entity.FlagPrivPK</class>
+		<class>com.expertsvision.erp.core.flagpriv.entity.FlagPrivView</class>
+		<class>com.expertsvision.erp.core.flagdetail.entity.FlagDetailMainTree</class>
+		<class>com.expertsvision.erp.core.flagdetail.entity.FlagDetailMainTreePK</class>
 	</persistence-unit>
 </persistence>

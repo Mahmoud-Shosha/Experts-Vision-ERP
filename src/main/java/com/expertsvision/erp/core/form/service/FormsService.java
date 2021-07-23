@@ -12,6 +12,8 @@ public interface FormsService {
 	
 	List<FormsView> getFormsViewList(UsersView loginUser);
 	
+	List<FormsView> getFormsViewList();
+	
 	FormsView getFormsView(UsersView loginUser, Integer formNo);
 	
 	SinglePage<FormsView> getFormsViewSinglePage(UsersView loginUser, long pageNo);
@@ -21,6 +23,8 @@ public interface FormsService {
 	Long getFormsViewSinglePageNo(UsersView loginUser, Integer formNo);
 	
 	List<FormsView> getFormsViewMainTree(UsersView loginUser);
+	
+	Boolean IsFormsViewInMainTree(Integer userId, Integer formNo);
 	
 	MultiplePages<FormsView> getFormsViewMultiplePages(UsersView loginUser, long pageNo);
 	

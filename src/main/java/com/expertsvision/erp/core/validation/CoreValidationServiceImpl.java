@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 import com.expertsvision.erp.core.exception.ConfirmException;
 import com.expertsvision.erp.core.exception.UnauthorizedException;
 import com.expertsvision.erp.core.exception.ValidationException;
+import com.expertsvision.erp.core.flagdetail.entity.FlagDetailPK;
+import com.expertsvision.erp.core.flagdetail.service.InMemoryFlagDetailService;
+import com.expertsvision.erp.core.flagpriv.entity.FlagPrivPK;
+import com.expertsvision.erp.core.flagpriv.entity.FlagPrivView;
+import com.expertsvision.erp.core.flagpriv.service.InMemoryFlagPrivService;
 import com.expertsvision.erp.core.form.entity.FormsView;
 import com.expertsvision.erp.core.form.service.InMemoryFormsService;
 import com.expertsvision.erp.core.module.entity.ModulesView;
@@ -18,6 +23,7 @@ import com.expertsvision.erp.core.privilege.entity.FormPrivilagePK;
 import com.expertsvision.erp.core.privilege.entity.FormPrivilageView;
 import com.expertsvision.erp.core.privilege.service.InMemoryFormPrivilageService;
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.core.utils.FlagsActions;
 import com.expertsvision.erp.core.utils.Forms;
 import com.expertsvision.erp.core.utils.FormsActions;
 
@@ -32,6 +38,12 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 
 	@Autowired
 	private InMemoryFormPrivilageService inMemoryFormPrivilageService;
+
+	@Autowired
+	private InMemoryFlagDetailService inMemoryFlagDetailService;
+
+	@Autowired
+	private InMemoryFlagPrivService inMemoryFlagPrivService;
 
 	@Override
 	public void notNull(Object field, String labelCode) {
@@ -111,7 +123,26 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 			}
 		}
 	}
+	
+	@Override
+	public void activeModule(Forms form) {
+		Integer formNo = form.getFormNo();
+		FormsView formsView = inMemoryFormsViewService.getFormsView(formNo);
+		Integer moduleNo = formsView.getModuleNo();
+		ModulesView modulesView = inMemoryModulesViewService.getModulesView(moduleNo);
+		if (!modulesView.getActive()) {
+			throw new UnauthorizedException("resource");
+		}
+	}
 
+	@Override
+	public void activeFlagDetail(FlagDetailPK flagDetailPK) {
+		if (!inMemoryFlagDetailService.getFlagDetailView(flagDetailPK).getActive()) {
+			throw new UnauthorizedException("resource");
+		}
+	}
+
+	@Override
 	public void validateHasFormPrivilege(UsersView loginUser, Forms form, FormsActions formAction) {
 		if (loginUser.getSuperAdmin() || loginUser.getAdminUser())
 			return;
@@ -138,7 +169,7 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 			hasPriv = formPrivilageView.getPostPriv();
 			break;
 		case PRINT:
-			hasPriv = formPrivilageView.getPostPriv();
+			hasPriv = formPrivilageView.getPrintPriv();
 			break;
 		case VIEW:
 			hasPriv = formPrivilageView.getViewPriv();
@@ -160,6 +191,39 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 			} else if (formsView.getParentForm().equals(0)) {
 				break;
 			}
+		}
+	}
+
+	@Override
+	public void validateHasFlagDetailPrivilege(UsersView loginUser, FlagDetailPK flagDetailPK,
+			FlagsActions flagsAction) {
+		if (loginUser.getSuperAdmin() || loginUser.getAdminUser())
+			return;
+		FlagPrivView flagPrivView = inMemoryFlagPrivService.getFlagPrivView(
+				new FlagPrivPK(loginUser.getUserId(), flagDetailPK.getFlagCode(), flagDetailPK.getFlagValue()));
+		boolean hasPriv;
+		switch (flagsAction) {
+		case ADD:
+			hasPriv = flagPrivView.getAddPriv();
+			break;
+		case DELETE:
+			hasPriv = flagPrivView.getDeletePriv();
+			break;
+		case MODIFY:
+			hasPriv = flagPrivView.getModifyPriv();
+			break;
+		case PRINT:
+			hasPriv = flagPrivView.getPrintPriv();
+			break;
+		case VIEW:
+			hasPriv = flagPrivView.getViewPriv();
+			break;
+		default:
+			hasPriv = false;
+			break;
+		}
+		if (!hasPriv) {
+			throw new UnauthorizedException("resource");
 		}
 	}
 

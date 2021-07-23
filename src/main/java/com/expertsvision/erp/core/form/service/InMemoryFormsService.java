@@ -41,6 +41,10 @@ public class InMemoryFormsService {
 		return formsView;
 	}
 	
+	public Map<Integer, FormsView> ggetFormsViewMap() {
+		return formsViewMap;
+	}
+	
 	public void updateFormsView() {
 		List<FormsView> formsViewList = formsViewService.getFormsViewList(superAdmin);
 		Map<Integer, FormsView> NewFormsViewMap = convertToFormsViewMap(formsViewList);

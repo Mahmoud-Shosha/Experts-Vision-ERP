@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.expertsvision.erp.core.flagdetail.dto.FlagDetailViewFilter;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetail;
+import com.expertsvision.erp.core.flagdetail.entity.FlagDetailMainTree;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetailView;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
@@ -13,7 +14,9 @@ public interface FlagDetailDAO {
 	List<FlagDetailView> getFlagDetailViewList();
 
 	List<FlagDetailView> getFlagDetailViewList(String flagCode);
-
+	
+	List<FlagDetailMainTree> getFlagDetailMainTree(Integer userId);
+	
 	FlagDetailView getFlagDetailView(String flagCode, Integer flagValue);
 
 	SinglePage<FlagDetailView> getFlagDetailsViewSinglePage(String flagCode, long pageNo);

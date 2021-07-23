@@ -33,6 +33,10 @@ public class InMemoryFlagDetailService {
 		FlagDetailView flagDetailView = flagDetailViewMap.get(flagDetailPK);
 		return flagDetailView;
 	}
+	
+	public Map<FlagDetailPK, FlagDetailView> getFlagDetailViewMap() {
+		return flagDetailViewMap;
+	}
 
 	public void updateFlagDetailView() {
 		List<FlagDetailView> flagDetailViewList = flagDetailService.getFlagDetailViewList();
