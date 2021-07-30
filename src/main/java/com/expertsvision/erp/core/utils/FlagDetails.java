@@ -7,7 +7,12 @@ public enum FlagDetails {
 	MESSAGES("internal_coding", 3),
 	MODULES("internal_coding", 5),
 	FORMS("internal_coding", 4),
-	Flag("internal_coding", 6);
+	FLAG("internal_coding", 6),
+	REGION("geographical_coding", 1),
+	COUNTRY("geographical_coding", 2),
+	PROVINCE("geographical_coding", 3),
+	CITY("geographical_coding", 4),
+	ZONE("geographical_coding", 5);
 	
 	private Integer flagValue;
 	private String flagCode;

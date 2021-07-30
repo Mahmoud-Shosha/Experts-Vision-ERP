@@ -2,8 +2,8 @@ package com.expertsvision.erp.core.validation;
 
 import java.util.List;
 
-import com.expertsvision.erp.core.flagdetail.entity.FlagDetailPK;
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.core.utils.FlagDetails;
 import com.expertsvision.erp.core.utils.FlagsActions;
 import com.expertsvision.erp.core.utils.Forms;
 import com.expertsvision.erp.core.utils.FormsActions;
@@ -26,11 +26,11 @@ public interface CoreValidationService {
 	
 	void activeModule(Forms form);
 	
-	void activeFlagDetail(FlagDetailPK flagDetailPK);
+	void activeFlagDetail(FlagDetails flagDetails);
 	
 	void validateHasFormPrivilege(UsersView loginUser, Forms form, FormsActions formAction);
 	
-	void validateHasFlagDetailPrivilege(UsersView loginUser, FlagDetailPK flagDetailPK,
+	void validateHasFlagDetailPrivilege(UsersView loginUser, FlagDetails flagDetails,
 			FlagsActions flagsAction) ;
 			
 }

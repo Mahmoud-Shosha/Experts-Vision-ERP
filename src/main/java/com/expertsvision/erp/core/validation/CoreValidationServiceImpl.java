@@ -11,6 +11,7 @@ import com.expertsvision.erp.core.exception.ConfirmException;
 import com.expertsvision.erp.core.exception.UnauthorizedException;
 import com.expertsvision.erp.core.exception.ValidationException;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetailPK;
+import com.expertsvision.erp.core.flagdetail.entity.FlagDetailView;
 import com.expertsvision.erp.core.flagdetail.service.InMemoryFlagDetailService;
 import com.expertsvision.erp.core.flagpriv.entity.FlagPrivPK;
 import com.expertsvision.erp.core.flagpriv.entity.FlagPrivView;
@@ -23,6 +24,7 @@ import com.expertsvision.erp.core.privilege.entity.FormPrivilagePK;
 import com.expertsvision.erp.core.privilege.entity.FormPrivilageView;
 import com.expertsvision.erp.core.privilege.service.InMemoryFormPrivilageService;
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.core.utils.FlagDetails;
 import com.expertsvision.erp.core.utils.FlagsActions;
 import com.expertsvision.erp.core.utils.Forms;
 import com.expertsvision.erp.core.utils.FormsActions;
@@ -123,7 +125,7 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 			}
 		}
 	}
-	
+
 	@Override
 	public void activeModule(Forms form) {
 		Integer formNo = form.getFormNo();
@@ -136,8 +138,10 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 	}
 
 	@Override
-	public void activeFlagDetail(FlagDetailPK flagDetailPK) {
-		if (!inMemoryFlagDetailService.getFlagDetailView(flagDetailPK).getActive()) {
+	public void activeFlagDetail(FlagDetails flagDetails) {
+		if (!inMemoryFlagDetailService
+				.getFlagDetailView(new FlagDetailPK(flagDetails.getFlagCode(), flagDetails.getFlagValue()))
+				.getActive()) {
 			throw new UnauthorizedException("resource");
 		}
 	}
@@ -195,12 +199,15 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 	}
 
 	@Override
-	public void validateHasFlagDetailPrivilege(UsersView loginUser, FlagDetailPK flagDetailPK,
-			FlagsActions flagsAction) {
+	public void validateHasFlagDetailPrivilege(UsersView loginUser, FlagDetails flagDetails, FlagsActions flagsAction) {
 		if (loginUser.getSuperAdmin() || loginUser.getAdminUser())
 			return;
 		FlagPrivView flagPrivView = inMemoryFlagPrivService.getFlagPrivView(
-				new FlagPrivPK(loginUser.getUserId(), flagDetailPK.getFlagCode(), flagDetailPK.getFlagValue()));
+				new FlagPrivPK(loginUser.getUserId(), flagDetails.getFlagCode(), flagDetails.getFlagValue()));
+		FlagDetailView flagDetailView = inMemoryFlagDetailService
+				.getFlagDetailView(new FlagDetailPK(flagDetails.getFlagCode(), flagDetails.getFlagValue()));
+		if (!flagDetailView.getFlagPriv())
+			return;
 		boolean hasPriv;
 		switch (flagsAction) {
 		case ADD:

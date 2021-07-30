@@ -1,4 +1,4 @@
-package com.expertsvision.erp.core;
+package com.expertsvision.erp;
 
 
 import org.springframework.boot.SpringApplication;

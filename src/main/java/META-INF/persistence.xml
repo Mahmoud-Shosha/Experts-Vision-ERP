@@ -27,5 +27,15 @@
 		<class>com.expertsvision.erp.core.flagpriv.entity.FlagPrivView</class>
 		<class>com.expertsvision.erp.core.flagdetail.entity.FlagDetailMainTree</class>
 		<class>com.expertsvision.erp.core.flagdetail.entity.FlagDetailMainTreePK</class>
+		<class>com.expertsvision.erp.masterdata.region.entity.Region</class>
+		<class>com.expertsvision.erp.masterdata.region.entity.RegionView</class>
+		<class>com.expertsvision.erp.masterdata.country.entity.Country</class>
+		<class>com.expertsvision.erp.masterdata.country.entity.CountryView</class>
+		<class>com.expertsvision.erp.masterdata.province.entity.Province</class>
+		<class>com.expertsvision.erp.masterdata.province.entity.ProvinceView</class>
+		<class>com.expertsvision.erp.masterdata.city.entity.City</class>
+		<class>com.expertsvision.erp.masterdata.city.entity.CityView</class>
+		<class>com.expertsvision.erp.masterdata.zone.entity.Zone</class>
+		<class>com.expertsvision.erp.masterdata.zone.entity.ZoneView</class>
 	</persistence-unit>
 </persistence>
