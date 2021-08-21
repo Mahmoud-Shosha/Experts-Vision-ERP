@@ -17,6 +17,7 @@ import com.expertsvision.erp.core.exception.ValidationException;
 import com.expertsvision.erp.core.form.entity.FormsView;
 import com.expertsvision.erp.core.form.service.FormsService;
 import com.expertsvision.erp.core.form.service.InMemoryFormsService;
+import com.expertsvision.erp.core.module.service.InMemoryModulesService;
 import com.expertsvision.erp.core.privilege.dao.FormPrivilageDAO;
 import com.expertsvision.erp.core.privilege.entity.FormPrivilage;
 import com.expertsvision.erp.core.privilege.entity.FormPrivilagePK;
@@ -58,7 +59,13 @@ public class FormPrivilageServiceImpl implements FormPrivilageService {
 
 	@Autowired
 	@Lazy
+	private InMemoryModulesService inMemoryModulesService;
+	
+	@Autowired
+	@Lazy
 	private InMemoryFormsService inMemoryFormsService;
+	
+	
 
 	// Donot forget to update cache when add, upd, del
 
@@ -84,33 +91,47 @@ public class FormPrivilageServiceImpl implements FormPrivilageService {
 			throw new UnauthorizedException("user");
 		List<FormPrivilageView> formPrivilageViewList = null;
 		UsersView userIdUsersView = inMemoryUsersService.getUsersView(userId);
-		if (userIdUsersView.getSuperAdmin() || userIdUsersView.getAdminUser()) {
+		if (userIdUsersView.getSuperAdmin()) {
 			List<FormsView> formsViewList = formsService.getFormsViewList();
 			formPrivilageViewList = new ArrayList<>();
 			FormPrivilageView newFormPrivilageView;
 			for (FormsView formsView : formsViewList) {
 				newFormPrivilageView = new FormPrivilageView();
-//				newFormPrivilageView.setAddDate(null);
 				newFormPrivilageView.setAddPriv(true);
-//				newFormPrivilageView.setAddUser(null);
-//				newFormPrivilageView.setAddUserDName(null);
-//				newFormPrivilageView.setAddUserFName(null);
 				newFormPrivilageView.setAuditPriv(true);
 				newFormPrivilageView.setDeletePriv(true);
 				newFormPrivilageView.setFormDName(formsView.getFormDName());
 				newFormPrivilageView.setFormFName(formsView.getFormFName());
 				newFormPrivilageView.setFormNo(formsView.getFormNo());
 				newFormPrivilageView.setIncludePriv(true);
-//				newFormPrivilageView.setModifyDate(null);
 				newFormPrivilageView.setModifyPriv(true);
-//				newFormPrivilageView.setModifyUser(null);
-//				newFormPrivilageView.setModifyUserDName(null);
-//				newFormPrivilageView.setModifyUserFName(null);
 				newFormPrivilageView.setPostPriv(true);
 				newFormPrivilageView.setPrintPriv(true);
 				newFormPrivilageView.setUserId(userId);
 				newFormPrivilageView.setViewPriv(true);
 				formPrivilageViewList.add(newFormPrivilageView);
+			}
+		} else if (userIdUsersView.getAdminUser()) {
+			List<FormsView> formsViewList = formsService.getFormsViewList();
+			formPrivilageViewList = new ArrayList<>();
+			FormPrivilageView newFormPrivilageView;
+			for (FormsView formsView : formsViewList) {
+				if (inMemoryModulesService.getModulesView(formsView.getModuleNo()).getActive()) {
+					newFormPrivilageView = new FormPrivilageView();
+					newFormPrivilageView.setAddPriv(true);
+					newFormPrivilageView.setAuditPriv(true);
+					newFormPrivilageView.setDeletePriv(true);
+					newFormPrivilageView.setFormDName(formsView.getFormDName());
+					newFormPrivilageView.setFormFName(formsView.getFormFName());
+					newFormPrivilageView.setFormNo(formsView.getFormNo());
+					newFormPrivilageView.setIncludePriv(true);
+					newFormPrivilageView.setModifyPriv(true);
+					newFormPrivilageView.setPostPriv(true);
+					newFormPrivilageView.setPrintPriv(true);
+					newFormPrivilageView.setUserId(userId);
+					newFormPrivilageView.setViewPriv(true);
+					formPrivilageViewList.add(newFormPrivilageView);
+				}
 			}
 		} else {
 			try {
@@ -216,7 +237,7 @@ public class FormPrivilageServiceImpl implements FormPrivilageService {
 		List<FormPrivilage> prvsList = new ArrayList<>();
 		FormPrivilage prv = null;
 		for (FormsView form : formsViewList) {
-			if (form.getActive()) {
+			if (inMemoryModulesService.getModulesView(form.getModuleNo()).getActive()) {
 				prv = new FormPrivilage();
 				prv.setAddDate(addDate);
 				prv.setAddPriv(false);
@@ -254,7 +275,7 @@ public class FormPrivilageServiceImpl implements FormPrivilageService {
 			List<FormsView> formsViewList = formsService.getFormsViewList(superAdmin);
 			// Generating the privileges for the user for each screen
 			for (FormsView form : formsViewList) {
-				if (form.getActive()) {
+				if (inMemoryModulesService.getModulesView(form.getModuleNo()).getActive()) {
 					prv = new FormPrivilage();
 					prv.setAddDate(addDate);
 					prv.setAddPriv(true);
@@ -315,7 +336,7 @@ public class FormPrivilageServiceImpl implements FormPrivilageService {
 			List<FormsView> formsViewList = formsService.getFormsViewList(superAdmin);
 			// Generating the privileges for the user for each screen
 			for (FormsView form : formsViewList) {
-				if (form.getActive()) {
+				if (inMemoryModulesService.getModulesView(form.getModuleNo()).getActive()) {
 					prv = new FormPrivilage();
 					prv.setAddPriv(true);
 					prv.setAuditPriv(true);
@@ -398,6 +419,11 @@ public class FormPrivilageServiceImpl implements FormPrivilageService {
 		conditions.put("form_no", formPrivilageView.getFormNo());
 		if (!generalDAO.isEntityExist("forms", conditions))
 			throw new ValidationException("not_exist", "form_no");
+		conditions.clear();
+		conditions.put("form_no", formPrivilageView.getFormNo());
+		conditions.put("user_id", formPrivilageView.getUserId());
+		if (!generalDAO.isEntityExist("form_privilage", conditions))
+			throw new ValidationException("not_exist", "privilege");
 		conditions.clear();
 		FormPrivilage newFormPrivilage = getFormPrivilageFromFormPrivilageView(formPrivilageView);
 		FormPrivilage oldFormPrivilage = formPrivilageViewDAO

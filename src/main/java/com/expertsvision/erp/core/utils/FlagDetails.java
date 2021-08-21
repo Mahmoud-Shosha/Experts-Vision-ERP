@@ -12,7 +12,10 @@ public enum FlagDetails {
 	COUNTRY("geographical_coding", 2),
 	PROVINCE("geographical_coding", 3),
 	CITY("geographical_coding", 4),
-	ZONE("geographical_coding", 5);
+	ZONE("geographical_coding", 5),
+	COMPANY_GROUPS("companies_and_branches", 1),
+	COMPANIES("companies_and_branches", 2),
+	BRANCHES("companies_and_branches", 3);
 	
 	private Integer flagValue;
 	private String flagCode;

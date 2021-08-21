@@ -28,12 +28,14 @@ import com.expertsvision.erp.core.user.dto.UsersDTO;
 import com.expertsvision.erp.core.user.dto.UsersViewFilter;
 import com.expertsvision.erp.core.user.entity.User;
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.core.usersgroups.service.InMemoryUsersGroupsService;
 import com.expertsvision.erp.core.utils.Forms;
 import com.expertsvision.erp.core.utils.FormsActions;
 import com.expertsvision.erp.core.utils.GeneralDAO;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.core.validation.CoreValidationService;
+import com.expertsvision.erp.masterdata.masterdataprivileges.service.MasterDataPrivilegesService;
 
 @Service
 public class UsersServiceImpl implements UsersService {
@@ -43,9 +45,12 @@ public class UsersServiceImpl implements UsersService {
 
 	@Autowired
 	private FormPrivilageService formPrivilageService;
-	
+
 	@Autowired
 	private FlagPrivService flagPrivService;
+
+	@Autowired
+	private MasterDataPrivilegesService masterDataPrivilegesService;
 
 	@Autowired
 	private GeneralDAO generalDAO;
@@ -59,11 +64,15 @@ public class UsersServiceImpl implements UsersService {
 	@Autowired
 	@Lazy
 	private InMemoryUsersService inMemoryUsersService;
-	
+
 	@Autowired
 	@Lazy
-	private InMemoryFormPrivilageService inMemoryFormPrivilageService; 
-	
+	private InMemoryUsersGroupsService inMemoryUsersGroupsService;
+
+	@Autowired
+	@Lazy
+	private InMemoryFormPrivilageService inMemoryFormPrivilageService;
+
 	@Autowired
 	@Lazy
 	private InMemoryFlagPrivService inMemoryFlagPrivService;
@@ -294,6 +303,13 @@ public class UsersServiceImpl implements UsersService {
 		coreValidationService.greaterThanOrEqualZero(usersView.getDirectMang(), "direct_manager");
 		coreValidationService.notNull(usersView.getPassword(), "password");
 		coreValidationService.notBlank(usersView.getPassword(), "password");
+		if ((usersView.getGroupNo() != null)
+				&& inMemoryUsersGroupsService.getUsersGroupsView(usersView.getGroupNo()).getAdminGroup()) {
+			if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()) && ((loginUser.getGroupNo() == null)
+					|| !inMemoryUsersGroupsService.getUsersGroupsView(loginUser.getGroupNo()).getAdminGroup())) {
+				throw new ValidationException("cannot_choose_admin_group");
+			}
+		}
 		// Database validation
 		User user = getUserFromUsersView(usersView);
 		Map<String, Object> conditions = new HashMap<>();
@@ -329,6 +345,8 @@ public class UsersServiceImpl implements UsersService {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setSuperAdmin(false);
 		user.setAdminUser(false);
+		usersView.setSuperAdmin(false);
+		usersView.setAdminUser(false);
 		if (user.getInactive()) {
 			user.setInactiveDate(add_date);
 			user.setInactiveUser(loginUser.getUserId());
@@ -345,10 +363,14 @@ public class UsersServiceImpl implements UsersService {
 				throw new InactiveException("copy_privileges_from_user");
 			formPrivilageService.generateFormPrivilegesForUserFromAnotherUser(loginUser, COPY_FROM_USER_PRIVILEDGES,
 					user.getUserId(), add_date);
-			flagPrivService.generateFlagPrivsForUserFromAnotherUser(loginUser, COPY_FROM_USER_PRIVILEDGES, user.getUserId(), add_date);;
+			flagPrivService.generateFlagPrivsForUserFromAnotherUser(loginUser, COPY_FROM_USER_PRIVILEDGES,
+					user.getUserId(), add_date);
+			masterDataPrivilegesService.generateMasterDataPrivilegesFromAnotherUser(loginUser, usersView,
+					COPY_FROM_USER_PRIVILEDGES, add_date);
 		} else {
 			formPrivilageService.generateFormPrivilegesForUser(loginUser, user.getUserId(), add_date);
 			flagPrivService.generateFlagPrivsForUser(loginUser, user.getUserId(), add_date);
+			masterDataPrivilegesService.generateMasterDataPrivileges(loginUser, usersView, add_date, false, false);
 		}
 		inMemoryUsersService.updateUsersView();
 	}
@@ -420,6 +442,8 @@ public class UsersServiceImpl implements UsersService {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setSuperAdmin(false);
 		user.setAdminUser(false);
+		usersView.setSuperAdmin(false);
+		usersView.setAdminUser(false);
 		UsersView DBUsersView = usersViewDAO.getUsersView(loginUser.getUserId(), usersView.getUserId());
 		if (DBUsersView.getInactive() && !user.getInactive()) {
 			user.setInactiveDate(null);
@@ -434,6 +458,33 @@ public class UsersServiceImpl implements UsersService {
 			user.setInactiveUser(DBUsersView.getInactiveUser());
 			user.setInactiveReason(DBUsersView.getInactiveReason());
 		}
+		if ((usersView.getGroupNo() != null)
+				&& inMemoryUsersGroupsService.getUsersGroupsView(usersView.getGroupNo()).getAdminGroup()) {
+			if ((DBUsersView.getGroupNo() == null)
+					|| !inMemoryUsersGroupsService.getUsersGroupsView(DBUsersView.getGroupNo()).getAdminGroup()) {
+				if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()) && ((loginUser.getGroupNo() == null)
+						|| !inMemoryUsersGroupsService.getUsersGroupsView(loginUser.getGroupNo()).getAdminGroup())) {
+					throw new ValidationException("cannot_change_group");
+				}
+				masterDataPrivilegesService.updateMasterDataPrivileges(usersView, usersView, update_date, true, true);
+			} else if ((DBUsersView.getGroupNo() != null)
+					&& inMemoryUsersGroupsService.getUsersGroupsView(DBUsersView.getGroupNo()).getAdminGroup()
+					&& !usersView.getGroupNo().equals(DBUsersView.getGroupNo())) {
+				if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()) && ((loginUser.getGroupNo() == null)
+						|| !inMemoryUsersGroupsService.getUsersGroupsView(loginUser.getGroupNo()).getAdminGroup())) {
+					throw new ValidationException("cannot_change_group");
+				}
+			}
+		} else if ((usersView.getGroupNo() == null)
+				|| !inMemoryUsersGroupsService.getUsersGroupsView(usersView.getGroupNo()).getAdminGroup()) {
+			if ((DBUsersView.getGroupNo() != null)
+					&& inMemoryUsersGroupsService.getUsersGroupsView(DBUsersView.getGroupNo()).getAdminGroup()) {
+				if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()) && ((loginUser.getGroupNo() == null)
+						|| !inMemoryUsersGroupsService.getUsersGroupsView(loginUser.getGroupNo()).getAdminGroup())) {
+					throw new ValidationException("cannot_change_group");
+				}
+			}
+		}
 		usersViewDAO.updateUser(user);
 		if ((COPY_FROM_USER_PRIVILEDGES != null) && (COPY_PRIVILEGES_TO_GROUP != null)) {
 			throw new ValidationException("cannot_both_copy_privileges");
@@ -444,7 +495,12 @@ public class UsersServiceImpl implements UsersService {
 				throw new InactiveException("copy_privileges_from_user");
 			formPrivilageService.updateFormPrivilegesForUserFromAnotherUser(loginUser, COPY_FROM_USER_PRIVILEDGES,
 					user.getUserId(), update_date);
-			flagPrivService.updateFlagPrivsForUserFromAnotherUser(loginUser, COPY_FROM_USER_PRIVILEDGES, user.getUserId(), update_date);
+			flagPrivService.updateFlagPrivsForUserFromAnotherUser(loginUser, COPY_FROM_USER_PRIVILEDGES,
+					user.getUserId(), update_date);
+			UsersView fromUsersView = new UsersView();
+			fromUsersView.setUserId(COPY_FROM_USER_PRIVILEDGES);
+			masterDataPrivilegesService.updateMasterDataPrivilegesFromAnotherUser(loginUser, DBUsersView, fromUsersView,
+					update_date);
 		} else if (COPY_PRIVILEGES_TO_GROUP != null) {
 			conditions.clear();
 			conditions.put("group_no", COPY_PRIVILEGES_TO_GROUP);
@@ -453,7 +509,12 @@ public class UsersServiceImpl implements UsersService {
 			if (confirm) {
 				formPrivilageService.updateGroupUsersPrivileges(loginUser, user.getUserId(), COPY_PRIVILEGES_TO_GROUP,
 						update_date);
-				flagPrivService.updateGroupUsersFlagPrivs(loginUser, user.getUserId(), COPY_PRIVILEGES_TO_GROUP, update_date);
+				flagPrivService.updateGroupUsersFlagPrivs(loginUser, user.getUserId(), COPY_PRIVILEGES_TO_GROUP,
+						update_date);
+				if (!inMemoryUsersGroupsService.getUsersGroupsView(COPY_PRIVILEGES_TO_GROUP).getAdminGroup()) {
+					masterDataPrivilegesService.updateGroupUsersMasterDataPrivileges(loginUser, usersView,
+							COPY_PRIVILEGES_TO_GROUP, update_date);
+				}
 				return;
 			}
 			List<User> groupMembers = getUsersListByGroupNo(COPY_PRIVILEGES_TO_GROUP);
@@ -470,7 +531,12 @@ public class UsersServiceImpl implements UsersService {
 			}
 			formPrivilageService.updateGroupUsersPrivileges(loginUser, user.getUserId(), COPY_PRIVILEGES_TO_GROUP,
 					update_date);
-			flagPrivService.updateGroupUsersFlagPrivs(loginUser, user.getUserId(), COPY_PRIVILEGES_TO_GROUP, update_date);
+			flagPrivService.updateGroupUsersFlagPrivs(loginUser, user.getUserId(), COPY_PRIVILEGES_TO_GROUP,
+					update_date);
+			if (!inMemoryUsersGroupsService.getUsersGroupsView(COPY_PRIVILEGES_TO_GROUP).getAdminGroup()) {
+				masterDataPrivilegesService.updateGroupUsersMasterDataPrivileges(loginUser, usersView,
+						COPY_PRIVILEGES_TO_GROUP, update_date);
+			}
 		}
 		inMemoryUsersService.updateUsersView();
 	}
@@ -488,7 +554,7 @@ public class UsersServiceImpl implements UsersService {
 			coreValidationService.validateHasFormPrivilege(loginUser, Forms.USERS, FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUser, Forms.USERS, FormsActions.VIEW);
 			coreValidationService.validateHasFormPrivilege(loginUser, Forms.USERS, FormsActions.DELETE);
-		}	
+		}
 		// Non-database validation
 		if (loginUser.getUserId().equals(userId))
 			throw new UnauthorizedException("user");

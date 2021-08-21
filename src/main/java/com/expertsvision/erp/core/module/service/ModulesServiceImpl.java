@@ -22,6 +22,8 @@ import com.expertsvision.erp.core.utils.GeneralDAO;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.core.validation.CoreValidationService;
+import com.expertsvision.erp.systemcommands.privileges.service.PrivilegesService;
+import com.expertsvision.erp.systemcommands.server.service.ServerService;
 
 @Service
 public class ModulesServiceImpl implements ModulesService {
@@ -31,6 +33,12 @@ public class ModulesServiceImpl implements ModulesService {
 	
 	@Autowired
 	private GeneralDAO generalDAO;
+	
+	@Autowired
+	private ServerService serverService;
+	
+	@Autowired
+	private PrivilegesService privilegesService;
 	
 	@Autowired
 	private CoreValidationService coreValidationService;
@@ -152,6 +160,11 @@ public class ModulesServiceImpl implements ModulesService {
 		conditions.clear();
 		conditions.put("shortcut", module.getShortcut());
 		if (generalDAO.isEntityExist("modules", conditions, exceptionCondition)) throw new ValidationException("already_exist", "shortcut");
+		ModulesView DBModulesView = modulesDAO.getModulesView(module.getModuleNo());
+		if (!DBModulesView.getActive() && modulesView.getActive()) {
+			serverService.reloadServerCache(loginUser);
+			privilegesService.generateUngeneratedPrivileges(loginUser, false);
+		}
 		// Update the message
 		modulesDAO.updateModules(module);
 		inMemoryModulesService.updateModulesViewMap();

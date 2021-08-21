@@ -1,5 +1,6 @@
 package com.expertsvision.erp.core.flagdetail.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,16 @@ public class InMemoryFlagDetailService {
 		return flagDetailViewMap;
 	}
 
+	public Map<String, List<FlagDetailView>> getFlagDetailViewListByFlagCode() {
+		Map<String, List<FlagDetailView>> ResultFlagDetailViewMap = new HashMap<>();
+		for(FlagDetailView flagDetailView : flagDetailViewMap.values()) {
+			if (ResultFlagDetailViewMap.get(flagDetailView.getFlagCode()) == null)
+				ResultFlagDetailViewMap.put(flagDetailView.getFlagCode(), new ArrayList<>());
+			ResultFlagDetailViewMap.get(flagDetailView.getFlagCode()).add(flagDetailView);
+		}
+		return ResultFlagDetailViewMap;
+	}
+	
 	public void updateFlagDetailView() {
 		List<FlagDetailView> flagDetailViewList = flagDetailService.getFlagDetailViewList();
 		Map<FlagDetailPK, FlagDetailView> newFlagDetailViewMap = convertToFlagDetailViewMap(flagDetailViewList);

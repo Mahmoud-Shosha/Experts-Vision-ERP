@@ -37,5 +37,12 @@
 		<class>com.expertsvision.erp.masterdata.city.entity.CityView</class>
 		<class>com.expertsvision.erp.masterdata.zone.entity.Zone</class>
 		<class>com.expertsvision.erp.masterdata.zone.entity.ZoneView</class>
+		<class>com.expertsvision.erp.masterdata.companygroups.entity.CompanyGroup</class>
+		<class>com.expertsvision.erp.masterdata.companygroups.entity.CompanyGroupsView</class>
+		<class>com.expertsvision.erp.masterdata.company.entity.Company</class>
+		<class>com.expertsvision.erp.masterdata.company.entity.CompanyView</class>
+		<class>com.expertsvision.erp.masterdata.branches.entity.Branch</class>
+		<class>com.expertsvision.erp.masterdata.branches.entity.BranchesView</class>
+		<class>com.expertsvision.erp.masterdata.branches.entity.BranchesPriv</class>
 	</persistence-unit>
 </persistence>

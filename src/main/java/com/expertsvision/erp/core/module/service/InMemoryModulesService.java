@@ -40,6 +40,11 @@ public class InMemoryModulesService {
 		return modulesView;
 	}
 	
+//	public Collection<ModulesView> getAllModulesView() {
+//		Collection<ModulesView> modulesViewList = modulesViewMap.values();
+//		return modulesViewList;
+//	}
+	
 	public void updateModulesViewMap() {
 		List<ModulesView> modulesViewList = modulesViewService.getModulesViewList(superAdmin);
 		Map<Integer, ModulesView> newModulesViewMap = convertToModulesViewMap(modulesViewList);

@@ -1,6 +1,7 @@
 package com.expertsvision.erp.core.form.service;
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,11 @@ public class InMemoryFormsService {
 	public FormsView getFormsView(Integer formNo) {
 		FormsView formsView = formsViewMap.get(formNo);
 		return formsView;
+	}
+	
+	public Collection<FormsView> getAllFormsView() {
+		Collection<FormsView> allFormsView = formsViewMap.values();
+		return allFormsView;
 	}
 	
 	public Map<Integer, FormsView> ggetFormsViewMap() {

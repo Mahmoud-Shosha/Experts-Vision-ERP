@@ -20,6 +20,7 @@ import com.expertsvision.erp.core.flagdetail.entity.FlagDetailPK;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetailView;
 import com.expertsvision.erp.core.flagdetail.service.FlagDetailService;
 import com.expertsvision.erp.core.flagdetail.service.InMemoryFlagDetailService;
+import com.expertsvision.erp.core.flagmaster.service.InMemoryFlagMasterService;
 import com.expertsvision.erp.core.flagpriv.dao.FlagPrivDAO;
 import com.expertsvision.erp.core.flagpriv.entity.FlagPriv;
 import com.expertsvision.erp.core.flagpriv.entity.FlagPrivPK;
@@ -27,6 +28,7 @@ import com.expertsvision.erp.core.flagpriv.entity.FlagPrivView;
 import com.expertsvision.erp.core.form.entity.FormsView;
 import com.expertsvision.erp.core.form.service.FormsService;
 import com.expertsvision.erp.core.form.service.InMemoryFormsService;
+import com.expertsvision.erp.core.module.service.InMemoryModulesService;
 import com.expertsvision.erp.core.user.entity.User;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.user.service.InMemoryUsersService;
@@ -72,6 +74,14 @@ public class FlagPrivServiceImpl implements FlagPrivService {
 	@Autowired
 	@Lazy
 	private InMemoryFlagDetailService inMemoryFlagDetailService;
+	
+	@Autowired
+	@Lazy
+	private InMemoryFlagMasterService inMemoryFlagMasterService;
+	
+	@Autowired
+	@Lazy
+	private InMemoryModulesService inMemoryModulesService;
 
 	// Donot forget to update cache when add, upd, del
 
@@ -97,31 +107,42 @@ public class FlagPrivServiceImpl implements FlagPrivService {
 			throw new UnauthorizedException("user");
 		List<FlagPrivView> flagPrivViewList = null;
 		UsersView userIdUsersView = inMemoryUsersService.getUsersView(userId);
-		if (userIdUsersView.getSuperAdmin() || userIdUsersView.getAdminUser()) {
+		if (userIdUsersView.getSuperAdmin()) {
 			List<FlagDetailView> flagDetailViewList = flagDetailService.getFlagDetailViewList();
 			flagPrivViewList = new ArrayList<>();
 			FlagPrivView newFlagPrivView;
 			for (FlagDetailView FlagDetailView : flagDetailViewList) {
 				newFlagPrivView = new FlagPrivView();
-//				newFlagPrivView.setAddDate(null);
 				newFlagPrivView.setAddPriv(true);
-//				newFlagPrivView.setAddUser(null);
-//				newFlagPrivView.setAddUserDName(null);
-//				newFlagPrivView.setAddUserFName(null);
 				newFlagPrivView.setDeletePriv(true);
 				newFlagPrivView.setFlagCode(FlagDetailView.getFlagCode());
 				newFlagPrivView.setFlagValue(FlagDetailView.getFlagValue());		
-//				newFlagPrivView.setModifyDate(null);
 				newFlagPrivView.setModifyPriv(true);
-//				newFlagPrivView.setModifyUser(null);
-//				newFlagPrivView.setModifyUserDName(null);
-//				newFlagPrivView.setModifyUserFName(null);
 				newFlagPrivView.setPrintPriv(true);
-//				newFlagPrivView.setUserDName(null);
-//				newFlagPrivView.setUserFName(null);
 				newFlagPrivView.setUserId(userId);
 				newFlagPrivView.setViewPriv(true);
 				flagPrivViewList.add(newFlagPrivView);
+			}
+		} else if (userIdUsersView.getAdminUser()) {
+			Map<String, List<FlagDetailView>> flagDetailViewListByFlagCode = inMemoryFlagDetailService.getFlagDetailViewListByFlagCode();
+			List<FormsView> formsViewList = formsService.getFormsViewList();
+			flagPrivViewList = new ArrayList<>();
+			FlagPrivView newFlagPrivView;
+			for (FormsView formsView : formsViewList) {
+				if (formsView.getFlagCode() != null &&  inMemoryModulesService.getModulesView(formsView.getModuleNo()).getActive()) {
+					for (FlagDetailView flagDetailView : flagDetailViewListByFlagCode.get(formsView.getFlagCode())) {
+						newFlagPrivView = new FlagPrivView();
+						newFlagPrivView.setAddPriv(true);
+						newFlagPrivView.setDeletePriv(true);
+						newFlagPrivView.setFlagCode(flagDetailView.getFlagCode());
+						newFlagPrivView.setFlagValue(flagDetailView.getFlagValue());		
+						newFlagPrivView.setModifyPriv(true);
+						newFlagPrivView.setPrintPriv(true);
+						newFlagPrivView.setUserId(userId);
+						newFlagPrivView.setViewPriv(true);
+						flagPrivViewList.add(newFlagPrivView);
+					}
+				}
 			}
 		} else {
 			try {
@@ -220,26 +241,29 @@ public class FlagPrivServiceImpl implements FlagPrivService {
 	public void generateFlagPrivsForUser(UsersView loginUser, Integer userId, Timestamp addDate) {
 		addDate = (addDate != null) ? addDate : new Timestamp(new Date().getTime());
 		// Get all flagDetails
-		List<FlagDetailView> flagDetailViewList = flagDetailService.getFlagDetailViewList();
+		List<FormsView> formsViewList = formsService.getFormsViewList();
+		Map<String, List<FlagDetailView>> flagDetailViewListByFlagCode = inMemoryFlagDetailService.getFlagDetailViewListByFlagCode();
 		// Generating the privileges for the user for each screen
 		List<FlagPriv> prvsList = new ArrayList<>();
 		FlagPriv prv = null;
-		for (FlagDetailView flagDetail : flagDetailViewList) {
-			if (flagDetail.getActive()) {
-				prv = new FlagPriv();
-				prv.setAddDate(addDate);
-				prv.setAddPriv(false);
-				prv.setAddUser(loginUser.getUserId());
-				prv.setDeletePriv(false);
-				prv.setModifyDate(null);
-				prv.setModifyPriv(false);
-				prv.setModifyUser(null);
-				prv.setPrintPriv(false);
-				prv.setViewPriv(false);
-				prv.setUserId(userId);
-				prv.setFlagCode(flagDetail.getFlagCode());
-				prv.setFlagValue(flagDetail.getFlagValue());
-				prvsList.add(prv);
+		for (FormsView formsView : formsViewList) {
+			if (formsView.getFlagCode() != null &&  inMemoryModulesService.getModulesView(formsView.getModuleNo()).getActive()) {
+				for (FlagDetailView flagDetailView : flagDetailViewListByFlagCode.get(formsView.getFlagCode())) {
+					prv = new FlagPriv();
+					prv.setAddDate(addDate);
+					prv.setAddPriv(false);
+					prv.setAddUser(loginUser.getUserId());
+					prv.setDeletePriv(false);
+					prv.setModifyDate(null);
+					prv.setModifyPriv(false);
+					prv.setModifyUser(null);
+					prv.setPrintPriv(false);
+					prv.setViewPriv(false);
+					prv.setUserId(userId);
+					prv.setFlagCode(flagDetailView.getFlagCode());
+					prv.setFlagValue(flagDetailView.getFlagValue());
+					prvsList.add(prv);
+				}
 			}
 		}
 		flagPrivViewDAO.addBulkFlagPriv(prvsList);
@@ -256,24 +280,27 @@ public class FlagPrivServiceImpl implements FlagPrivService {
 		UsersView fromUsersView = inMemoryUsersService.getUsersView(fromUserId);
 		if (fromUsersView.getSuperAdmin() || fromUsersView.getAdminUser()) {
 			// Get all forms
-			List<FlagDetailView> flagDetailViewList = flagDetailService.getFlagDetailViewList();
+			List<FormsView> formsViewList = formsService.getFormsViewList();
+			Map<String, List<FlagDetailView>> flagDetailViewListByFlagCode = inMemoryFlagDetailService.getFlagDetailViewListByFlagCode();
 			// Generating the privileges for the user for each screen
-			for (FlagDetailView flagDetail : flagDetailViewList) {
-				if (flagDetail.getActive()) {
-					prv = new FlagPriv();
-					prv.setAddDate(addDate);
-					prv.setAddPriv(true);
-					prv.setAddUser(loginUser.getUserId());
-					prv.setDeletePriv(true);
-					prv.setModifyDate(null);
-					prv.setModifyPriv(true);
-					prv.setModifyUser(null);
-					prv.setPrintPriv(true);
-					prv.setUserId(toUserId);
-					prv.setViewPriv(true);
-					prv.setFlagCode(flagDetail.getFlagCode());
-					prv.setFlagValue(flagDetail.getFlagValue());
-					toUserPrvsList.add(prv);
+			for (FormsView formsView : formsViewList) {
+				if (formsView.getFlagCode() != null &&  inMemoryModulesService.getModulesView(formsView.getModuleNo()).getActive()) {
+					for (FlagDetailView flagDetailView : flagDetailViewListByFlagCode.get(formsView.getFlagCode())) {
+						prv = new FlagPriv();
+						prv.setAddDate(addDate);
+						prv.setAddPriv(true);
+						prv.setAddUser(loginUser.getUserId());
+						prv.setDeletePriv(true);
+						prv.setModifyDate(null);
+						prv.setModifyPriv(true);
+						prv.setModifyUser(null);
+						prv.setPrintPriv(true);
+						prv.setUserId(toUserId);
+						prv.setViewPriv(true);
+						prv.setFlagCode(flagDetailView.getFlagCode());
+						prv.setFlagValue(flagDetailView.getFlagValue());
+						toUserPrvsList.add(prv);
+					}
 				}
 			}
 		} else {
@@ -311,22 +338,25 @@ public class FlagPrivServiceImpl implements FlagPrivService {
 		UsersView fromUsersView = inMemoryUsersService.getUsersView(fromUserId);
 		if (fromUsersView.getSuperAdmin() || fromUsersView.getAdminUser()) {
 			// Get all flagDetails
-			List<FlagDetailView> flagDetailViewList = flagDetailService.getFlagDetailViewList();
+			List<FormsView> formsViewList = formsService.getFormsViewList();
+			Map<String, List<FlagDetailView>> flagDetailViewListByFlagCode = inMemoryFlagDetailService.getFlagDetailViewListByFlagCode();
 			// Generating the privileges for the user for each screen
-			for (FlagDetailView flagDetail : flagDetailViewList) {
-				if (flagDetail.getActive()) {
-					prv = new FlagPriv();
-					prv.setAddPriv(true);
-					prv.setDeletePriv(true);
-					prv.setModifyDate(modifyDate);
-					prv.setModifyPriv(true);
-					prv.setModifyUser(loginUser.getUserId());
-					prv.setPrintPriv(true);
-					prv.setUserId(toUserId);
-					prv.setViewPriv(true);
-					prv.setFlagCode(flagDetail.getFlagCode());
-					prv.setFlagValue(flagDetail.getFlagValue());
-					toUserPrvsList.add(prv);
+			for (FormsView formsView : formsViewList) {
+				if (formsView.getFlagCode() != null &&  inMemoryModulesService.getModulesView(formsView.getModuleNo()).getActive()) {
+					for (FlagDetailView flagDetailView : flagDetailViewListByFlagCode.get(formsView.getFlagCode())) {
+						prv = new FlagPriv();
+						prv.setAddPriv(true);
+						prv.setDeletePriv(true);
+						prv.setModifyDate(modifyDate);
+						prv.setModifyPriv(true);
+						prv.setModifyUser(loginUser.getUserId());
+						prv.setPrintPriv(true);
+						prv.setUserId(toUserId);
+						prv.setViewPriv(true);
+						prv.setFlagCode(flagDetailView.getFlagCode());
+						prv.setFlagValue(flagDetailView.getFlagValue());
+						toUserPrvsList.add(prv);
+					}
 				}
 			}
 		} else {
@@ -395,6 +425,12 @@ public class FlagPrivServiceImpl implements FlagPrivService {
 		conditions.put("flag_value", flagPrivView.getFlagValue());
 		if (!generalDAO.isEntityExist("flag_detail", conditions))
 			throw new ValidationException("not_exist", "flag_value");
+		conditions.clear();
+		conditions.put("user_id", flagPrivView.getUserId());
+		conditions.put("flag_code", flagPrivView.getFlagCode());
+		conditions.put("flag_value", flagPrivView.getFlagValue());
+		if (!generalDAO.isEntityExist("flag_priv", conditions))
+			throw new ValidationException("not_exist", "privilege");
 		conditions.clear();
 		FlagPriv newFlagPriv = getFlagPrivFromFlagPrivView(flagPrivView);
 		FlagPriv oldFlagPriv = flagPrivViewDAO

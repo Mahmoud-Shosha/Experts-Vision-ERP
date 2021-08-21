@@ -1,5 +1,6 @@
 package com.expertsvision.erp.core.user.service;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,11 @@ public class InMemoryUsersService {
 	public UsersView getUsersView(Integer userId) {
 		UsersView usersView = usersViewMap.get(userId);
 		return usersView;
+	}
+	
+	public Collection<UsersView> getAllUsersView() {
+		Collection<UsersView> allUsersView = usersViewMap.values();
+		return allUsersView;
 	}
 	
 	public void updateUsersView() {		
