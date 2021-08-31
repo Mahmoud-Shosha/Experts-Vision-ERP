@@ -25,6 +25,8 @@ public interface CompanyGroupDAO {
 	
 	MultiplePages<CompanyGroupsView> getCompanyGroupsViewFilteredMultiplePages(long pageNo, CompanyGroupsViewFilter companyGroupViewFilter);
 	
+	Object getNextPK();
+	
 	void addCompanyGroups(CompanyGroup companyGroup);
 	
 	void updateCompanyGroups(CompanyGroup companyGroup);

@@ -149,6 +149,17 @@ public class CompanyGroupsDAOImpl implements CompanyGroupDAO {
 	}
 	
 	@Override
+	public Object getNextPK() {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT max(group_no) + 1 FROM company_groups";
+		@SuppressWarnings("unchecked")
+		Query<Object> query = session.createNativeQuery(sql);
+		Object nextPK = query.getSingleResult();
+		if (nextPK == null) nextPK = 1;
+		return nextPK;
+	}
+	
+	@Override
 	public void addCompanyGroups(CompanyGroup companyGroup) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(companyGroup);
