@@ -38,7 +38,7 @@ public class CompanyGroupsDAOImpl implements CompanyGroupDAO {
 	@Override
 	public CompanyGroupsView getCompanyGroupsView(Integer companyGroupsNo) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT * FROM company_groups_view WHERE groups_no = :companyGroupsNo";
+		String sql = "SELECT * FROM company_groups_view WHERE group_no = :companyGroupsNo";
 		Query<CompanyGroupsView> query = session.createNativeQuery(sql, CompanyGroupsView.class);
 		query.setParameter("companyGroupsNo", companyGroupsNo);
 		List<CompanyGroupsView> companyGroupsViewList = query.getResultList();
@@ -88,10 +88,10 @@ public class CompanyGroupsDAOImpl implements CompanyGroupDAO {
 	public Long getUserViewSinglePageNo(Integer companyGroupsNo) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "SELECT row_number FROM" +
-					 "			(SELECT groups_no, ROW_NUMBER()" +
-					 "						OVER(ORDER BY (groups_no)) FROM company_groups_view)" +
+					 "			(SELECT group_no, ROW_NUMBER()" +
+					 "						OVER(ORDER BY (group_no)) FROM company_groups_view)" +
 					 "			AS row_number " +
-					 "WHERE groups_no = :companyGroupsNo";
+					 "WHERE group_no = :companyGroupsNo";
 		@SuppressWarnings("unchecked")
 		Query<BigInteger> query = session.createNativeQuery(sql);
 		query.setParameter("companyGroupsNo", companyGroupsNo);
@@ -127,9 +127,9 @@ public class CompanyGroupsDAOImpl implements CompanyGroupDAO {
 		String sql = null;
 		List<CompanyGroupsView> usersViewList = null;
 		Map<String, Object> filters = new HashMap<String, Object>();
-		filters.put("groups_no", companyGroupsViewFilter.getGroupNo());
-		filters.put("groups_d_name", companyGroupsViewFilter.getGroupDName());
-		filters.put("groups_f_name", companyGroupsViewFilter.getGroupFName());
+		filters.put("group_no", companyGroupsViewFilter.getGroupNo());
+		filters.put("group_d_name", companyGroupsViewFilter.getGroupDName());
+		filters.put("group_f_name", companyGroupsViewFilter.getGroupFName());
 		String filterQuery = GenerateSql.generateFilterQuery("company_groups_view", filters);
 		if (pageNo > 0) {
 			sql = filterQuery + " LIMIT 30 OFFSET :Offset";

@@ -271,6 +271,8 @@ public class BranchesServiceImpl implements BranchesService {
 			branchView.setReportFHeader3(null);
 		if ((branchView.getTelephoneNo() != null) && branchView.getTelephoneNo().isBlank())
 			branchView.setTelephoneNo(null);
+		if ((branchView.getLogo() != null) && branchView.getLogo().isBlank())
+			branchView.setLogo(null);
 		if (branchView.getCityNo() != null) {
 			coreValidationService.notNull(branchView.getProvinceNo(), "province_no");
 			coreValidationService.greaterThanOrEqualZero(branchView.getProvinceNo(), "province_no");
@@ -416,6 +418,8 @@ public class BranchesServiceImpl implements BranchesService {
 			branchView.setReportFHeader3(null);
 		if ((branchView.getTelephoneNo() != null) && branchView.getTelephoneNo().isBlank())
 			branchView.setTelephoneNo(null);
+		if ((branchView.getLogo() != null) && branchView.getLogo().isBlank())
+			branchView.setLogo(null);
 		if (branchView.getCityNo() != null) {
 			coreValidationService.notNull(branchView.getProvinceNo(), "province_no");
 			coreValidationService.greaterThanOrEqualZero(branchView.getProvinceNo(), "province_no");

@@ -207,7 +207,7 @@ public class CompanyGroupsServiceImpl implements CompanyGroupsService {
 		// Database validation
 		CompanyGroup companyGroup = getCompanyGroupFromCompanyGroupsView(companyGroupsView);
 		Map<String, Object> conditions = new HashMap<>();
-		conditions.put("groups_no", companyGroup.getGroupNo());
+		conditions.put("group_no", companyGroup.getGroupNo());
 		if (generalDAO.isEntityExist("company_groups", conditions))
 			throw new ValidationException("already_exist", "group_no");
 		conditions.clear();
@@ -252,7 +252,7 @@ public class CompanyGroupsServiceImpl implements CompanyGroupsService {
 		// Database validation
 		CompanyGroup companyGroup = getCompanyGroupFromCompanyGroupsView(companyGroupsView);
 		Map<String, Object> conditions = new HashMap<>();
-		conditions.put("groups_no", companyGroup.getGroupNo());
+		conditions.put("group_no", companyGroup.getGroupNo());
 		if (!generalDAO.isEntityExist("company_groups", conditions))
 			throw new ValidationException("not_exist", "group_no");
 		conditions.clear();

@@ -165,11 +165,11 @@ public class CompanyDAOImpl implements CompanyDAO {
 		DBCompany.setCompanyDName(company.getCompanyDName());
 		DBCompany.setCompanyFName(company.getCompanyFName());
 		DBCompany.setCountryNo(company.getCountryNo());
-		DBCompany.setCompanyGroup(null);
-		DBCompany.setCompanyMail(null);
-		DBCompany.setCompanyWebsite(null);
-		DBCompany.setShortcutD(null);
-		DBCompany.setShortcutF(null);
+		DBCompany.setCompanyGroup(company.getCompanyGroup());
+		DBCompany.setCompanyMail(company.getCompanyMail());
+		DBCompany.setCompanyWebsite(company.getCompanyWebsite());
+		DBCompany.setShortcutD(company.getShortcutD());
+		DBCompany.setShortcutF(company.getShortcutF());
 		session.merge(DBCompany);
 		session.flush();
 	}

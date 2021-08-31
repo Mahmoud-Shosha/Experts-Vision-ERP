@@ -230,7 +230,7 @@ public class CompanyServiceImpl implements CompanyService {
 		conditions.clear();
 		conditions.put("shortcut_f", company.getShortcutF());
 		if (company.getCompanyFName() != null && generalDAO.isEntityExist("company", conditions))
-			throw new ValidationException("already_exist", "shortcut_F_name");
+			throw new ValidationException("already_exist", "shortcut_f_name");
 		conditions.clear();
 		conditions.put("group_no", company.getCompanyGroup());
 		if (!generalDAO.isEntityExist("company_groups", conditions))
@@ -298,7 +298,7 @@ public class CompanyServiceImpl implements CompanyService {
 		conditions.clear();
 		conditions.put("shortcut_f", company.getShortcutF());
 		if (company.getCompanyFName() != null && generalDAO.isEntityExist("company", conditions, exceptionCondition))
-			throw new ValidationException("already_exist", "shortcut_F_name");
+			throw new ValidationException("already_exist", "shortcut_f_name");
 		conditions.clear();
 		conditions.put("group_no", company.getCompanyGroup());
 		if (!generalDAO.isEntityExist("company_groups", conditions))
