@@ -181,6 +181,25 @@ public class CompanyServiceImpl implements CompanyService {
 				companyViewFilter);
 		return multiplePages;
 	}
+	
+	@Override
+	@Transactional
+	public Object getNextPK(UsersView loginUsersView) {
+		// Check module, form, privileges
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeFlagDetail(FlagDetails.COMPANIES);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES, FormsActions.INCLUDE);
+			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.COMPANIES, FlagsActions.VIEW);
+		}
+		// Return requested data
+		Object PK = companyDAO.getNextPK();
+		return PK;
+	}
 
 	@Override
 	@Transactional

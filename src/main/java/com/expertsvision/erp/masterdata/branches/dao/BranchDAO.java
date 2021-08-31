@@ -27,6 +27,8 @@ public interface BranchDAO {
 	
 	MultiplePages<BranchesView> getBranchViewFilteredMultiplePages(UsersView loginUsersView ,long pageNo, BranchesViewFilter branchesViewFilter);
 	
+	Object getNextPK();
+	
 	void addBranch(Branch branch);
 	
 	void addBranchesPriv(BranchesPriv branchesPriv);

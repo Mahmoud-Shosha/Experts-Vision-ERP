@@ -221,6 +221,25 @@ public class BranchesServiceImpl implements BranchesService {
 				branchesViewFilter);
 		return multiplePages;
 	}
+	
+	@Override
+	@Transactional
+	public Object getNextPK(UsersView loginUsersView) {
+		// Check module, form, privileges
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES, FormsActions.INCLUDE);
+			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES, FlagsActions.VIEW);
+		}
+		// Return requested data
+		Object PK = branchDAO.getNextPK();
+		return PK;
+	}
 
 	@Override
 	@Transactional

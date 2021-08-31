@@ -25,6 +25,7 @@ public interface CompanyService {
 	
 	MultiplePages<CompanyView> getCompanyViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
 																		   CompanyViewFilter companyViewFilter);
+	Object getNextPK(UsersView loginUsersView);
 	
 	void addCompany(UsersView loginUsersView, CompanyView companyView);
 	

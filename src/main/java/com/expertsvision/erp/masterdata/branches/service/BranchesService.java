@@ -27,6 +27,8 @@ public interface BranchesService {
 	MultiplePages<BranchesView> getBranchesViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
 																		   BranchesViewFilter branchesViewFilter);
 	
+	Object getNextPK(UsersView loginUsersView);
+	
 	void addBranches(UsersView loginUsersView, BranchesView branchesView);
 	
 	void updateBranches(UsersView loginUsersView, BranchesView branchesView);

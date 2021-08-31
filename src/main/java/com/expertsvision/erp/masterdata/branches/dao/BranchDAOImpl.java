@@ -250,6 +250,17 @@ public class BranchDAOImpl implements BranchDAO {
 			return new MultiplePages<BranchesView>(branchViewList, pageNo, (long) Math.ceil(count / 30.0));
 		}
 	}
+	
+	@Override
+	public Object getNextPK() {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT max(branch_no) + 1 FROM branches";
+		@SuppressWarnings("unchecked")
+		Query<Object> query = session.createNativeQuery(sql);
+		Object nextPK = query.getSingleResult();
+		if (nextPK == null) nextPK = 1;
+		return nextPK;
+	}
 
 	@Override
 	public void addBranch(Branch branch) {
