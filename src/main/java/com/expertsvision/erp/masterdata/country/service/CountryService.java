@@ -26,6 +26,8 @@ public interface CountryService {
 	MultiplePages<CountryView> getCountryViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
 																		   CountryViewFilter countryViewFilter);
 	
+	Object getNextPK(UsersView loginUsersView);
+	
 	void addCountry(UsersView loginUsersView, CountryView countryView);
 	
 	void updateCountry(UsersView loginUsersView, CountryView countryView);

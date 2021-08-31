@@ -24,6 +24,8 @@ public interface LanguageService {
 	
 	MultiplePages<LanguageView> getLanguagesViewFilteredMultiplePages(long pageNo, LanguageViewFilter LanguageViewFilter);
 
+	Object getNextPK();
+	
 	void addLanguage(UsersView loginUser, LanguageView languageView);
 	
 	void updateLanguage(UsersView loginUser, LanguageView languageView);

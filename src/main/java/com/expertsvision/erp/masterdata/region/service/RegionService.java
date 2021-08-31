@@ -25,6 +25,7 @@ public interface RegionService {
 	
 	MultiplePages<RegionView> getRegionViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
 																		   RegionViewFilter regionViewFilter);
+	Object getNextPK(UsersView loginUsersView);
 	
 	void addRegion(UsersView loginUsersView, RegionView regionView);
 	

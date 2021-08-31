@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.expertsvision.erp.core.response.Response;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
+import com.expertsvision.erp.core.utils.NextPK;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.masterdata.region.dto.RegionViewFilter;
 import com.expertsvision.erp.masterdata.region.entity.RegionView;
@@ -89,6 +90,13 @@ public class RegionController {
 		return response.response(multiplePages, HttpStatus.OK);
 	}
 
+	@GetMapping("/nextPK")
+	public ResponseEntity<Object> getNextPK() {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Object PK = regionService.getNextPK(loginUser);
+		return response.response(NextPK.build(PK), HttpStatus.OK);
+	}
+	
 	@PostMapping("")
 	public ResponseEntity<Object> addUsersGroup(@RequestBody RegionView regionView) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

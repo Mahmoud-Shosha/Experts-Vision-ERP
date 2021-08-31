@@ -25,6 +25,7 @@ public interface ProvinceService {
 	
 	MultiplePages<ProvinceView> getProvinceViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
 																		   ProvinceViewFilter provinceViewFilter);
+	Object getNextPK(UsersView loginUsersView);
 	
 	void addProvince(UsersView loginUsersView, ProvinceView provinceView);
 	

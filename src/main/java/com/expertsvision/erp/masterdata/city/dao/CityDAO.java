@@ -25,6 +25,8 @@ public interface CityDAO {
 	
 	MultiplePages<CityView> getCityViewFilteredMultiplePages(long pageNo, CityViewFilter cityViewFilter);
 	
+	Object getNextPK();
+	
 	void addCity(City city);
 	
 	void updateCity(City city);

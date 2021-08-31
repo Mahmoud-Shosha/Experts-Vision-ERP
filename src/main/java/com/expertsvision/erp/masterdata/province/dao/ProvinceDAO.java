@@ -25,6 +25,8 @@ public interface ProvinceDAO {
 	
 	MultiplePages<ProvinceView> getProvinceViewFilteredMultiplePages(long pageNo, ProvinceViewFilter provinceViewFilter);
 	
+	Object getNextPK();
+	
 	void addProvince(Province province);
 	
 	void updateProvince(Province province);

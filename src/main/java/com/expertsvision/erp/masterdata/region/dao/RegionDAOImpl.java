@@ -150,6 +150,17 @@ public class RegionDAOImpl implements RegionDAO {
 	}
 	
 	@Override
+	public Object getNextPK() {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT max(region_no) + 1 FROM region";
+		@SuppressWarnings("unchecked")
+		Query<Object> query = session.createNativeQuery(sql);
+		Object nextPK = query.getSingleResult();
+		if (nextPK == null) nextPK = 1;
+		return nextPK;
+	}
+	
+	@Override
 	public void addRegion(Region region) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(region);

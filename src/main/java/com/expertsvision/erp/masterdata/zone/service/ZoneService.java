@@ -26,6 +26,8 @@ public interface ZoneService {
 	MultiplePages<ZoneView> getZoneViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
 																		   ZoneViewFilter zoneViewFilter);
 	
+	Object getNextPK(UsersView loginUsersView);
+	
 	void addZone(UsersView loginUsersView, ZoneView zoneView);
 	
 	void updateZone(UsersView loginUsersView, ZoneView zoneView);

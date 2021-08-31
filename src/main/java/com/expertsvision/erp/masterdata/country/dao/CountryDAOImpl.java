@@ -151,6 +151,17 @@ public class CountryDAOImpl implements CountryDAO {
 	}
 	
 	@Override
+	public Object getNextPK() {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT max(country_no) + 1 FROM country";
+		@SuppressWarnings("unchecked")
+		Query<Object> query = session.createNativeQuery(sql);
+		Object nextPK = query.getSingleResult();
+		if (nextPK == null) nextPK = 1;
+		return nextPK;
+	}
+	
+	@Override
 	public void addCountry(Country country) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(country);

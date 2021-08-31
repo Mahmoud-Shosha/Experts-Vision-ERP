@@ -181,6 +181,25 @@ public class ProvinceServiceImpl implements ProvinceService {
 				provinceViewFilter);
 		return multiplePages;
 	}
+	
+	@Override
+	@Transactional
+	public Object getNextPK(UsersView loginUsersView) {
+		// Check module, form, privileges
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.GEOGRAPHICAL_CODING);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.GEOGRAPHICAL_CODING);
+				coreValidationService.activeFlagDetail(FlagDetails.PROVINCE);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.GEOGRAPHICAL_CODING, FormsActions.INCLUDE);
+			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.PROVINCE, FlagsActions.VIEW);
+		}
+		// Return requested data
+		Object PK = provinceDAO.getNextPK();
+		return PK;
+	}
 
 	@Override
 	@Transactional

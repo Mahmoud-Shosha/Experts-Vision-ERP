@@ -24,6 +24,8 @@ public interface LanguageDAO {
 	
 	MultiplePages<LanguageView> getLanguagesViewFilteredMultiplePages(long pageNo, LanguageViewFilter LanguageViewFilter);
 
+	Object getNextPK();
+	
 	void addLanguage(Language language);
 	
 	void updateLanguage(Language language);

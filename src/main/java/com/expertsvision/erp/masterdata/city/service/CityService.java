@@ -26,6 +26,8 @@ public interface CityService {
 	MultiplePages<CityView> getCityViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
 																		   CityViewFilter cityViewFilter);
 	
+	Object getNextPK(UsersView loginUsersView);
+	
 	void addCity(UsersView loginUsersView, CityView cityView);
 	
 	void updateCity(UsersView loginUsersView, CityView cityView);

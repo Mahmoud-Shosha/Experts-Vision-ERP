@@ -25,6 +25,8 @@ public interface ZoneDAO {
 	
 	MultiplePages<ZoneView> getZoneViewFilteredMultiplePages(long pageNo, ZoneViewFilter zoneViewFilter);
 	
+	Object getNextPK();
+	
 	void addZone(Zone zone);
 	
 	void updateZone(Zone zone);

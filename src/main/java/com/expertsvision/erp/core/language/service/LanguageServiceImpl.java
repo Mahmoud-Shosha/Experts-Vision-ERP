@@ -99,6 +99,13 @@ public class LanguageServiceImpl implements LanguageService {
 
 	@Override
 	@Transactional
+	public Object getNextPK() {
+		Object PK = languageDAO.getNextPK();
+		return PK;
+	}
+	
+	@Override
+	@Transactional
 	public void addLanguage(UsersView loginUser, LanguageView languageView) {
 		// Check form privileges
 		if (!loginUser.getSuperAdmin())

@@ -151,6 +151,17 @@ public class CityDAOImpl implements CityDAO {
 	}
 	
 	@Override
+	public Object getNextPK() {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT max(city_no) + 1 FROM city";
+		@SuppressWarnings("unchecked")
+		Query<Object> query = session.createNativeQuery(sql);
+		Object nextPK = query.getSingleResult();
+		if (nextPK == null) nextPK = 1;
+		return nextPK;
+	}
+	
+	@Override
 	public void addCity(City city) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(city);

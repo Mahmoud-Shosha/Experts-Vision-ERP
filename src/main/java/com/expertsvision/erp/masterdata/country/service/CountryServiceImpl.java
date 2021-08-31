@@ -184,6 +184,25 @@ public class CountryServiceImpl implements CountryService {
 
 	@Override
 	@Transactional
+	public Object getNextPK(UsersView loginUsersView) {
+		// Check module, form, privileges
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.GEOGRAPHICAL_CODING);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.GEOGRAPHICAL_CODING);
+				coreValidationService.activeFlagDetail(FlagDetails.COUNTRY);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.GEOGRAPHICAL_CODING, FormsActions.INCLUDE);
+			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.COUNTRY, FlagsActions.VIEW);
+		}
+		// Return requested data
+		Object PK = countryDAO.getNextPK();
+		return PK;
+	}
+	
+	@Override
+	@Transactional
 	public void addCountry(UsersView loginUsersView, CountryView countryView) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {

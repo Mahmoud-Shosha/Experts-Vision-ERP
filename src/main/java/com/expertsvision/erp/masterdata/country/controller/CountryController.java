@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.expertsvision.erp.core.response.Response;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
+import com.expertsvision.erp.core.utils.NextPK;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.masterdata.country.dto.CountryViewFilter;
 import com.expertsvision.erp.masterdata.country.entity.CountryView;
@@ -87,6 +88,13 @@ public class CountryController {
 		MultiplePages<CountryView> multiplePages = countryService
 				.getCountryViewFilteredMultiplePages(loginUser, pageNo, countryViewFilter);
 		return response.response(multiplePages, HttpStatus.OK);
+	}
+	
+	@GetMapping("/nextPK")
+	public ResponseEntity<Object> getNextPK() {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Object PK = countryService.getNextPK(loginUser);
+		return response.response(NextPK.build(PK), HttpStatus.OK);
 	}
 
 	@PostMapping("")

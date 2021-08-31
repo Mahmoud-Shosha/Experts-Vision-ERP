@@ -151,6 +151,17 @@ public class ProvinceDAOImpl implements ProvinceDAO {
 	}
 	
 	@Override
+	public Object getNextPK() {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT max(province_no) + 1 FROM province";
+		@SuppressWarnings("unchecked")
+		Query<Object> query = session.createNativeQuery(sql);
+		Object nextPK = query.getSingleResult();
+		if (nextPK == null) nextPK = 1;
+		return nextPK;
+	}
+	
+	@Override
 	public void addProvince(Province province) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(province);

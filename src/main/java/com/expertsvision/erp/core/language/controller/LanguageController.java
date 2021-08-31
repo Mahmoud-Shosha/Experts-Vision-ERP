@@ -23,6 +23,7 @@ import com.expertsvision.erp.core.language.service.LanguageService;
 import com.expertsvision.erp.core.response.Response;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
+import com.expertsvision.erp.core.utils.NextPK;
 import com.expertsvision.erp.core.utils.SinglePage;
 
 
@@ -80,6 +81,12 @@ public class LanguageController {
 																		@RequestBody LanguageViewFilter LanguageViewFilter) {
 		MultiplePages<LanguageView> multiplePages = languageService.getLanguagesViewFilteredMultiplePages(pageNo, LanguageViewFilter);
 		return response.response(multiplePages, HttpStatus.OK);
+	}
+	
+	@GetMapping("/nextPK")
+	public ResponseEntity<Object> getNextPK() {
+		Object PK = languageService.getNextPK();
+		return response.response(NextPK.build(PK), HttpStatus.OK);
 	}
 	
 	@PostMapping("")

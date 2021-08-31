@@ -25,6 +25,8 @@ public interface CountryDAO {
 	
 	MultiplePages<CountryView> getCountryViewFilteredMultiplePages(long pageNo, CountryViewFilter countryViewFilter);
 	
+	Object getNextPK();
+	
 	void addCountry(Country country);
 	
 	void updateCountry(Country country);

@@ -25,6 +25,8 @@ public interface RegionDAO {
 	
 	MultiplePages<RegionView> getRegionViewFilteredMultiplePages(long pageNo, RegionViewFilter regionViewFilter);
 	
+	Object getNextPK();
+	
 	void addRegion(Region region);
 	
 	void updateRegion(Region region);

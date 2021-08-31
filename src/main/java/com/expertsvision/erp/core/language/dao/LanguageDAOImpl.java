@@ -148,6 +148,17 @@ public class LanguageDAOImpl implements LanguageDAO {
 	}
 	
 	@Override
+	public Object getNextPK() {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT max(lang_no) + 1 FROM language_view";
+		@SuppressWarnings("unchecked")
+		Query<Object> query = session.createNativeQuery(sql);
+		Object nextPK = query.getSingleResult();
+		if (nextPK == null) nextPK = 1;
+		return nextPK;
+	}
+	
+	@Override
 	public void addLanguage(Language language) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(language);

@@ -181,6 +181,25 @@ public class RegionServiceImpl implements RegionService {
 				regionViewFilter);
 		return multiplePages;
 	}
+	
+	@Override
+	@Transactional
+	public Object getNextPK(UsersView loginUsersView) {
+		// Check module, form, privileges
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.GEOGRAPHICAL_CODING);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.GEOGRAPHICAL_CODING);
+				coreValidationService.activeFlagDetail(FlagDetails.REGION);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.GEOGRAPHICAL_CODING, FormsActions.INCLUDE);
+			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.REGION, FlagsActions.VIEW);
+		}
+		// Return requested data
+		Object PK = regionDAO.getNextPK();
+		return PK;
+	}
 
 	@Override
 	@Transactional
