@@ -1,8 +1,11 @@
 package com.expertsvision.erp.masterdata.masterdataprivileges.service;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
 
 public interface MasterDataPrivilegesService {
 	
@@ -20,4 +23,6 @@ public interface MasterDataPrivilegesService {
 	
 	void updateGroupUsersMasterDataPrivileges(UsersView loginUser, UsersView fromUsersView, Integer groupNo,
 			Timestamp currentDate);
+	
+	List<BranchesPrivDTO> getBranchesPrivs(UsersView loginUser, BranchesPrivFilter filter);
 }

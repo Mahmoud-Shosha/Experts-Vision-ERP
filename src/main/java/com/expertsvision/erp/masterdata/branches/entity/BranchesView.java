@@ -6,6 +6,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 
 /**
@@ -476,6 +477,23 @@ public class BranchesView implements Serializable {
 
 	public void setTelephoneNo(String telephoneNo) {
 		this.telephoneNo = telephoneNo;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(branchNo);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BranchesView other = (BranchesView) obj;
+		return Objects.equals(branchNo, other.branchNo);
 	}
 
 	@Override

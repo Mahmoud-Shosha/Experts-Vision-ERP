@@ -9,14 +9,20 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.exception.UnauthorizedException;
+import com.expertsvision.erp.core.exception.ValidationException;
 import com.expertsvision.erp.core.module.service.InMemoryModulesService;
 import com.expertsvision.erp.core.user.entity.User;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.user.service.InMemoryUsersService;
 import com.expertsvision.erp.core.user.service.UsersService;
 import com.expertsvision.erp.core.usersgroups.service.InMemoryUsersGroupsService;
+import com.expertsvision.erp.core.utils.Forms;
+import com.expertsvision.erp.core.utils.FormsActions;
+import com.expertsvision.erp.core.validation.CoreValidationService;
 import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dao.MasterDataPrivilegesDAO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
 
 @Service
 public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesService {
@@ -38,6 +44,9 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 	@Autowired
 	@Lazy
 	private InMemoryUsersService inMemoryUsersService;
+	
+	@Autowired
+	private CoreValidationService coreValidationService;
 
 	// VERY IMPORTANT NOTE !!!
 	// when adding new one, add it in both generateMasterDataPrivileges and
@@ -246,6 +255,85 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 		for (Object object : entityPrvsList) {
 			masterDataPrivilegesDAO.addMasterDataPrivileges(object);
 		}
+	}
+	
+	// $$$$$$$$$$$$$$$ For BranchesPriv $$$$$$$$$$$$$$$ 
+	
+	@Override
+	public List<BranchesPrivDTO> getBranchesPrivs(UsersView loginUser, BranchesPrivFilter filter) {
+		// Check module, form, privileges
+		if (!loginUser.getSuperAdmin()) {
+			if (loginUser.getAdminUser()) {
+				coreValidationService.activeModule(Forms.MASTER_DATA_PRIVILEGES);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.MASTER_DATA_PRIVILEGES);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
+					FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
+					FormsActions.VIEW);
+		}
+		if (filter.getToBranchNo() != null && filter.getFromBranchNo() == null)
+			throw new ValidationException("you_must_enter", "branch_no");
+		if (filter.getToUserId() != null && filter.getFromUserId() == null)
+			throw new ValidationException("you_must_enter", "user_no");
+		List<BranchesPrivDTO> branchesPrivDTOList = masterDataPrivilegesDAO.getBranchesPrivs(loginUser, filter);
+		// Add privileges  for adminUser and superAdmin
+//		if (loginUser.getAdminUser() || loginUser.getSuperAdmin()) {
+//			Set<BranchesView> branchesViewSet = new HashSet<>();
+//			BranchesView branchesView;
+//			BranchesPrivDTO branchesPrivDTO;
+//			for (BranchesPrivDTO obj : branchesPrivDTOList) {
+//				branchesView = new BranchesView();
+//				branchesView.setBranchNo(obj.getBranchNo());
+//				branchesView.setBranchDName(obj.getBranchDName());
+//				branchesView.setBranchFName(obj.getBranchFName());
+//				branchesViewSet.add(branchesView);
+//			}
+//			if (loginUser.getAdminUser() || loginUser.getSuperAdmin()) {
+//				UsersView adminUser = new UsersView();
+//				for (UsersView obj : inMemoryUsersService.getAllUsersView()) {
+//					if (obj.getAdminUser())
+//						adminUser = obj;
+//				}
+//				for (BranchesView obj : branchesViewSet) {
+//					branchesPrivDTO = new BranchesPrivDTO();
+//					branchesPrivDTO.setBranchNo(obj.getBranchNo());
+//					branchesPrivDTO.setBranchDName(obj.getBranchDName());
+//					branchesPrivDTO.setBranchFName(obj.getBranchFName());
+//					branchesPrivDTO.setAddPriv(true);
+//					branchesPrivDTO.setViewPriv(true);
+//					branchesPrivDTO.setCanChangeAddPriv(true);
+//					branchesPrivDTO.setCanChangeViewPriv(true);
+//					branchesPrivDTO.setUserDName(adminUser.getUserDName());
+//					branchesPrivDTO.setUserFName(adminUser.getUserFName());
+//					branchesPrivDTO.setUserId(adminUser.getUserId());
+//					branchesPrivDTOList.add(branchesPrivDTO);
+//				}
+//			}
+//			if (loginUser.getSuperAdmin()) {
+//				UsersView superAdmin = new UsersView();
+//				for (UsersView obj : inMemoryUsersService.getAllUsersView()) {
+//					if (obj.getSuperAdmin())
+//						superAdmin = obj;
+//				}
+//				for (BranchesView obj : branchesViewSet) {
+//					branchesPrivDTO = new BranchesPrivDTO();
+//					branchesPrivDTO.setBranchNo(obj.getBranchNo());
+//					branchesPrivDTO.setBranchDName(obj.getBranchDName());
+//					branchesPrivDTO.setBranchFName(obj.getBranchFName());
+//					branchesPrivDTO.setAddPriv(true);
+//					branchesPrivDTO.setViewPriv(true);
+//					branchesPrivDTO.setCanChangeAddPriv(true);
+//					branchesPrivDTO.setCanChangeViewPriv(true);
+//					branchesPrivDTO.setUserDName(superAdmin.getUserDName());
+//					branchesPrivDTO.setUserFName(superAdmin.getUserFName());
+//					branchesPrivDTO.setUserId(superAdmin.getUserId());
+//					branchesPrivDTOList.add(branchesPrivDTO);
+//				}
+//			}
+//		}
+		return branchesPrivDTOList;
 	}
 
 }
