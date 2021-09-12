@@ -395,7 +395,9 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 			givenBranchNoSet.add(prv.getBranchNo());
 		}
 		if (!loginUser.getAdminUser() && !loginUser.getSuperAdmin()) {
-			List<Object[]> loginUserPrvsList = masterDataPrivilegesDAO.getBranchesPrivs(new HashSet<>(loginUser.getUserId()), givenBranchNoSet);
+			Set<Integer> tempHashSet = new HashSet<>();
+			tempHashSet.add(loginUser.getUserId());
+			List<Object[]> loginUserPrvsList = masterDataPrivilegesDAO.getBranchesPrivs(tempHashSet, givenBranchNoSet);
 			List<Object[]> DBUserPrvsList = masterDataPrivilegesDAO.getBranchesPrivs(givenUserNoSet, givenBranchNoSet);
 			for (Object[] objArr : loginUserPrvsList) {
 				loginUserPrvsMap.put((Integer)objArr[1], objArr);
@@ -408,10 +410,10 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 					throw new ValidationException("not_exist", "branch_no");
 				if ((prv.getViewPriv()!=DBUserPrvsMap.get(new BranchesPrivPK(prv.getUserId(), prv.getBranchNo()))[3])
 						&& !(Boolean)loginUserPrvsMap.get(prv.getBranchNo())[3])
-					throw new UnauthorizedException("view_priv");
+					throw new UnauthorizedException("view_prv");
 				if ((prv.getAddPriv()!=DBUserPrvsMap.get(new BranchesPrivPK(prv.getUserId(), prv.getBranchNo()))[2])
 						&& !(Boolean)loginUserPrvsMap.get(prv.getBranchNo())[2])
-					throw new UnauthorizedException("add_priv");
+					throw new UnauthorizedException("add_prv");
 			}
 		} else {
 			Set<Integer> DBBranchNoSet = generalDAO.getThemIfExist("branches", "branch_no", givenBranchNoSet);

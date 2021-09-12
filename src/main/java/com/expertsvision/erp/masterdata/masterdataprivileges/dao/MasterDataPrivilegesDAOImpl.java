@@ -80,9 +80,9 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 	@Override
 	public List<Object[]> getBranchesPrivs(Set<Integer> userIdList, Set<Integer> branchNoList) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "SELECT userId, branchNo, addPriv, viewPriv FROM BranchesPriv "
-				    +"WHERE userId IN :userIdList AND branchNo IN :branchNoList";
-		Query query = session.createQuery(hql);
+		String hql = "SELECT user_id, branch_no, add_priv, view_priv FROM branches_priv "
+				    +"WHERE user_id IN :userIdList AND branch_no IN :branchNoList";
+		Query query = session.createNativeQuery(hql);
 		query.setParameter("userIdList", userIdList);
 		query.setParameter("branchNoList", branchNoList);
 		@SuppressWarnings("unchecked")
