@@ -12,6 +12,8 @@ public interface CoreValidationService {
 	
 	void notNull(Object field, String labelCode);
 	
+	void notNull(Object field, String labelCodeFirst, String labelCodeSecond, Object valueSecond);
+	
 	void notBlank(String field, String labelCode);
 	
 	void greaterThanOrEqualZero(Integer field, String labelCode);

@@ -3,6 +3,7 @@ package com.expertsvision.erp.masterdata.masterdataprivileges.dao;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Query;
 
@@ -77,6 +78,19 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 	}
 
 	@Override
+	public List<Object[]> getBranchesPrivs(Set<Integer> userIdList, Set<Integer> branchNoList) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "SELECT userId, branchNo, addPriv, viewPriv FROM BranchesPriv "
+				    +"WHERE userId IN :userIdList AND branchNo IN :branchNoList";
+		Query query = session.createQuery(hql);
+		query.setParameter("userIdList", userIdList);
+		query.setParameter("branchNoList", branchNoList);
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = query.getResultList();
+		return result;
+	}
+	
+	@Override
 	@Transactional
 	public List<BranchesPrivDTO> getBranchesPrivs(UsersView loginUser, BranchesPrivFilter filter) {
 		// prepare the queryString
@@ -90,6 +104,7 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 		else
 			sb.append("SELECT m.*, n.add_priv AS can_change_add_priv, n.view_priv AS can_change_view_priv, ");
 		sb.append("_user.user_d_name AS user_d_name, _user.user_f_name AS user_f_name, ")
+		.append("_group.admin_group AS admin_group, ")
 		.append("add_user.user_d_name AS add_user_d_name, add_user.user_f_name AS add_user_f_name, ")
 		.append("modify_user.user_d_name As modify_user_d_name, modify_user.user_f_name As modify_user_f_name, ")
 		.append("branches.branch_d_name AS branch_d_name, branches.branch_f_name AS branch_f_name ")
@@ -98,6 +113,7 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 			sb.append("LEFT JOIN branches_priv n ON n.user_id = :managerUserId AND n.branch_no = m.branch_no ");
 		sb.append("LEFT JOIN branches AS branches ON m.branch_no = branches.branch_no ")
 		.append("LEFT JOIN users AS _user ON m.user_id = _user.user_id ")
+		.append("LEFT JOIN users_groups AS _group ON _user.group_no = _group.group_no ")
 		.append("LEFT JOIN users AS add_user ON m.add_user = add_user.user_id ")
 		.append("LEFT JOIN users AS modify_user ON m.modify_user = modify_user.user_id WHERE 1 = 1");
 		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
@@ -159,12 +175,13 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 			branchesPrivDTO.setCanChangeViewPriv((Boolean)objArr[9]);
 			branchesPrivDTO.setUserDName((String)objArr[10]);
 			branchesPrivDTO.setUserFName((String)objArr[11]);
-			branchesPrivDTO.setAddUserDName((String)objArr[12]);
-			branchesPrivDTO.setAddUserFName((String)objArr[13]);
-			branchesPrivDTO.setModifyUserDName((String)objArr[14]);
-			branchesPrivDTO.setModifyUserFName((String)objArr[15]);
-			branchesPrivDTO.setBranchDName((String)objArr[16]);
-			branchesPrivDTO.setBranchFName((String)objArr[17]);
+			branchesPrivDTO.setAdminGroup((Boolean)(objArr[12]==null?false:objArr[12]));
+			branchesPrivDTO.setAddUserDName((String)objArr[13]);
+			branchesPrivDTO.setAddUserFName((String)objArr[14]);
+			branchesPrivDTO.setModifyUserDName((String)objArr[15]);
+			branchesPrivDTO.setModifyUserFName((String)objArr[16]);
+			branchesPrivDTO.setBranchDName((String)objArr[17]);
+			branchesPrivDTO.setBranchFName((String)objArr[18]);
 			// set branchesPrivDTO data
 			branchesPrivDTOList.add(branchesPrivDTO);
 		}

@@ -8,6 +8,9 @@ public class BranchesPrivDTO {
 
 	@JsonProperty("user_id")
 	private Integer userId;
+	
+	@JsonProperty("admin_group")
+	private Boolean adminGroup;
 
 	@JsonProperty("branch_no")
 	private Integer branchNo;
@@ -202,6 +205,14 @@ public class BranchesPrivDTO {
 
 	public void setBranchFName(String branchFName) {
 		this.branchFName = branchFName;
+	}
+
+	public Boolean getAdminGroup() {
+		return adminGroup;
+	}
+
+	public void setAdminGroup(Boolean adminGroup) {
+		this.adminGroup = adminGroup;
 	}
 
 }

@@ -3,6 +3,8 @@ package com.expertsvision.erp.masterdata.branches.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.sql.Timestamp;
 
 
@@ -19,28 +21,36 @@ public class BranchesPriv implements Serializable {
 
 	@Id
 	@Column(name="user_id")
+	@JsonProperty("user_id")
 	private Integer userId;
 
 	@Id
 	@Column(name="branch_no")
+	@JsonProperty("branch_no")
 	private Integer branchNo;
 
 	@Column(name="add_date")
+	@JsonProperty("add_date")
 	private Timestamp addDate;
 
 	@Column(name="add_priv")
+	@JsonProperty("add_priv")
 	private Boolean addPriv;
 
 	@Column(name="add_user")
+	@JsonProperty("add_user")
 	private Integer addUser;
 
 	@Column(name="modify_date")
+	@JsonProperty("modify_date")
 	private Timestamp modifyDate;
 
 	@Column(name="modify_user")
+	@JsonProperty("modify_user")
 	private Integer modifyUser;
 
 	@Column(name="view_priv")
+	@JsonProperty("view_priv")
 	private Boolean viewPriv;
 
 	public BranchesPriv() {

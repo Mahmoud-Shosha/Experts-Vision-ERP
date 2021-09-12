@@ -1,8 +1,10 @@
 package com.expertsvision.erp.core.usersgroups.service;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -31,6 +33,15 @@ public class InMemoryUsersGroupsService {
 	public UsersGroupsView getUsersGroupsView(Integer groupNo) {
 		UsersGroupsView usersGroupsView = usersGroupsViewMap.get(groupNo);
 		return usersGroupsView;
+	}
+	
+	public Set<Integer> getAdminGroupNoList() {
+		Set<Integer> adminGroupNoList = new HashSet<>();
+		for (Integer groupNo : usersGroupsViewMap.keySet()) {
+			if (usersGroupsViewMap.get(groupNo).getAdminGroup())
+				adminGroupNoList.add(groupNo);
+		}
+		return adminGroupNoList;
 	}
 
 	public void updateUsersGroupsView() {

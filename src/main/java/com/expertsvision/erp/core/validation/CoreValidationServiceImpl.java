@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.expertsvision.erp.core.exception.ConfirmException;
+import com.expertsvision.erp.core.exception.DetailValidationException;
 import com.expertsvision.erp.core.exception.UnauthorizedException;
 import com.expertsvision.erp.core.exception.ValidationException;
 import com.expertsvision.erp.core.flagdetail.entity.FlagDetailPK;
@@ -54,6 +55,13 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 		}
 	}
 
+	@Override
+	public void notNull(Object field, String labelCodeFirst, String labelCodeSecond, Object valueSecond) {
+		if (!(field != null)) {
+			throw new DetailValidationException("you_must_enter_detail", labelCodeFirst, null, labelCodeSecond, valueSecond);
+		}
+	}
+	
 	@Override
 	public void notBlank(String field, String labelCode) {
 		if (field != null && field.isBlank()) {

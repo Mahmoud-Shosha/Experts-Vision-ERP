@@ -17,6 +17,11 @@ public class BranchesPrivPK implements Serializable {
 	public BranchesPrivPK() {
 	}
 	
+	public BranchesPrivPK(Integer userId, Integer branchNo) {
+		this.userId = userId;
+		this.branchNo = branchNo;
+	}
+
 	public Integer getUserId() {
 		return this.userId;
 	}

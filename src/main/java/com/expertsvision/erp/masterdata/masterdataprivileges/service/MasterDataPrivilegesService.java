@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
 
@@ -25,4 +26,6 @@ public interface MasterDataPrivilegesService {
 			Timestamp currentDate);
 	
 	List<BranchesPrivDTO> getBranchesPrivs(UsersView loginUser, BranchesPrivFilter filter);
+	
+	void updateBrachesPriv(UsersView loginUser, List<BranchesPriv> branchesPrivList);
 }
