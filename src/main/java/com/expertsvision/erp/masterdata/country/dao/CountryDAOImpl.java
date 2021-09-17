@@ -110,7 +110,7 @@ public class CountryDAOImpl implements CountryDAO {
 			query.setParameter("Offset", (pageNo - 1) * 30);
 			countryViewList = query.getResultList();
 		}
-		sql = "SELECT COUNT(*) FROM region_view AS foo";
+		sql = "SELECT COUNT(*) FROM country_view AS foo";
 		@SuppressWarnings("unchecked")
 		Query<BigInteger> query2 = session.createNativeQuery(sql);
 		long count = query2.getSingleResult().longValue();

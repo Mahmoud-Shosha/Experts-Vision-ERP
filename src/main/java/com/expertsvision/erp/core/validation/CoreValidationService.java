@@ -1,5 +1,6 @@
 package com.expertsvision.erp.core.validation;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
@@ -19,6 +20,8 @@ public interface CoreValidationService {
 	void greaterThanOrEqualZero(Integer field, String labelCode);
 	
 	void greaterThanZero(Integer field, String labelCode);
+	
+	void greaterThanZero(BigDecimal field, String labelCode);
 	
 	void inValues(Integer field, List<Integer> values, String labelCode);
 	

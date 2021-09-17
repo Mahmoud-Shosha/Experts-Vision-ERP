@@ -1,0 +1,21 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f725f155375, pid=16813, tid=16833
+#
+# JRE version: OpenJDK Runtime Environment (15.0.2+7) (build 15.0.2+7-27)
+# Java VM: OpenJDK 64-Bit Server VM (15.0.2+7-27, mixed mode, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libjimage.so+0x4375]  ImageStrings::find(Endian*, char const*, int*, unsigned int)+0x65
+#
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/share/apport/apport %p %s %c %d %P %E" (or dumping to /mnt/a6a1b846-fb99-469a-8cf5-146953c7f908/programming/NEW PROJECT/expertsvision/erp/core.16813)
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -XX:+ShowCodeDetailsInExceptionMessages -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:39723 -javaagent:/home/mahmoud/eclipse/jee-2021-06/eclipse/configuration/org.eclipse.osgi/410/0/.cp/lib/javaagent-shaded.jar -Dfile.encoding=UTF-8 com.expertsvision.erp.ErpApplication
+
+Host: Intel(R) Core(TM) i5 CPU       M 540  @ 2.53GHz, 4 cores, 3G, 

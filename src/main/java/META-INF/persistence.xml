@@ -44,5 +44,13 @@
 		<class>com.expertsvision.erp.masterdata.branches.entity.Branch</class>
 		<class>com.expertsvision.erp.masterdata.branches.entity.BranchesView</class>
 		<class>com.expertsvision.erp.masterdata.branches.entity.BranchesPriv</class>
+		<class>com.expertsvision.erp.masterdata.currency.entity.Currency</class>
+		<class>com.expertsvision.erp.masterdata.currency.entity.CurrencyHistory</class>
+		<class>com.expertsvision.erp.masterdata.currency.entity.CurrencyHistoryPK</class>
+		<class>com.expertsvision.erp.masterdata.currency.entity.CurrencyHistoryView</class>
+		<class>com.expertsvision.erp.masterdata.currency.entity.CurrencyValue</class>
+		<class>com.expertsvision.erp.masterdata.currency.entity.CurrencyValuePK</class>
+		<class>com.expertsvision.erp.masterdata.currency.entity.CurrencyValuesView</class>
+		<class>com.expertsvision.erp.masterdata.currency.entity.CurrencyView</class>
 	</persistence-unit>
 </persistence>

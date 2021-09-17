@@ -1,5 +1,6 @@
 package com.expertsvision.erp.core.validation;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,10 +76,17 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 			throw new ValidationException("must_greater_equal_zero", labelCode);
 		}
 	}
-
+	
 	@Override
 	public void greaterThanZero(Integer field, String labelCode) {
 		if (field != null && !(field > 0)) {
+			throw new ValidationException("must_greater_zero", labelCode);
+		}
+	}
+	
+	@Override
+	public void greaterThanZero(BigDecimal field, String labelCode) {
+		if (field != null && !(field.compareTo(BigDecimal.ZERO) > 0)) {
 			throw new ValidationException("must_greater_zero", labelCode);
 		}
 	}
