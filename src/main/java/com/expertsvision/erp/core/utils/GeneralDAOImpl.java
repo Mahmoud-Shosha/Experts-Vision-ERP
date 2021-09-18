@@ -148,6 +148,21 @@ public class GeneralDAOImpl implements GeneralDAO {
 	}
 	
 	@Override
+	public <T> Set<T> getThemIfExist(String tableName, String whr, Map<String, Object> parameters, String columnName, Set<T> columnValues) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT " + columnName + " FROM " + tableName
+				   + " WHERE " + whr + " AND " + columnName + " IN :columnValues";
+		Query query = session.createNativeQuery(sql);
+		query.setParameter("columnValues", columnValues);
+		for (String name : parameters.keySet()) {
+			query.setParameter(name, parameters.get(name));
+		}
+		@SuppressWarnings("unchecked")
+		Set<T> result = new HashSet<T>(query.getResultList());
+		return result;
+	}
+	
+	@Override
 	public <T> Set<T> getThemIfExist(String tableName, String columnName, Set<T> columnValues) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "SELECT " + columnName + " FROM " + tableName

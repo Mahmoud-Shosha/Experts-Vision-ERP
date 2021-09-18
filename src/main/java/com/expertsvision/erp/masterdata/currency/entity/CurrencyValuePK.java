@@ -20,6 +20,13 @@ public class CurrencyValuePK implements Serializable {
 
 	public CurrencyValuePK() {
 	}
+	
+	public CurrencyValuePK(String currencyCode, Integer value) {
+		super();
+		this.currencyCode = currencyCode;
+		this.value = value;
+	}
+
 	public String getCurrencyCode() {
 		return this.currencyCode;
 	}

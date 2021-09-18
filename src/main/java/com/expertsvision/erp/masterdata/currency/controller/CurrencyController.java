@@ -52,72 +52,72 @@ public class CurrencyController {
 		return response.response(currencyView, HttpStatus.OK);
 	}
 
-//	@GetMapping("pageNo/{currencyNo}")
-//	public ResponseEntity<Object> getCurrencyViewSinglePageNo(@PathVariable("currencyNo") Integer currencyNo) {
-//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		long singlePageNo = currencyService.getCurrencyViewSinglePageNo(loginUser, currencyNo);
-//		Map<String, Long> singlePageNoMap = new HashMap<>();
-//		singlePageNoMap.put("page_no", singlePageNo);
-//		return response.response(singlePageNoMap, HttpStatus.OK);
-//	}
-//
-//	@GetMapping("/page/{pageNo}")
-//	public ResponseEntity<Object> getMessagesViewSinglePage(@PathVariable("pageNo") Long pageNo) {
-//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		SinglePage<CurrencyView> singlePage = currencyService.getCurrencyViewSinglePage(loginUser, pageNo);
-//		return response.response(singlePage, HttpStatus.OK);
-//	}
-//
-//	@GetMapping("/lastPage")
-//	public ResponseEntity<Object> getCurrencyViewLastPage() {
-//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		SinglePage<CurrencyView> singlePage = currencyService.getCurrencyViewLastPage(loginUser);
-//		return response.response(singlePage, HttpStatus.OK);
-//	}
-//
-//	@GetMapping("/pages/{pageNo}")
-//	public ResponseEntity<Object> getCurrencyViewMultiplePages(@PathVariable("pageNo") Long pageNo) {
-//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		MultiplePages<CurrencyView> multiplePages = currencyService.getCurrencyViewMultiplePages(loginUser,
-//				pageNo);
-//		return response.response(multiplePages, HttpStatus.OK);
-//	}
-//
-//	@PostMapping("/filteredPages/{pageNo}")
-//	public ResponseEntity<Object> getCurrencyViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
-//			@RequestBody CurrencyViewFilter currencyViewFilter) {
-//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		MultiplePages<CurrencyView> multiplePages = currencyService
-//				.getCurrencyViewFilteredMultiplePages(loginUser, pageNo, currencyViewFilter);
-//		return response.response(multiplePages, HttpStatus.OK);
-//	}
-//	
-//	@GetMapping("/nextPK")
-//	public ResponseEntity<Object> getNextPK() {
-//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		Object PK = currencyService.getNextPK(loginUser);
-//		return response.response(NextPK.build(PK), HttpStatus.OK);
-//	}
-//
-//	@PostMapping("")
-//	public ResponseEntity<Object> addUsersGroup(@RequestBody CurrencyView currencyView) {
-//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		currencyService.addCurrency(loginUser, currencyView);
-//		return response.response("added", "currency", HttpStatus.OK);
-//	}
-//
-//	@PutMapping("")
-//	public ResponseEntity<Object> updateUsersGroup(@RequestBody CurrencyView currencyView) {
-//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		currencyService.updateCurrency(loginUser, currencyView);
-//		return response.response("updated", "currency", HttpStatus.OK);
-//	}
-//
-//	@DeleteMapping("/{currencyNo}")
-//	public ResponseEntity<Object> deleteUsersGroup(@PathVariable("currencyNo") Integer currencyNo) {
-//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		currencyService.deleteCurrency(loginUser, currencyNo);
-//		return response.response("deleted", "currency", HttpStatus.OK);
-//	}
+	@GetMapping("pageNo/{currencyNo}")
+	public ResponseEntity<Object> getCurrencyViewSinglePageNo(@PathVariable("currencyNo") Integer currencyNo) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		long singlePageNo = currencyService.getCurrencyViewSinglePageNo(loginUser, currencyNo);
+		Map<String, Long> singlePageNoMap = new HashMap<>();
+		singlePageNoMap.put("page_no", singlePageNo);
+		return response.response(singlePageNoMap, HttpStatus.OK);
+	}
+
+	@GetMapping("/page/{pageNo}")
+	public ResponseEntity<Object> getMessagesViewSinglePage(@PathVariable("pageNo") Long pageNo) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		SinglePage<CurrencyView> singlePage = currencyService.getCurrencyViewSinglePage(loginUser, pageNo);
+		return response.response(singlePage, HttpStatus.OK);
+	}
+
+	@GetMapping("/lastPage")
+	public ResponseEntity<Object> getCurrencyViewLastPage() {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		SinglePage<CurrencyView> singlePage = currencyService.getCurrencyViewLastPage(loginUser);
+		return response.response(singlePage, HttpStatus.OK);
+	}
+
+	@GetMapping("/pages/{pageNo}")
+	public ResponseEntity<Object> getCurrencyViewMultiplePages(@PathVariable("pageNo") Long pageNo) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		MultiplePages<CurrencyView> multiplePages = currencyService.getCurrencyViewMultiplePages(loginUser,
+				pageNo);
+		return response.response(multiplePages, HttpStatus.OK);
+	}
+
+	@PostMapping("/filteredPages/{pageNo}")
+	public ResponseEntity<Object> getCurrencyViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
+			@RequestBody CurrencyViewFilter currencyViewFilter) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		MultiplePages<CurrencyView> multiplePages = currencyService
+				.getCurrencyViewFilteredMultiplePages(loginUser, pageNo, currencyViewFilter);
+		return response.response(multiplePages, HttpStatus.OK);
+	}
+	
+	@GetMapping("/nextPK")
+	public ResponseEntity<Object> getNextPK() {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Object PK = currencyService.getNextPK(loginUser);
+		return response.response(NextPK.build(PK), HttpStatus.OK);
+	}
+
+	@PostMapping("")
+	public ResponseEntity<Object> addUsersGroup(@RequestBody CurrencyView currencyView) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		currencyService.addCurrency(loginUser, currencyView);
+		return response.response("added", "currency", HttpStatus.OK);
+	}
+
+	@PutMapping("")
+	public ResponseEntity<Object> updateUsersGroup(@RequestBody CurrencyView currencyView) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		currencyService.updateCurrency(loginUser, currencyView);
+		return response.response("updated", "currency", HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{currencyNo}")
+	public ResponseEntity<Object> deleteUsersGroup(@PathVariable("currencyNo") Integer currencyNo) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		currencyService.deleteCurrency(loginUser, currencyNo);
+		return response.response("deleted", "currency", HttpStatus.OK);
+	}
 
 }

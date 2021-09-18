@@ -16,7 +16,10 @@ import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.masterdata.currency.dto.CurrencyViewFilter;
 import com.expertsvision.erp.masterdata.currency.entity.Currency;
+import com.expertsvision.erp.masterdata.currency.entity.CurrencyHistory;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyHistoryView;
+import com.expertsvision.erp.masterdata.currency.entity.CurrencyValue;
+import com.expertsvision.erp.masterdata.currency.entity.CurrencyValuePK;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyValuesView;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyView;
 
@@ -201,14 +204,20 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 	}
 	
 	@Override
-	public void addCurrency(Currency currency) {
+	public void addCurrency(Currency currency, List<CurrencyValue> currencyValueList) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(currency);
+		session.flush();
+		for (CurrencyValue obj: currencyValueList) {
+			session.save(obj);
+		}
 		session.flush();
 	}
 	
 	@Override
-	public void updateCurrency(Currency currency) {
+	public void updateCurrency(Currency currency, List<CurrencyValue> CurrencyValueForAddList,
+			List<CurrencyValue> CurrencyValueForModifyList, List<CurrencyValue> CurrencyValueForDeleteList,
+			CurrencyHistory CurrencyHistoryForAdd) {
 		Session session = sessionFactory.getCurrentSession();
 		Currency DBCurrency = session.get(Currency.class, currency.getCurrencyCode());
 		DBCurrency.setCurrencyDName(currency.getCurrencyDName());
@@ -225,6 +234,31 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 		DBCurrency.setPosExRate(currency.getPosExRate());
 		session.merge(DBCurrency);
 		session.flush();
+		// Add the details
+		for (CurrencyValue obj : CurrencyValueForAddList) {
+			session.save(obj);
+		}
+		if (CurrencyHistoryForAdd != null)
+			session.save(CurrencyHistoryForAdd);
+		// Modify the details
+		CurrencyValue DBCurrencyValue;
+		for (CurrencyValue obj : CurrencyValueForModifyList) {
+			DBCurrencyValue = session.get(CurrencyValue.class,
+					new CurrencyValuePK(obj.getCurrencyCode(), obj.getValue()));
+			DBCurrencyValue.setModifyDate(obj.getModifyDate());
+			DBCurrencyValue.setModifyUser(obj.getModifyUser());
+			DBCurrencyValue.setValue(obj.getValue());
+			session.merge(DBCurrencyValue);
+		}
+		// Delete the details
+		String sql = "DELETE FROM currency_values WHERE currency_code = :currencyCode AND value = :value";
+		Query<?> query = session.createNativeQuery(sql);
+		for (CurrencyValue obj : CurrencyValueForDeleteList) {
+			query.setParameter("currencyCode", obj.getCurrencyCode());
+			query.setParameter("currencyCode", obj.getValue());
+			query.executeUpdate();
+		}
+		session.flush();
 	}
 	
 	@Override
@@ -233,6 +267,16 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 		Currency DBCurrency = session.get(Currency.class, currencyCode);
 		session.delete(DBCurrency);
 		session.flush();
+	}
+	
+	
+	@Override
+	public CurrencyView getLocalCurrency() {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT * FROM currency_view WHERE local_currency = true";
+		Query<CurrencyView> query = session.createNativeQuery(sql, CurrencyView.class);
+		List<CurrencyView> currencyViewList = query.getResultList();
+		return currencyViewList.isEmpty()? null : currencyViewList.get(0);
 	}
 
 }

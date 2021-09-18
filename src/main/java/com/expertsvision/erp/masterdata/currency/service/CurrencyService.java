@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
+import com.expertsvision.erp.core.utils.PreData;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.masterdata.currency.dto.CurrencyViewFilter;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyHistoryView;
@@ -38,5 +39,11 @@ public interface CurrencyService {
 	void updateCurrency(UsersView loginUsersView, CurrencyView currencyView);
 
 	void deleteCurrency(UsersView loginUsersView, String currencyCode);
+	
+	PreData preAdd(UsersView loginUsersView);
+	
+	PreData preModify(UsersView loginUsersView);
+	
+	CurrencyView getLocalCurrency();
 
 }

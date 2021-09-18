@@ -90,6 +90,38 @@ public class CoreValidationServiceImpl implements CoreValidationService {
 			throw new ValidationException("must_greater_zero", labelCode);
 		}
 	}
+	
+	@Override
+	public void greaterThan(BigDecimal field1, BigDecimal field2, String labelCodeFirst, Object valueFirst,
+			String labelCodeSecond, Object valueSecond) {
+		if (field1 != null && field2 != null && !(field1.compareTo(field2) > 0)) {
+			throw new DetailValidationException("must_greater", labelCodeFirst, valueFirst, labelCodeSecond, valueSecond);
+		}
+	}
+
+	@Override
+	public void greaterThanOrEqual(BigDecimal field1, BigDecimal field2, String labelCodeFirst, Object valueFirst,
+			String labelCodeSecond, Object valueSecond) {
+		if (field1 != null && field2 != null && !(field1.compareTo(field2) >= 0)) {
+			throw new DetailValidationException("must_greater_equal", labelCodeFirst, valueFirst, labelCodeSecond, valueSecond);
+		}
+	}
+
+	@Override
+	public void lessThan(BigDecimal field1, BigDecimal field2, String labelCodeFirst, Object valueFirst,
+			String labelCodeSecond, Object valueSecond) {
+		if (field1 != null && field2 != null && !(field1.compareTo(field2) < 0)) {
+			throw new DetailValidationException("must_less", labelCodeFirst, valueFirst, labelCodeSecond, valueSecond);
+		}
+	}
+
+	@Override
+	public void lessThanOrEqual(BigDecimal field1, BigDecimal field2, String labelCodeFirst, Object valueFirst,
+			String labelCodeSecond, Object valueSecond) {
+		if (field1 != null && field2 != null && !(field1.compareTo(field2) <= 0)) {
+			throw new DetailValidationException("must_less_equal", labelCodeFirst, valueFirst, labelCodeSecond, valueSecond);
+		}
+	}
 
 	@Override
 	public void inValues(Integer field, List<Integer> values, String labelCode) {

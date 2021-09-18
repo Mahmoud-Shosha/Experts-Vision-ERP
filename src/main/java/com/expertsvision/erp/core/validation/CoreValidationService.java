@@ -23,6 +23,18 @@ public interface CoreValidationService {
 	
 	void greaterThanZero(BigDecimal field, String labelCode);
 	
+	void greaterThan(BigDecimal field1, BigDecimal field2, String labelCodeFirst, Object valueFirst,
+			         String labelCodeSecond, Object valueSecond);
+	
+	void greaterThanOrEqual(BigDecimal field1, BigDecimal field2, String labelCodeFirst, Object valueFirst,
+	                        String labelCodeSecond, Object valueSecond);
+	
+	void lessThan(BigDecimal field1, BigDecimal field2, String labelCodeFirst, Object valueFirst,
+	         String labelCodeSecond, Object valueSecond);
+
+	void lessThanOrEqual(BigDecimal field1, BigDecimal field2, String labelCodeFirst, Object valueFirst,
+	                   String labelCodeSecond, Object valueSecond);
+	
 	void inValues(Integer field, List<Integer> values, String labelCode);
 	
 	void runDatabaseValidation(List<String> validation);
