@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.expertsvision.erp.core.response.Response;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
-import com.expertsvision.erp.core.utils.NextPK;
+import com.expertsvision.erp.core.utils.PreData;
 import com.expertsvision.erp.core.utils.SinglePage;
-import com.expertsvision.erp.masterdata.country.dto.CountryViewFilter;
-import com.expertsvision.erp.masterdata.country.entity.CountryView;
-import com.expertsvision.erp.masterdata.country.service.CountryService;
+import com.expertsvision.erp.masterdata.currency.dto.CurrencyViewFilter;
+import com.expertsvision.erp.masterdata.currency.entity.CurrencyHistoryView;
+import com.expertsvision.erp.masterdata.currency.entity.CurrencyValuesView;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyView;
 import com.expertsvision.erp.masterdata.currency.service.CurrencyService;
 
@@ -52,10 +52,10 @@ public class CurrencyController {
 		return response.response(currencyView, HttpStatus.OK);
 	}
 
-	@GetMapping("pageNo/{currencyNo}")
-	public ResponseEntity<Object> getCurrencyViewSinglePageNo(@PathVariable("currencyNo") Integer currencyNo) {
+	@GetMapping("pageNo/{currencyCode}")
+	public ResponseEntity<Object> getCurrencyViewSinglePageNo(@PathVariable("currencyCode") String currencyCode) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		long singlePageNo = currencyService.getCurrencyViewSinglePageNo(loginUser, currencyNo);
+		long singlePageNo = currencyService.getCurrencyViewSinglePageNo(loginUser, currencyCode);
 		Map<String, Long> singlePageNoMap = new HashMap<>();
 		singlePageNoMap.put("page_no", singlePageNo);
 		return response.response(singlePageNoMap, HttpStatus.OK);
@@ -91,13 +91,25 @@ public class CurrencyController {
 				.getCurrencyViewFilteredMultiplePages(loginUser, pageNo, currencyViewFilter);
 		return response.response(multiplePages, HttpStatus.OK);
 	}
-	
-	@GetMapping("/nextPK")
-	public ResponseEntity<Object> getNextPK() {
+
+	@GetMapping("/pages/currencyValues/{currencyCode}/{pageNo}")
+	public ResponseEntity<Object> getCurrencyValuesViewMultiplePages(@PathVariable("pageNo") Long pageNo,
+															   @PathVariable("currencyCode") String currencyCode) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Object PK = currencyService.getNextPK(loginUser);
-		return response.response(NextPK.build(PK), HttpStatus.OK);
+		MultiplePages<CurrencyValuesView> multiplePages = currencyService.getCurrencyValuesViewMultiplePages(loginUser,
+				currencyCode, pageNo);
+		return response.response(multiplePages, HttpStatus.OK);
 	}
+	
+	@GetMapping("/pages/currencyHistory/{currencyCode}/{pageNo}")
+	public ResponseEntity<Object> getCurrencyHistoryViewMultiplePages(@PathVariable("pageNo") Long pageNo,
+															   @PathVariable("currencyCode") String currencyCode) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		MultiplePages<CurrencyHistoryView> multiplePages = currencyService.getCurrencyHistoryViewMultiplePages(loginUser,
+				currencyCode, pageNo);
+		return response.response(multiplePages, HttpStatus.OK);
+	}
+	
 
 	@PostMapping("")
 	public ResponseEntity<Object> addUsersGroup(@RequestBody CurrencyView currencyView) {
@@ -114,10 +126,24 @@ public class CurrencyController {
 	}
 
 	@DeleteMapping("/{currencyNo}")
-	public ResponseEntity<Object> deleteUsersGroup(@PathVariable("currencyNo") Integer currencyNo) {
+	public ResponseEntity<Object> deleteUsersGroup(@PathVariable("currencyNo") String currencyCode) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		currencyService.deleteCurrency(loginUser, currencyNo);
+		currencyService.deleteCurrency(loginUser, currencyCode);
 		return response.response("deleted", "currency", HttpStatus.OK);
+	}
+	
+	@GetMapping("/preAdd")
+	public ResponseEntity<Object> preAdd() {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PreData preData = currencyService.preAdd(loginUser);
+		return response.response(preData, HttpStatus.OK);
+	}
+	
+	@GetMapping("/preModify")
+	public ResponseEntity<Object> preModify() {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PreData preData = currencyService.preModify(loginUser);
+		return response.response(preData, HttpStatus.OK);
 	}
 
 }

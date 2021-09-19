@@ -52,9 +52,10 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 			query.setParameter("currencyCode", currencyCode);
 			currencyHistoryViewList = query.getResultList();
 		}
-		sql = "SELECT COUNT(*) FROM currency_history_view AS foo";
+		sql = "SELECT COUNT(*) FROM currency_history AS foo WHERE currency_code = :currencyCode ";
 		@SuppressWarnings("unchecked")
 		Query<BigInteger> query2 = session.createNativeQuery(sql);
+		query2.setParameter("currencyCode", currencyCode);
 		long count = query2.getSingleResult().longValue();
 		if (pageNo <= 0 || currencyHistoryViewList.isEmpty()) {
 			return new MultiplePages<CurrencyHistoryView>(null, pageNo, (long)Math.ceil(count/30.0));
@@ -76,9 +77,10 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 			query.setParameter("currencyCode", currencyCode);
 			currencyValuesViewList = query.getResultList();
 		}
-		sql = "SELECT COUNT(*) FROM currency_values_view AS foo";
+		sql = "SELECT COUNT(*) FROM currency_values AS foo WHERE currency_code = :currencyCode ";
 		@SuppressWarnings("unchecked")
 		Query<BigInteger> query2 = session.createNativeQuery(sql);
+		query2.setParameter("currencyCode", currencyCode);
 		long count = query2.getSingleResult().longValue();
 		if (pageNo <= 0 || currencyValuesViewList.isEmpty()) {
 			return new MultiplePages<CurrencyValuesView>(null, pageNo, (long)Math.ceil(count/30.0));
@@ -162,7 +164,7 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 			query.setParameter("Offset", (pageNo - 1) * 30);
 			currencyViewList = query.getResultList();
 		}
-		sql = "SELECT COUNT(*) FROM currency_view AS foo";
+		sql = "SELECT COUNT(*) FROM currency AS foo";
 		@SuppressWarnings("unchecked")
 		Query<BigInteger> query2 = session.createNativeQuery(sql);
 		long count = query2.getSingleResult().longValue();

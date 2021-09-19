@@ -1,6 +1,8 @@
 package com.expertsvision.erp.masterdata.currency.dto;
 
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CurrencyViewFilter {
@@ -15,7 +17,7 @@ public class CurrencyViewFilter {
 	private String currencyFName;
 	
 	@JsonProperty("exchange_rate")
-	private Integer exchangeRate;
+	private BigDecimal exchangeRate;
 	
 	@JsonProperty("fraction_d_name")
 	private String fractionDName;
@@ -47,11 +49,11 @@ public class CurrencyViewFilter {
 		this.currencyFName = currencyFName;
 	}
 
-	public Integer getExchangeRate() {
+	public BigDecimal getExchangeRate() {
 		return exchangeRate;
 	}
 
-	public void setExchangeRate(Integer exchangeRate) {
+	public void setExchangeRate(BigDecimal exchangeRate) {
 		this.exchangeRate = exchangeRate;
 	}
 

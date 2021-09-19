@@ -28,7 +28,7 @@ public interface CurrencyService {
 	MultiplePages<CurrencyHistoryView> getCurrencyHistoryViewMultiplePages(UsersView loginUsersView,
 			String currencyCode, long pageNo);
 
-	MultiplePages<CurrencyValuesView> getCurrencyCurrencyValuesViewViewMultiplePages(UsersView loginUsersView,
+	MultiplePages<CurrencyValuesView> getCurrencyValuesViewMultiplePages(UsersView loginUsersView,
 			String currencyCode, long pageNo);
 
 	MultiplePages<CurrencyView> getCurrencyViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,

@@ -195,7 +195,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
 	@Override
 	@Transactional
-	public MultiplePages<CurrencyValuesView> getCurrencyCurrencyValuesViewViewMultiplePages(UsersView loginUsersView,
+	public MultiplePages<CurrencyValuesView> getCurrencyValuesViewMultiplePages(UsersView loginUsersView,
 			String currencyCode, long pageNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
@@ -291,16 +291,16 @@ public class CurrencyServiceImpl implements CurrencyService {
 				case "add":
 					break;
 				default:
-					throw new DetailValidationException("invalid", "action", obj.getAction(), "currency_value", obj.getValue());
+					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "currency_value", obj.getValue());
 				}
 			}
 		}
 		// Database validation
 		Currency currency = getCurrencyFromCurrencyView(currencyView);
 		Map<String, Object> conditions = new HashMap<>();
-		conditions.put("currency_Code", currency.getCurrencyCode());
+		conditions.put("currency_code", currency.getCurrencyCode());
 		if (generalDAO.isEntityExist("currency", conditions))
-			throw new ValidationException("already_exist", "currency_Code");
+			throw new ValidationException("already_exist", "currency_code");
 		conditions.clear();
 		conditions.put("currency_d_name", currency.getCurrencyDName());
 		if (generalDAO.isEntityExist("currency", conditions))
@@ -341,7 +341,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 					"currency_code = :currencyCode", parameters, "value", valuesSetForAdd);
 			if (DBValuesSetForAdd != null && !DBValuesSetForAdd.isEmpty())
 				throw new DetailValidationException("already_exist_detail", "currency_value",
-						DBValuesSetForAdd.toArray()[0], null, null);
+						DBValuesSetForAdd.toArray()[0], "currency_code", currencyView.getCurrencyCode());
 		}
 		// Add the currency
 		currency.setAddDate(add_date);
@@ -428,7 +428,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 		conditions.clear();
 		conditions.put("currency_d_name", currency.getCurrencyDName());
 		String exceptionCondition = null;
-		exceptionCondition = " and currency_code != " + currency.getCurrencyCode();
+		exceptionCondition = " and currency_code != '" + currency.getCurrencyCode() + "'";
 		if (generalDAO.isEntityExist("currency", conditions, exceptionCondition))
 			throw new ValidationException("already_exist", "name");
 		conditions.clear();
@@ -444,8 +444,10 @@ public class CurrencyServiceImpl implements CurrencyService {
 		if (currency.getCurrencyFName() != null && generalDAO.isEntityExist("currency", conditions, exceptionCondition))
 			throw new ValidationException("already_exist", "fraction_foreign_name");
 		conditions.clear();
-		if (currency.getLocalCurrency() && getLocalCurrency() != null) {
-			throw new ValidationException("already_exist", "local_currency");
+		if (currency.getLocalCurrency()) {
+			CurrencyView localCurrency = getLocalCurrency();
+			if ((localCurrency != null) && (!localCurrency.getCurrencyCode().equals(currency.getCurrencyCode())))
+				throw new ValidationException("already_exist", "local_currency");
 		}
 		CurrencyView DBCurrencyView = currencyDAO.getCurrencyView(currencyView.getCurrencyCode());
 		if (!currencyView.getExchangeRate().equals(DBCurrencyView.getExchangeRate())) {
@@ -465,7 +467,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 			Set<Integer> DBValuesSetForModifyOrDelete;
 			Map<String, Object> parameters = new HashMap<>();
 			CurrencyValue currencyValue;
-			parameters.put("currency_code", currencyView.getCurrencyCode());
+			parameters.put("currencyCode", currencyView.getCurrencyCode());
 			for (CurrencyValuesView obj : currencyView.getCurrencyValuesPages().getPages()) {
 				currencyValue = getCurrencyValueFromCurrencyValueView(obj);
 				switch (obj.getAction()) {
@@ -494,7 +496,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 						"currency_code = :currencyCode", parameters, "value", valuesSetForAdd);
 				if (DBValuesSetForAdd != null && !DBValuesSetForAdd.isEmpty())
 					throw new DetailValidationException("already_exist_detail", "currency_value",
-							DBValuesSetForAdd.toArray()[0], null, null);
+							DBValuesSetForAdd.toArray()[0], "currency_code", currencyView.getCurrencyCode());
 			}
 			if (!valuesSetForModifyOrDelete.isEmpty()) {
 				DBValuesSetForModifyOrDelete = generalDAO.getThemIfExist("currency_values",
@@ -503,7 +505,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 					for (Integer i : valuesSetForModifyOrDelete) {
 						if (!DBValuesSetForModifyOrDelete.contains(i))
 							throw new DetailValidationException("not_exist_detail", "currency_value",
-									i, null, null);
+									i, "currency_code", currencyView.getCurrencyCode());
 					}
 				}
 			}
