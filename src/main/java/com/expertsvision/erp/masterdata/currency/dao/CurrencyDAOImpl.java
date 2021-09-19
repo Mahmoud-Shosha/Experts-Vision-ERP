@@ -19,7 +19,6 @@ import com.expertsvision.erp.masterdata.currency.entity.Currency;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyHistory;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyHistoryView;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyValue;
-import com.expertsvision.erp.masterdata.currency.entity.CurrencyValuePK;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyValuesView;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyView;
 
@@ -218,8 +217,7 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 	
 	@Override
 	public void updateCurrency(Currency currency, List<CurrencyValue> CurrencyValueForAddList,
-			List<CurrencyValue> CurrencyValueForModifyList, List<CurrencyValue> CurrencyValueForDeleteList,
-			CurrencyHistory CurrencyHistoryForAdd) {
+			List<CurrencyValue> CurrencyValueForDeleteList, CurrencyHistory CurrencyHistoryForAdd) {
 		Session session = sessionFactory.getCurrentSession();
 		Currency DBCurrency = session.get(Currency.class, currency.getCurrencyCode());
 		DBCurrency.setCurrencyDName(currency.getCurrencyDName());
@@ -242,22 +240,12 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 		}
 		if (CurrencyHistoryForAdd != null)
 			session.save(CurrencyHistoryForAdd);
-		// Modify the details
-		CurrencyValue DBCurrencyValue;
-		for (CurrencyValue obj : CurrencyValueForModifyList) {
-			DBCurrencyValue = session.get(CurrencyValue.class,
-					new CurrencyValuePK(obj.getCurrencyCode(), obj.getValue()));
-			DBCurrencyValue.setModifyDate(obj.getModifyDate());
-			DBCurrencyValue.setModifyUser(obj.getModifyUser());
-			DBCurrencyValue.setValue(obj.getValue());
-			session.merge(DBCurrencyValue);
-		}
 		// Delete the details
 		String sql = "DELETE FROM currency_values WHERE currency_code = :currencyCode AND value = :value";
 		Query<?> query = session.createNativeQuery(sql);
 		for (CurrencyValue obj : CurrencyValueForDeleteList) {
 			query.setParameter("currencyCode", obj.getCurrencyCode());
-			query.setParameter("currencyCode", obj.getValue());
+			query.setParameter("value", obj.getValue());
 			query.executeUpdate();
 		}
 		session.flush();

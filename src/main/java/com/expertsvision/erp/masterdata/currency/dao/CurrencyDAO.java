@@ -36,8 +36,7 @@ public interface CurrencyDAO {
 	void addCurrency(Currency currency, List<CurrencyValue> CurrencyValueList);
 	
 	void updateCurrency(Currency currency, List<CurrencyValue> CurrencyValueForAddList,
-			List<CurrencyValue> CurrencyValueForModifyList, List<CurrencyValue> CurrencyValueForDeleteList,
-			CurrencyHistory CurrencyHistoryForAdd);
+			List<CurrencyValue> CurrencyValueForDeleteList, CurrencyHistory CurrencyHistoryForAdd);
 	
 	void deleteCurrency(String currencyCode);
 	

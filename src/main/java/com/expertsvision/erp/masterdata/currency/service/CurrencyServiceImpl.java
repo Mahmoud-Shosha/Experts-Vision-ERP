@@ -314,8 +314,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 		if (generalDAO.isEntityExist("currency", conditions))
 			throw new ValidationException("already_exist", "fraction_name");
 		conditions.clear();
-		conditions.put("fraction_d_name", currency.getFractionFName());
-		if (currency.getCurrencyFName() != null && generalDAO.isEntityExist("currency", conditions))
+		conditions.put("fraction_f_name", currency.getFractionFName());
+		if (currency.getFractionFName() != null && generalDAO.isEntityExist("currency", conditions))
 			throw new ValidationException("already_exist", "fraction_foreign_name");
 		conditions.clear();
 		if (currency.getLocalCurrency() && getLocalCurrency() != null) {
@@ -327,7 +327,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 			Set<Integer> DBValuesSetForAdd;
 			Map<String, Object> parameters = new HashMap<>();
 			CurrencyValue currencyValue;
-			parameters.put("currency_code", currencyView.getCurrencyCode());
+			parameters.put("currencyCode", currencyView.getCurrencyCode());
 			for (CurrencyValuesView obj : currencyView.getCurrencyValuesPages().getPages()) {
 				currencyValue = getCurrencyValueFromCurrencyValueView(obj);
 				currencyValue.setAddDate(add_date);
@@ -335,7 +335,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 				currencyValue.setModifyDate(null);
 				currencyValue.setModifyUser(null);
 				CurrencyValueForAddList.add(currencyValue);
-				valuesSetForAdd.add(obj.getValue());
+				if (valuesSetForAdd.contains(obj.getValue())) {
+					throw new DetailValidationException("already_exist_detail", "currency_value",
+							obj.getValue(), "currency_code", currencyView.getCurrencyCode());
+				} else {
+					valuesSetForAdd.add(obj.getValue());
+				}
 			}
 			DBValuesSetForAdd = generalDAO.getThemIfExist("currency_values",
 					"currency_code = :currencyCode", parameters, "value", valuesSetForAdd);
@@ -367,7 +372,6 @@ public class CurrencyServiceImpl implements CurrencyService {
 		}
 		Timestamp update_date = new Timestamp(new Date().getTime());
 		List<CurrencyValue> CurrencyValueForAddList = new ArrayList<>();
-		List<CurrencyValue> CurrencyValueForModifyList = new ArrayList<>();
 		List<CurrencyValue> CurrencyValueForDeleteList = new ArrayList<>();
 		CurrencyHistory CurrencyHistoryForAdd = null;
 		// Non-database validation
@@ -411,20 +415,19 @@ public class CurrencyServiceImpl implements CurrencyService {
 				coreValidationService.notNull(obj.getValue(), "currency_value");
 				switch (obj.getAction()) {
 				case "add":
-				case "modify":
 				case "delete":
 					break;
 				default:
-					throw new DetailValidationException("invalid", "action", obj.getAction(), "currency_value", obj.getValue());
+					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "currency_value", obj.getValue());
 				}
 			}
 		}
 		// Database validation
 		Currency currency = getCurrencyFromCurrencyView(currencyView);
 		Map<String, Object> conditions = new HashMap<>();
-		conditions.put("currency_Code", currency.getCurrencyCode());
+		conditions.put("currency_code", currency.getCurrencyCode());
 		if (!generalDAO.isEntityExist("currency", conditions))
-			throw new ValidationException("not_exist", "currency_Code");
+			throw new ValidationException("not_exist", "currency_code");
 		conditions.clear();
 		conditions.put("currency_d_name", currency.getCurrencyDName());
 		String exceptionCondition = null;
@@ -440,8 +443,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 		if (generalDAO.isEntityExist("currency", conditions, exceptionCondition))
 			throw new ValidationException("already_exist", "fraction_name");
 		conditions.clear();
-		conditions.put("fraction_d_name", currency.getFractionFName());
-		if (currency.getCurrencyFName() != null && generalDAO.isEntityExist("currency", conditions, exceptionCondition))
+		conditions.put("fraction_f_name", currency.getFractionFName());
+		if (currency.getFractionFName() != null && generalDAO.isEntityExist("currency", conditions, exceptionCondition))
 			throw new ValidationException("already_exist", "fraction_foreign_name");
 		conditions.clear();
 		if (currency.getLocalCurrency()) {
@@ -450,7 +453,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 				throw new ValidationException("already_exist", "local_currency");
 		}
 		CurrencyView DBCurrencyView = currencyDAO.getCurrencyView(currencyView.getCurrencyCode());
-		if (!currencyView.getExchangeRate().equals(DBCurrencyView.getExchangeRate())) {
+		if (currencyView.getExchangeRate().compareTo(DBCurrencyView.getExchangeRate()) != 0) {
 			CurrencyHistoryForAdd = new CurrencyHistory();
 			CurrencyHistoryForAdd.setCurrencyCode(DBCurrencyView.getCurrencyCode());
 			CurrencyHistoryForAdd.setExchangeRate(DBCurrencyView.getExchangeRate());
@@ -477,13 +480,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 					currencyValue.setModifyDate(null);
 					currencyValue.setModifyUser(null);
 					CurrencyValueForAddList.add(currencyValue);
-					valuesSetForAdd.add(currencyValue.getValue());
-					break;
-				case "modify":
-					currencyValue.setModifyDate(update_date);
-					currencyValue.setModifyUser(loginUsersView.getUserId());
-					CurrencyValueForModifyList.add(currencyValue);
-					valuesSetForModifyOrDelete.add(currencyValue.getValue());
+					if (valuesSetForAdd.contains(obj.getValue())) {
+						throw new DetailValidationException("already_exist_detail", "currency_value",
+								obj.getValue(), "currency_code", currencyView.getCurrencyCode());
+					} else {
+						valuesSetForAdd.add(obj.getValue());
+					}
 					break;
 				case "delete":
 					CurrencyValueForDeleteList.add(currencyValue);
@@ -514,7 +516,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 		// Update the currency
 		currency.setModifyDate(update_date);
 		currency.setModifyUser(loginUsersView.getUserId());
-		currencyDAO.updateCurrency(currency, CurrencyValueForAddList, CurrencyValueForModifyList,
+		currencyDAO.updateCurrency(currency, CurrencyValueForAddList,
 				CurrencyValueForDeleteList, CurrencyHistoryForAdd);
 	}
 
