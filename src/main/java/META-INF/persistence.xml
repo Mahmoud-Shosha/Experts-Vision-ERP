@@ -52,5 +52,9 @@
 		<class>com.expertsvision.erp.masterdata.currency.entity.CurrencyValuePK</class>
 		<class>com.expertsvision.erp.masterdata.currency.entity.CurrencyValuesView</class>
 		<class>com.expertsvision.erp.masterdata.currency.entity.CurrencyView</class>
+		<class>com.expertsvision.erp.masterdata.accountsgroup.entity.AccountsGroup</class>
+		<class>com.expertsvision.erp.masterdata.accountsgroup.entity.AccountsGroupView</class>
+		<class>com.expertsvision.erp.masterdata.costcentergroup.entity.CostCenterGroup</class>
+		<class>com.expertsvision.erp.masterdata.costcentergroup.entity.CostCenterGroupView</class>
 	</persistence-unit>
 </persistence>

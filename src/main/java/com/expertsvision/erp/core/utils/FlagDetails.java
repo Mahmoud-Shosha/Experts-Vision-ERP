@@ -15,7 +15,9 @@ public enum FlagDetails {
 	ZONE("geographical_coding", 5),
 	COMPANY_GROUPS("companies_and_branches", 1),
 	COMPANIES("companies_and_branches", 2),
-	BRANCHES("companies_and_branches", 3);
+	BRANCHES("companies_and_branches", 3),
+	ACCOUNTS_GROUP("financial_coding", 1),
+	COST_CENTER_GROUP("financial_coding", 2);
 	
 	private Integer flagValue;
 	private String flagCode;
