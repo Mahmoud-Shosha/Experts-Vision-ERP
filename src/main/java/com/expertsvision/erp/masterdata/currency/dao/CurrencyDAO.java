@@ -17,9 +17,9 @@ public interface CurrencyDAO {
 	
 	List<CurrencyView> getAllCurrencyViewList();
 	
-	MultiplePages<CurrencyValuesView> getCurrencyValuesViewList(String currencyCode, long pageNo);
+	List<CurrencyValuesView> getCurrencyValuesViewList(String currencyCode);
 	
-	MultiplePages<CurrencyHistoryView> getCurrencyHistoryViewList(String currencyCode, long pageNo);
+	List<CurrencyHistoryView> getCurrencyHistoryViewList(String currencyCode);
 			
 	CurrencyView getCurrencyView(String currencyCode);
 	

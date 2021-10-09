@@ -23,8 +23,6 @@ import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.PreData;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.masterdata.currency.dto.CurrencyViewFilter;
-import com.expertsvision.erp.masterdata.currency.entity.CurrencyHistoryView;
-import com.expertsvision.erp.masterdata.currency.entity.CurrencyValuesView;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyView;
 import com.expertsvision.erp.masterdata.currency.service.CurrencyService;
 
@@ -92,23 +90,23 @@ public class CurrencyController {
 		return response.response(multiplePages, HttpStatus.OK);
 	}
 
-	@GetMapping("/pages/currencyValues/{currencyCode}/{pageNo}")
-	public ResponseEntity<Object> getCurrencyValuesViewMultiplePages(@PathVariable("pageNo") Long pageNo,
-															   @PathVariable("currencyCode") String currencyCode) {
-		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		MultiplePages<CurrencyValuesView> multiplePages = currencyService.getCurrencyValuesViewMultiplePages(loginUser,
-				currencyCode, pageNo);
-		return response.response(multiplePages, HttpStatus.OK);
-	}
-	
-	@GetMapping("/pages/currencyHistory/{currencyCode}/{pageNo}")
-	public ResponseEntity<Object> getCurrencyHistoryViewMultiplePages(@PathVariable("pageNo") Long pageNo,
-															   @PathVariable("currencyCode") String currencyCode) {
-		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		MultiplePages<CurrencyHistoryView> multiplePages = currencyService.getCurrencyHistoryViewMultiplePages(loginUser,
-				currencyCode, pageNo);
-		return response.response(multiplePages, HttpStatus.OK);
-	}
+//	@GetMapping("/pages/currencyValues/{currencyCode}/{pageNo}")
+//	public ResponseEntity<Object> getCurrencyValuesViewMultiplePages(@PathVariable("pageNo") Long pageNo,
+//															   @PathVariable("currencyCode") String currencyCode) {
+//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//		MultiplePages<CurrencyValuesView> multiplePages = currencyService.getCurrencyValuesViewMultiplePages(loginUser,
+//				currencyCode, pageNo);
+//		return response.response(multiplePages, HttpStatus.OK);
+//	}
+//	
+//	@GetMapping("/pages/currencyHistory/{currencyCode}/{pageNo}")
+//	public ResponseEntity<Object> getCurrencyHistoryViewMultiplePages(@PathVariable("pageNo") Long pageNo,
+//															   @PathVariable("currencyCode") String currencyCode) {
+//		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//		MultiplePages<CurrencyHistoryView> multiplePages = currencyService.getCurrencyHistoryViewMultiplePages(loginUser,
+//				currencyCode, pageNo);
+//		return response.response(multiplePages, HttpStatus.OK);
+//	}
 	
 
 	@PostMapping("")

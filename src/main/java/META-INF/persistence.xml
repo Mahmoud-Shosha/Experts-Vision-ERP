@@ -56,5 +56,11 @@
 		<class>com.expertsvision.erp.masterdata.accountsgroup.entity.AccountsGroupView</class>
 		<class>com.expertsvision.erp.masterdata.costcentergroup.entity.CostCenterGroup</class>
 		<class>com.expertsvision.erp.masterdata.costcentergroup.entity.CostCenterGroupView</class>
+		<class>com.expertsvision.erp.masterdata.accpara.entity.AccPara</class>
+		<class>com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrency</class>
+		<class>com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyView</class>
+		<class>com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv</class>
+		<class>com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccount</class>
+		<class>com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView</class>
 	</persistence-unit>
 </persistence>

@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 
 import javax.persistence.*;
 
-import com.expertsvision.erp.core.utils.MultiplePages;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 
 /**
@@ -100,15 +100,15 @@ public class CurrencyView implements Serializable {
 	@Column(name="pos_ex_rate")
 	private BigDecimal posExRate;
 	
-	@JsonProperty("currency_history_pages")
+	@JsonProperty("currency_history_list")
 	@Transient
 	@JsonInclude(Include.NON_NULL)
-	private MultiplePages<CurrencyHistoryView> currencyHistoryPages;
+	private List<CurrencyHistoryView> currencyHistoryList;
 	
-	@JsonProperty("currency_values_pages")
+	@JsonProperty("currency_values_list")
 	@Transient
 	@JsonInclude(Include.NON_NULL)
-	private MultiplePages<CurrencyValuesView> currencyValuesPages;
+	private List<CurrencyValuesView> currencyValuesList;
 
 	public CurrencyView() {
 	}
@@ -265,20 +265,20 @@ public class CurrencyView implements Serializable {
 		this.modifyUserFName = modifyUserFName;
 	}
 
-	public MultiplePages<CurrencyHistoryView> getCurrencyHistoryPages() {
-		return currencyHistoryPages;
+	public List<CurrencyHistoryView> getCurrencyHistoryList() {
+		return currencyHistoryList;
 	}
 
-	public void setCurrencyHistoryPages(MultiplePages<CurrencyHistoryView> currencyHistoryPages) {
-		this.currencyHistoryPages = currencyHistoryPages;
+	public void setCurrencyHistoryList(List<CurrencyHistoryView> currencyHistoryList) {
+		this.currencyHistoryList = currencyHistoryList;
 	}
 
-	public MultiplePages<CurrencyValuesView> getCurrencyValuesPages() {
-		return currencyValuesPages;
+	public List<CurrencyValuesView> getCurrencyValuesList() {
+		return currencyValuesList;
 	}
 
-	public void setCurrencyValuesPages(MultiplePages<CurrencyValuesView> currencyValuesPages) {
-		this.currencyValuesPages = currencyValuesPages;
+	public void setCurrencyValuesList(List<CurrencyValuesView> currencyValuesList) {
+		this.currencyValuesList = currencyValuesList;
 	}
 
 	@Override

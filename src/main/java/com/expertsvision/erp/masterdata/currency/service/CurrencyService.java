@@ -7,8 +7,6 @@ import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.PreData;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.masterdata.currency.dto.CurrencyViewFilter;
-import com.expertsvision.erp.masterdata.currency.entity.CurrencyHistoryView;
-import com.expertsvision.erp.masterdata.currency.entity.CurrencyValuesView;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyView;
 
 public interface CurrencyService {
@@ -25,11 +23,11 @@ public interface CurrencyService {
 
 	MultiplePages<CurrencyView> getCurrencyViewMultiplePages(UsersView loginUsersView, long pageNo);
 
-	MultiplePages<CurrencyHistoryView> getCurrencyHistoryViewMultiplePages(UsersView loginUsersView,
-			String currencyCode, long pageNo);
+//	MultiplePages<CurrencyHistoryView> getCurrencyHistoryViewMultiplePages(UsersView loginUsersView,
+//			String currencyCode, long pageNo);
 
-	MultiplePages<CurrencyValuesView> getCurrencyValuesViewMultiplePages(UsersView loginUsersView,
-			String currencyCode, long pageNo);
+//	MultiplePages<CurrencyValuesView> getCurrencyValuesViewMultiplePages(UsersView loginUsersView,
+//			String currencyCode, long pageNo);
 
 	MultiplePages<CurrencyView> getCurrencyViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
 			CurrencyViewFilter currencyViewFilter);

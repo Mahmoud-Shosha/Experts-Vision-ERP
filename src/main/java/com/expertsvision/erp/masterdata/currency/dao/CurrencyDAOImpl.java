@@ -40,52 +40,24 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 	}
 	
 	@Override
-	public MultiplePages<CurrencyHistoryView> getCurrencyHistoryViewList(String currencyCode, long pageNo) {
+	public List<CurrencyHistoryView> getCurrencyHistoryViewList(String currencyCode) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = null;
-		List<CurrencyHistoryView> currencyHistoryViewList = null;
-		if (pageNo > 0) {
-			sql = "SELECT * FROM  currency_history_view WHERE currency_code = :currencyCode LIMIT 30 OFFSET :Offset";
-			Query<CurrencyHistoryView> query = session.createNativeQuery(sql, CurrencyHistoryView.class);
-			query.setParameter("Offset", (pageNo - 1) * 30);
-			query.setParameter("currencyCode", currencyCode);
-			currencyHistoryViewList = query.getResultList();
-		}
-		sql = "SELECT COUNT(*) FROM currency_history AS foo WHERE currency_code = :currencyCode ";
-		@SuppressWarnings("unchecked")
-		Query<BigInteger> query2 = session.createNativeQuery(sql);
-		query2.setParameter("currencyCode", currencyCode);
-		long count = query2.getSingleResult().longValue();
-		if (pageNo <= 0 || currencyHistoryViewList.isEmpty()) {
-			return new MultiplePages<CurrencyHistoryView>(null, pageNo, (long)Math.ceil(count/30.0));
-		} else {
-			return new MultiplePages<CurrencyHistoryView>(currencyHistoryViewList, pageNo, (long)Math.ceil(count/30.0));
-		}
+		String sql = "SELECT * FROM  currency_history_view WHERE currency_code = :currencyCode";
+		Query<CurrencyHistoryView> query = session.createNativeQuery(sql, CurrencyHistoryView.class);
+		query.setParameter("currencyCode", currencyCode);
+		List<CurrencyHistoryView> currencyHistoryViewList = query.getResultList();
+		return currencyHistoryViewList;
 	}
 	
 	
 	@Override
-	public MultiplePages<CurrencyValuesView> getCurrencyValuesViewList(String currencyCode, long pageNo) {
+	public List<CurrencyValuesView> getCurrencyValuesViewList(String currencyCode) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = null;
-		List<CurrencyValuesView> currencyValuesViewList = null;
-		if (pageNo > 0) {
-			sql = "SELECT * FROM  currency_values_view WHERE currency_code = :currencyCode LIMIT 30 OFFSET :Offset";
-			Query<CurrencyValuesView> query = session.createNativeQuery(sql, CurrencyValuesView.class);
-			query.setParameter("Offset", (pageNo - 1) * 30);
-			query.setParameter("currencyCode", currencyCode);
-			currencyValuesViewList = query.getResultList();
-		}
-		sql = "SELECT COUNT(*) FROM currency_values AS foo WHERE currency_code = :currencyCode ";
-		@SuppressWarnings("unchecked")
-		Query<BigInteger> query2 = session.createNativeQuery(sql);
-		query2.setParameter("currencyCode", currencyCode);
-		long count = query2.getSingleResult().longValue();
-		if (pageNo <= 0 || currencyValuesViewList.isEmpty()) {
-			return new MultiplePages<CurrencyValuesView>(null, pageNo, (long)Math.ceil(count/30.0));
-		} else {
-			return new MultiplePages<CurrencyValuesView>(currencyValuesViewList, pageNo, (long)Math.ceil(count/30.0));
-		}
+		String sql = "SELECT * FROM  currency_values_view WHERE currency_code = :currencyCode";
+		Query<CurrencyValuesView> query = session.createNativeQuery(sql, CurrencyValuesView.class);
+		query.setParameter("currencyCode", currencyCode);
+		List<CurrencyValuesView> currencyValuesViewList = query.getResultList();
+		return currencyValuesViewList;
 	}
 	
 	@Override

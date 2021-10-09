@@ -31,7 +31,6 @@ import com.expertsvision.erp.masterdata.currency.dao.CurrencyDAO;
 import com.expertsvision.erp.masterdata.currency.dto.CurrencyViewFilter;
 import com.expertsvision.erp.masterdata.currency.entity.Currency;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyHistory;
-import com.expertsvision.erp.masterdata.currency.entity.CurrencyHistoryView;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyValue;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyValuesView;
 import com.expertsvision.erp.masterdata.currency.entity.CurrencyView;
@@ -84,8 +83,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 		if (currencyView == null) {
 			throw new ValidationException("not_exist", "currency_code");
 		}
-		currencyView.setCurrencyValuesPages(currencyDAO.getCurrencyValuesViewList(currencyCode, 1));
-		currencyView.setCurrencyHistoryPages(currencyDAO.getCurrencyHistoryViewList(currencyCode, 1));
+		currencyView.setCurrencyValuesList(currencyDAO.getCurrencyValuesViewList(currencyCode));
+		currencyView.setCurrencyHistoryList(currencyDAO.getCurrencyHistoryViewList(currencyCode));
 		return currencyView;
 	}
 
@@ -106,8 +105,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 		SinglePage<CurrencyView> singlePage = currencyDAO.getCurrencyViewSinglePage(pageNo);
 		if (singlePage.getPage() != null) {
 			CurrencyView cv = singlePage.getPage();
-			cv.setCurrencyValuesPages(currencyDAO.getCurrencyValuesViewList(cv.getCurrencyCode(), 1));
-			cv.setCurrencyHistoryPages(currencyDAO.getCurrencyHistoryViewList(cv.getCurrencyCode(), 1));
+			cv.setCurrencyValuesList(currencyDAO.getCurrencyValuesViewList(cv.getCurrencyCode()));
+			cv.setCurrencyHistoryList(currencyDAO.getCurrencyHistoryViewList(cv.getCurrencyCode()));
 		}
 		return singlePage;
 	}
@@ -129,8 +128,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 		SinglePage<CurrencyView> singlePage = currencyDAO.getCurrencyViewLastPage();
 		if (singlePage.getPage() != null) {
 			CurrencyView cv = singlePage.getPage();
-			cv.setCurrencyValuesPages(currencyDAO.getCurrencyValuesViewList(cv.getCurrencyCode(), 1));
-			cv.setCurrencyHistoryPages(currencyDAO.getCurrencyHistoryViewList(cv.getCurrencyCode(), 1));
+			cv.setCurrencyValuesList(currencyDAO.getCurrencyValuesViewList(cv.getCurrencyCode()));
+			cv.setCurrencyHistoryList(currencyDAO.getCurrencyHistoryViewList(cv.getCurrencyCode()));
 		}
 		return singlePage;
 	}
@@ -174,43 +173,43 @@ public class CurrencyServiceImpl implements CurrencyService {
 		return multiplePages;
 	}
 
-	@Override
-	@Transactional
-	public MultiplePages<CurrencyHistoryView> getCurrencyHistoryViewMultiplePages(UsersView loginUsersView,
-			String currencyCode, long pageNo) {
-		// Check module, form, privileges
-		if (!loginUsersView.getSuperAdmin()) {
-			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.CURRENCY);
-			} else {
-				coreValidationService.activeModuleAndForm(Forms.CURRENCY);
-			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CURRENCY, FormsActions.INCLUDE);
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CURRENCY, FormsActions.VIEW);
-		}
-		// Return requested data
-		MultiplePages<CurrencyHistoryView> multiplePages = currencyDAO.getCurrencyHistoryViewList(currencyCode, pageNo);
-		return multiplePages;
-	}
+//	@Override
+//	@Transactional
+//	public MultiplePages<CurrencyHistoryView> getCurrencyHistoryViewMultiplePages(UsersView loginUsersView,
+//			String currencyCode, long pageNo) {
+//		// Check module, form, privileges
+//		if (!loginUsersView.getSuperAdmin()) {
+//			if (loginUsersView.getAdminUser()) {
+//				coreValidationService.activeModule(Forms.CURRENCY);
+//			} else {
+//				coreValidationService.activeModuleAndForm(Forms.CURRENCY);
+//			}
+//			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CURRENCY, FormsActions.INCLUDE);
+//			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CURRENCY, FormsActions.VIEW);
+//		}
+//		// Return requested data
+//		MultiplePages<CurrencyHistoryView> multiplePages = currencyDAO.getCurrencyHistoryViewList(currencyCode, pageNo);
+//		return multiplePages;
+//	}
 
-	@Override
-	@Transactional
-	public MultiplePages<CurrencyValuesView> getCurrencyValuesViewMultiplePages(UsersView loginUsersView,
-			String currencyCode, long pageNo) {
-		// Check module, form, privileges
-		if (!loginUsersView.getSuperAdmin()) {
-			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.CURRENCY);
-			} else {
-				coreValidationService.activeModuleAndForm(Forms.CURRENCY);
-			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CURRENCY, FormsActions.INCLUDE);
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CURRENCY, FormsActions.VIEW);
-		}
-		// Return requested data
-		MultiplePages<CurrencyValuesView> multiplePages = currencyDAO.getCurrencyValuesViewList(currencyCode, pageNo);
-		return multiplePages;
-	}
+//	@Override
+//	@Transactional
+//	public MultiplePages<CurrencyValuesView> getCurrencyValuesViewMultiplePages(UsersView loginUsersView,
+//			String currencyCode, long pageNo) {
+//		// Check module, form, privileges
+//		if (!loginUsersView.getSuperAdmin()) {
+//			if (loginUsersView.getAdminUser()) {
+//				coreValidationService.activeModule(Forms.CURRENCY);
+//			} else {
+//				coreValidationService.activeModuleAndForm(Forms.CURRENCY);
+//			}
+//			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CURRENCY, FormsActions.INCLUDE);
+//			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CURRENCY, FormsActions.VIEW);
+//		}
+//		// Return requested data
+//		MultiplePages<CurrencyValuesView> multiplePages = currencyDAO.getCurrencyValuesViewList(currencyCode, pageNo);
+//		return multiplePages;
+//	}
 
 	@Override
 	@Transactional
@@ -283,8 +282,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 		if ((currencyView.getFractionFName() != null) && currencyView.getFractionFName().isBlank())
 			currencyView.setFractionFName(null);
 		// Non-database validation for details
-		if (currencyView.getCurrencyValuesPages().getPages() != null) {
-			for (CurrencyValuesView obj : currencyView.getCurrencyValuesPages().getPages()) {
+		if (currencyView.getCurrencyValuesList() != null) {
+			for (CurrencyValuesView obj : currencyView.getCurrencyValuesList()) {
 				obj.setCurrencyCode(currencyView.getCurrencyCode());
 				coreValidationService.notNull(obj.getValue(), "currency_value");
 				switch (obj.getAction()) {
@@ -322,13 +321,13 @@ public class CurrencyServiceImpl implements CurrencyService {
 			throw new ValidationException("already_exist", "local_currency");
 		}
 		// Database validation for details
-		if (currencyView.getCurrencyValuesPages().getPages() != null) {
+		if (currencyView.getCurrencyValuesList() != null) {
 			Set<Integer> valuesSetForAdd = new HashSet<>();
 			Set<Integer> DBValuesSetForAdd;
 			Map<String, Object> parameters = new HashMap<>();
 			CurrencyValue currencyValue;
 			parameters.put("currencyCode", currencyView.getCurrencyCode());
-			for (CurrencyValuesView obj : currencyView.getCurrencyValuesPages().getPages()) {
+			for (CurrencyValuesView obj : currencyView.getCurrencyValuesList()) {
 				currencyValue = getCurrencyValueFromCurrencyValueView(obj);
 				currencyValue.setAddDate(add_date);
 				currencyValue.setAddUser(loginUsersView.getUserId());
@@ -409,8 +408,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 		if ((currencyView.getFractionFName() != null) && currencyView.getFractionFName().isBlank())
 			currencyView.setFractionFName(null);
 		// Non-database validation for details
-		if (currencyView.getCurrencyValuesPages().getPages() != null) {
-			for (CurrencyValuesView obj : currencyView.getCurrencyValuesPages().getPages()) {
+		if (currencyView.getCurrencyValuesList() != null) {
+			for (CurrencyValuesView obj : currencyView.getCurrencyValuesList()) {
 				obj.setCurrencyCode(currencyView.getCurrencyCode());
 				coreValidationService.notNull(obj.getValue(), "currency_value");
 				switch (obj.getAction()) {
@@ -463,7 +462,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 			CurrencyHistoryForAdd.setModifyUser(loginUsersView.getUserId());
 		}
 		// Database validation for details
-		if (currencyView.getCurrencyValuesPages().getPages() != null) {
+		if (currencyView.getCurrencyValuesList() != null) {
 			Set<Integer> valuesSetForAdd = new HashSet<>();
 			Set<Integer> DBValuesSetForAdd;
 			Set<Integer> valuesSetForModifyOrDelete = new HashSet<>();
@@ -471,7 +470,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 			Map<String, Object> parameters = new HashMap<>();
 			CurrencyValue currencyValue;
 			parameters.put("currencyCode", currencyView.getCurrencyCode());
-			for (CurrencyValuesView obj : currencyView.getCurrencyValuesPages().getPages()) {
+			for (CurrencyValuesView obj : currencyView.getCurrencyValuesList()) {
 				currencyValue = getCurrencyValueFromCurrencyValueView(obj);
 				switch (obj.getAction()) {
 				case "add":
