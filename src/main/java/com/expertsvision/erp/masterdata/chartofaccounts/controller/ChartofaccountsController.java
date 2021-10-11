@@ -22,9 +22,9 @@ import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.NextPK;
 import com.expertsvision.erp.core.utils.SinglePage;
-import com.expertsvision.erp.masterdata.branches.dto.BranchesViewFilter;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesView;
 import com.expertsvision.erp.masterdata.branches.service.BranchesService;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
+import com.expertsvision.erp.masterdata.chartofaccounts.service.ChartofaccountsService;
 
 @RestController
 @RequestMapping(value = "/chartofaccounts")
@@ -34,26 +34,26 @@ public class ChartofaccountsController {
 	private Response response;
 
 	@Autowired
-	private BranchesService branchesService;
+	private ChartofaccountsService chartofaccountsService;
 
 	@GetMapping("")
-	public ResponseEntity<Object> getBranchesViewList() {
+	public ResponseEntity<Object> getChartOfAccountsViewList() {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		List<BranchesView> branchesViewList = branchesService.getBranchesViewList(loginUser);
-		return response.response(branchesViewList, HttpStatus.OK);
+		List<ChartOfAccountsView> chartOfAccountsViewList = chartofaccountsService.getChartOfAccountsViewList(loginUser);
+		return response.response(chartOfAccountsViewList, HttpStatus.OK);
 	}
 
-	@GetMapping("/{branchesNo}")
-	public ResponseEntity<Object> getBranchesView(@PathVariable("branchesNo") Integer branchesNo) {
+	@GetMapping("/{accNo}")
+	public ResponseEntity<Object> getChartOfAccountsView(@PathVariable("accNo") Integer accNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		BranchesView branchesView = branchesService.getBranchesView(loginUser, branchesNo);
-		return response.response(branchesView, HttpStatus.OK);
+		ChartOfAccountsView chartOfAccountsView = chartofaccountsService.getChartOfAccountsView(loginUser, accNo);
+		return response.response(chartOfAccountsView, HttpStatus.OK);
 	}
 
 	@GetMapping("pageNo/{branchesNo}")
-	public ResponseEntity<Object> getBranchesViewSinglePageNo(@PathVariable("branchesNo") Integer branchesNo) {
+	public ResponseEntity<Object> getChartOfAccountsViewSinglePageNo(@PathVariable("branchesNo") Integer branchesNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		long singlePageNo = branchesService.getBranchesViewSinglePageNo(loginUser, branchesNo);
+		long singlePageNo = branchesService.getChartOfAccountsViewSinglePageNo(loginUser, branchesNo);
 		Map<String, Long> singlePageNoMap = new HashMap<>();
 		singlePageNoMap.put("page_no", singlePageNo);
 		return response.response(singlePageNoMap, HttpStatus.OK);
@@ -62,31 +62,31 @@ public class ChartofaccountsController {
 	@GetMapping("/page/{pageNo}")
 	public ResponseEntity<Object> getMessagesViewSinglePage(@PathVariable("pageNo") Long pageNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		SinglePage<BranchesView> singlePage = branchesService.getBranchesViewSinglePage(loginUser, pageNo);
+		SinglePage<ChartOfAccountsView> singlePage = branchesService.getChartOfAccountsViewSinglePage(loginUser, pageNo);
 		return response.response(singlePage, HttpStatus.OK);
 	}
 
 	@GetMapping("/lastPage")
-	public ResponseEntity<Object> getBranchesViewLastPage() {
+	public ResponseEntity<Object> getChartOfAccountsViewLastPage() {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		SinglePage<BranchesView> singlePage = branchesService.getBranchesViewLastPage(loginUser);
+		SinglePage<ChartOfAccountsView> singlePage = branchesService.getChartOfAccountsViewLastPage(loginUser);
 		return response.response(singlePage, HttpStatus.OK);
 	}
 
 	@GetMapping("/pages/{pageNo}")
-	public ResponseEntity<Object> getBranchesViewMultiplePages(@PathVariable("pageNo") Long pageNo) {
+	public ResponseEntity<Object> getChartOfAccountsViewMultiplePages(@PathVariable("pageNo") Long pageNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		MultiplePages<BranchesView> multiplePages = branchesService.getBranchesViewMultiplePages(loginUser,
+		MultiplePages<ChartOfAccountsView> multiplePages = branchesService.getChartOfAccountsViewMultiplePages(loginUser,
 				pageNo);
 		return response.response(multiplePages, HttpStatus.OK);
 	}
 
 	@PostMapping("/filteredPages/{pageNo}")
-	public ResponseEntity<Object> getBranchesViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
-			@RequestBody BranchesViewFilter branchesViewFilter) {
+	public ResponseEntity<Object> getChartOfAccountsViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
+			@RequestBody ChartOfAccountsViewFilter chartOfAccountsViewFilter) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		MultiplePages<BranchesView> multiplePages = branchesService
-				.getBranchesViewFilteredMultiplePages(loginUser, pageNo, branchesViewFilter);
+		MultiplePages<ChartOfAccountsView> multiplePages = branchesService
+				.getChartOfAccountsViewFilteredMultiplePages(loginUser, pageNo, chartOfAccountsViewFilter);
 		return response.response(multiplePages, HttpStatus.OK);
 	}
 
@@ -98,16 +98,16 @@ public class ChartofaccountsController {
 	}
 	
 	@PostMapping(path = "")
-	public ResponseEntity<Object> addUsersGroup(@RequestBody BranchesView branchesView) {
+	public ResponseEntity<Object> addUsersGroup(@RequestBody ChartOfAccountsView chartOfAccountsView) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		branchesService.addBranches(loginUser, branchesView);
+		branchesService.addBranches(loginUser, chartOfAccountsView);
 		return response.response("added", "branch", HttpStatus.OK);
 	}
 
 	@PutMapping("")
-	public ResponseEntity<Object> updateUsersGroup(@RequestBody BranchesView branchesView) {
+	public ResponseEntity<Object> updateUsersGroup(@RequestBody ChartOfAccountsView chartOfAccountsView) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		branchesService.updateBranches(loginUser, branchesView);
+		branchesService.updateBranches(loginUser, chartOfAccountsView);
 		return response.response("updated", "branch", HttpStatus.OK);
 	}
 

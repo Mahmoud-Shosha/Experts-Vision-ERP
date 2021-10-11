@@ -3,7 +3,7 @@ package com.expertsvision.erp.masterdata.chartofaccounts.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BranchesViewDTO {
+public class ChartOfAccountsViewDTO {
 
 	@JsonProperty("branch_d_address")
 	private String branchDAddress;

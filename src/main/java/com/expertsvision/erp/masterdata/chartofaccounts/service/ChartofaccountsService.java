@@ -3,38 +3,37 @@ package com.expertsvision.erp.masterdata.chartofaccounts.service;
 import java.sql.Timestamp;
 import java.util.List;
 
-
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
-import com.expertsvision.erp.masterdata.branches.dto.BranchesViewFilter;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesView;
+import com.expertsvision.erp.masterdata.chartofaccounts.dto.ChartOfAccountsViewFilter;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
 
 public interface ChartofaccountsService {
 		
-	List<BranchesView> getBranchesViewList(UsersView loginusersView);
+	List<ChartOfAccountsView> getChartOfAccountsViewList(UsersView loginusersView);
 	
-	BranchesView getBranchesView(UsersView loginUsersView, Integer branchesNo);
+	ChartOfAccountsView getChartOfAccountsView(UsersView loginUsersView, Integer accNo);
 	
-	SinglePage<BranchesView> getBranchesViewSinglePage(UsersView loginUsersView, long pageNo);
+	SinglePage<ChartOfAccountsView> getChartOfAccountsViewSinglePage(UsersView loginUsersView, long pageNo);
 	
-	SinglePage<BranchesView> getBranchesViewLastPage(UsersView loginUsersView);
+	SinglePage<ChartOfAccountsView> getChartOfAccountsViewLastPage(UsersView loginUsersView);
 	
-	Long getBranchesViewSinglePageNo(UsersView loginUsersView, Integer branchesNo);
+	Long getChartOfAccountsViewSinglePageNo(UsersView loginUsersView, Integer accNo);
 	
-	MultiplePages<BranchesView> getBranchesViewMultiplePages(UsersView loginUsersView, long pageNo);
+	MultiplePages<ChartOfAccountsView> getChartOfAccountsViewMultiplePages(UsersView loginUsersView, long pageNo);
 	
-	MultiplePages<BranchesView> getBranchesViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
-																		   BranchesViewFilter branchesViewFilter);
+	MultiplePages<ChartOfAccountsView> getChartOfAccountsViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
+																		   ChartOfAccountsViewFilter chartOfAccountsViewFilter);
 	
-	Object getNextPK(UsersView loginUsersView);
+	Object getNextPK(UsersView loginUsersView, Integer parentAcc);
 	
-	void addBranches(UsersView loginUsersView, BranchesView branchesView);
+	void addChartOfAccount(UsersView loginUsersView, ChartOfAccountsView chartOfAccountsView);
 	
-	void updateBranches(UsersView loginUsersView, BranchesView branchesView);
+	void updateChartOfAccount(UsersView loginUsersView, ChartOfAccountsView chartOfAccountsView);
 	
-	void deleteBranches(UsersView loginUsersView, Integer branchesNo);
+	void deleteChartOfAccount(UsersView loginUsersView, Integer accNo);
 
-	void generateBranchesPrivsForAllUsers(Integer branchesNo, Timestamp currentDate);
-	
+	void generateBranchesPrivsForAllUsers(Integer accNo, Timestamp currentDate);
+
 }

@@ -3,9 +3,12 @@ package com.expertsvision.erp.masterdata.chartofaccounts.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 
 /**
@@ -85,7 +88,7 @@ public class ChartOfAccountsView implements Serializable {
 
 	@JsonProperty("inactive_reason")
 	@Column(name="inactive_reason")
-	private Timestamp inactiveReason;
+	private String inactiveReason;
 
 	@JsonProperty("inactive_user")
 	@Column(name="inactive_user")
@@ -135,9 +138,14 @@ public class ChartOfAccountsView implements Serializable {
 	@Column(name="sub")
 	private Boolean sub;
 
-	@JsonProperty("tb")
-	@Column(name="tb")
-	private Boolean tb;
+	@JsonProperty("bs")
+	@Column(name="bs")
+	private Boolean bs;
+	
+	@JsonProperty("account_currency_list")
+	@Transient
+	@JsonInclude(Include.NON_NULL)
+	private List<AccountsCurrencyView> accountCurrencyList;
 
 	
 	public ChartOfAccountsView() {
@@ -271,11 +279,11 @@ public class ChartOfAccountsView implements Serializable {
 		this.inactiveDate = inactiveDate;
 	}
 
-	public Timestamp getInactiveReason() {
+	public String getInactiveReason() {
 		return this.inactiveReason;
 	}
 
-	public void setInactiveReason(Timestamp inactiveReason) {
+	public void setInactiveReason(String inactiveReason) {
 		this.inactiveReason = inactiveReason;
 	}
 
@@ -375,12 +383,20 @@ public class ChartOfAccountsView implements Serializable {
 		this.sub = sub;
 	}
 
-	public Boolean getTb() {
-		return this.tb;
+	public Boolean getBs() {
+		return this.bs;
 	}
 
-	public void setTb(Boolean tb) {
-		this.tb = tb;
+	public void setBs(Boolean bs) {
+		this.bs = bs;
+	}
+
+	public List<AccountsCurrencyView> getAccountCurrencyList() {
+		return accountCurrencyList;
+	}
+
+	public void setAccountCurrencyList(List<AccountsCurrencyView> accountCurrencyList) {
+		this.accountCurrencyList = accountCurrencyList;
 	}
 
 	@Override
@@ -394,7 +410,7 @@ public class ChartOfAccountsView implements Serializable {
 				+ ", inactiveUserFName=" + inactiveUserFName + ", level=" + level + ", modifyDate=" + modifyDate
 				+ ", modifyUser=" + modifyUser + ", modifyUserDName=" + modifyUserDName + ", modifyUserFName="
 				+ modifyUserFName + ", parentAcc=" + parentAcc + ", parentAccDName=" + parentAccDName
-				+ ", parentAccFName=" + parentAccFName + ", sub=" + sub + ", tb=" + tb + "]";
+				+ ", parentAccFName=" + parentAccFName + ", sub=" + sub + ", bs=" + bs + "]";
 	}
 
 }

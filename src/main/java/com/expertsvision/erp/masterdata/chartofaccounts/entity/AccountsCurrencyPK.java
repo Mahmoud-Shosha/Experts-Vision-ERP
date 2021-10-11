@@ -14,6 +14,13 @@ public class AccountsCurrencyPK implements Serializable {
 
 	private String curCode;
 
+	
+	public AccountsCurrencyPK(Integer accNo, String curCode) {
+		super();
+		this.accNo = accNo;
+		this.curCode = curCode;
+	}
+	
 	public AccountsCurrencyPK() {
 	}
 	public Integer getAccNo() {

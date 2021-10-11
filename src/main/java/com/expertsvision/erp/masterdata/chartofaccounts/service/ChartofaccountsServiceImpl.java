@@ -28,16 +28,19 @@ import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.core.validation.CoreValidationService;
 import com.expertsvision.erp.masterdata.branches.dao.BranchDAO;
-import com.expertsvision.erp.masterdata.branches.dto.BranchesViewFilter;
 import com.expertsvision.erp.masterdata.branches.entity.Branch;
 import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesView;
+import com.expertsvision.erp.masterdata.chartofaccounts.dao.ChartofaccountsDAO;
+import com.expertsvision.erp.masterdata.chartofaccounts.dto.ChartOfAccountsViewFilter;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccount;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
+import com.expertsvision.erp.masterdata.currency.entity.CurrencyView;
 
 @Service
 public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 
 	@Autowired
-	private BranchDAO branchDAO;
+	private ChartofaccountsDAO chartofaccountsDAO;
 
 	@Autowired
 	private GeneralDAO generalDAO;
@@ -55,209 +58,191 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 
 	@Override
 	@Transactional
-	public List<BranchesView> getBranchesViewList(UsersView loginUsersView) {
+	public List<ChartOfAccountsView> getChartOfAccountsViewList(UsersView loginUsersView) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
-		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
-			loginUsersView = null;
-		List<BranchesView> branchesView = branchDAO.getAllBranchViewList(loginUsersView);
-		return branchesView;
+		List<ChartOfAccountsView> chartOfAccountsView = chartofaccountsDAO.getAllChartOfAccountsViewList();
+		return chartOfAccountsView;
 	}
 
 	@Override
 	@Transactional
-	public BranchesView getBranchesView(UsersView loginUsersView, Integer branchesNo) {
+	public ChartOfAccountsView getChartOfAccountsView(UsersView loginUsersView, Integer accNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
-		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
-			loginUsersView = null;
-		BranchesView branchesView = branchDAO.getBranchView(loginUsersView, branchesNo);
-		if (branchesView == null) {
-			throw new ValidationException("not_exist", "branch_no");
+		ChartOfAccountsView chartOfAccountsView = chartofaccountsDAO.getChartOfAccountsView(accNo);
+		if (chartOfAccountsView == null)
+			throw new ValidationException("not_exist", "acc_no");
+		if (chartOfAccountsView.getSub()) {
+			if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
+				loginUsersView = null;
+			chartOfAccountsView.setAccountCurrencyList(chartofaccountsDAO.getAccountsCurrencyViewList(loginUsersView, accNo));
 		}
-		return branchesView;
+		return chartOfAccountsView;
 	}
 
 	@Override
 	@Transactional
-	public SinglePage<BranchesView> getBranchesViewSinglePage(UsersView loginUsersView, long pageNo) {
+	public SinglePage<ChartOfAccountsView> getChartOfAccountsViewSinglePage(UsersView loginUsersView, long pageNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
-		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
-			loginUsersView = null;
-		SinglePage<BranchesView> singlePage = branchDAO.getBranchViewSinglePage(loginUsersView, pageNo);
+		SinglePage<ChartOfAccountsView> singlePage = chartofaccountsDAO.getChartOfAccountsViewSinglePage(pageNo);
+		ChartOfAccountsView coav = singlePage.getPage();
+		if (coav != null && coav.getSub()) {
+			if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
+				loginUsersView = null;
+			coav.setAccountCurrencyList(chartofaccountsDAO.getAccountsCurrencyViewList(loginUsersView, coav.getAccNo()));
+		}
 		return singlePage;
 	}
 
 	@Override
 	@Transactional
-	public SinglePage<BranchesView> getBranchesViewLastPage(UsersView loginUsersView) {
+	public SinglePage<ChartOfAccountsView> getChartOfAccountsViewLastPage(UsersView loginUsersView) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
-		// Return requested data
-		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
-			loginUsersView = null;
-		SinglePage<BranchesView> singlePage = branchDAO.getBranchViewLastPage(loginUsersView);
+		SinglePage<ChartOfAccountsView> singlePage = chartofaccountsDAO.getChartOfAccountsViewLastPage();
+		ChartOfAccountsView coav = singlePage.getPage();
+		if (coav != null && coav.getSub()) {
+			if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
+				loginUsersView = null;
+			coav.setAccountCurrencyList(chartofaccountsDAO.getAccountsCurrencyViewList(loginUsersView, coav.getAccNo()));
+		}
 		return singlePage;
 	}
 
 	@Override
 	@Transactional
-	public Long getBranchesViewSinglePageNo(UsersView loginUsersView, Integer branchesNo) {
+	public Long getChartOfAccountsViewSinglePageNo(UsersView loginUsersView, Integer accNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
-		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
-			loginUsersView = null;
-		Long singlePageNo = branchDAO.getUserViewSinglePageNo(loginUsersView, branchesNo);
+		Long singlePageNo = chartofaccountsDAO.getUserViewSinglePageNo(accNo);
 		if (singlePageNo == null) {
-			throw new ValidationException("not_exist", "branch_no");
+			throw new ValidationException("not_exist", "acc_no");
 		}
 		return singlePageNo;
 	}
 
 	@Override
 	@Transactional
-	public MultiplePages<BranchesView> getBranchesViewMultiplePages(UsersView loginUsersView, long pageNo) {
+	public MultiplePages<ChartOfAccountsView> getChartOfAccountsViewMultiplePages(UsersView loginUsersView, long pageNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
-		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
-			loginUsersView = null;
-		MultiplePages<BranchesView> multiplePages = branchDAO.getBranchViewMultiplePages(loginUsersView, pageNo);
+		MultiplePages<ChartOfAccountsView> multiplePages = chartofaccountsDAO.getChartOfAccountsViewMultiplePages(pageNo);
 		return multiplePages;
 	}
 
 	@Override
 	@Transactional
-	public MultiplePages<BranchesView> getBranchesViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
-			BranchesViewFilter branchesViewFilter) {
+	public MultiplePages<ChartOfAccountsView> getChartOfAccountsViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
+			ChartOfAccountsViewFilter chartOfAccountsViewFilter) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
-		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
-			loginUsersView = null;
-		MultiplePages<BranchesView> multiplePages = branchDAO.getBranchViewFilteredMultiplePages(loginUsersView, pageNo,
-				branchesViewFilter);
+		MultiplePages<ChartOfAccountsView> multiplePages = chartofaccountsDAO.getChartOfAccountsViewFilteredMultiplePages(pageNo,
+				chartOfAccountsViewFilter);
 		return multiplePages;
 	}
 	
 	@Override
 	@Transactional
-	public Object getNextPK(UsersView loginUsersView) {
+	public Object getNextPK(UsersView loginUsersView, Integer parentAcc) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES, FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES, FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
-		Object PK = branchDAO.getNextPK();
-		return PK;
+		if (parentAcc.equals(0))
+			return null;
+		Integer PK = (Integer)chartofaccountsDAO.getNextPK(parentAcc);
+		if (PK == null) return null;
+		Double childDigits = Double.parseDouble(PK.toString().substring(parentAcc.toString().length()));
+		if ((Math.pow(10, childDigits) - 1) > childDigits)
+			return ++PK;
+		else
+			return null;
 	}
 
 	@Override
 	@Transactional
-	public void addBranches(UsersView loginUsersView, BranchesView branchView) {
+	public void addChartOfAccount(UsersView loginUsersView, ChartOfAccountsView chartOfAccountsView) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.ADD);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.ADD);
 		}
 		// Non-database validation
 		coreValidationService.notNull(branchView.getBranchNo(), "branch_no");
@@ -302,7 +287,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			coreValidationService.greaterThanOrEqualZero(branchView.getCountryNo(), "country_no");
 		}
 		// Database validation
-		Branch branch = getBranchFromBranchesView(branchView);
+		Branch branch = getBranchFromChartOfAccountsView(branchView);
 		Map<String, Object> conditions = new HashMap<>();
 		conditions.put("branch_no", branch.getBranchNo());
 		if (generalDAO.isEntityExist("branches", conditions))
@@ -390,21 +375,17 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 
 	@Override
 	@Transactional
-	public void updateBranches(UsersView loginUsersView, BranchesView branchView) {
+	public void updateChartOfAccount(UsersView loginUsersView, ChartOfAccountsView chartOfAccountsView) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.MODIFY);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.MODIFY);
 		}
 		// Non-database validation
 		coreValidationService.notNull(branchView.getBranchNo(), "branch_no");
@@ -449,7 +430,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			coreValidationService.greaterThanOrEqualZero(branchView.getCountryNo(), "country_no");
 		}
 		// Database validation
-		Branch branch = getBranchFromBranchesView(branchView);
+		Branch branch = getBranchFromChartOfAccountsView(branchView);
 		Map<String, Object> conditions = new HashMap<>();
 		conditions.put("branch_no", branch.getBranchNo());
 		if (!generalDAO.isEntityExist("branches", conditions))
@@ -536,21 +517,17 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 
 	@Override
 	@Transactional
-	public void deleteBranches(UsersView loginUsersView, Integer branchesNo) {
+	public void deleteChartOfAccount(UsersView loginUsersView, Integer accNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.DELETE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.DELETE);
 		}
 		// Non-database validation
 		coreValidationService.notNull(branchesNo, "branch_no");
@@ -609,72 +586,48 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		}
 	}
 
-	public Branch getBranchFromBranchesView(BranchesView branchesView) {
-		Branch branch = new Branch();
+	public ChartOfAccount getChartOfAccountFromChartOfAccountsView(ChartOfAccountsView chartOfAccountsView) {
+		ChartOfAccount chartOfAccount = new ChartOfAccount();
 		try {
-			branch.setAddDate(branchesView.getAddDate());
-			branch.setAddUser(branchesView.getAddUser());
-			branch.setModifyDate(branchesView.getModifyDate());
-			branch.setModifyUser(branchesView.getModifyUser());
-			branch.setBranchDName(Utils.escapeLiteral(null, branchesView.getBranchDName(), true).toString());
-			if (branchesView.getBranchFName() == null)
-				branch.setBranchFName(branchesView.getBranchFName());
+			chartOfAccount.setAccDName(Utils.escapeLiteral(null, chartOfAccountsView.getAccDName(), true).toString());
+			if (chartOfAccountsView.getAccDtl() == null)
+				chartOfAccount.setAccDtl(chartOfAccountsView.getAccDtl());
 			else
-				branch.setBranchFName(Utils.escapeLiteral(null, branchesView.getBranchFName(), true).toString());
-			branch.setBranchNo(branchesView.getBranchNo());
-			branch.setCountryNo(branchesView.getCountryNo());
-			branch.setShortcutD(Utils.escapeLiteral(null, branchesView.getShortcutD(), true).toString());
-			if (branchesView.getShortcutF() == null)
-				branch.setShortcutF(branchesView.getShortcutF());
+				chartOfAccount.setAccDtl(Utils.escapeLiteral(null, chartOfAccountsView.getAccDtl(), true).toString());
+			if (chartOfAccountsView.getAccFName() == null)
+				chartOfAccount.setAccFName(chartOfAccountsView.getAccFName());
 			else
-				branch.setShortcutF(Utils.escapeLiteral(null, branchesView.getShortcutF(), true).toString());
-			if (branchesView.getBranchDAddress() == null)
-				branch.setBranchDAddress(branchesView.getBranchDAddress());
+				chartOfAccount.setAccFName(Utils.escapeLiteral(null, chartOfAccountsView.getAccFName(), true).toString());
+			chartOfAccount.setAccGroup(chartOfAccountsView.getAccGroup());
+			chartOfAccount.setAccNo(chartOfAccountsView.getAccNo());
+			if (chartOfAccountsView.getAccType() == null)
+				chartOfAccount.setAccType(chartOfAccountsView.getAccType());
 			else
-				branch.setBranchDAddress(Utils.escapeLiteral(null, branchesView.getBranchDAddress(), true).toString());
-			if (branchesView.getBranchFAddress() == null)
-				branch.setBranchFAddress(branchesView.getBranchFAddress());
+				chartOfAccount.setAccType(Utils.escapeLiteral(null, chartOfAccountsView.getAccType(), true).toString());
+			chartOfAccount.setAddDate(chartOfAccountsView.getAddDate());
+			chartOfAccount.setAddUser(chartOfAccountsView.getAddUser());
+			chartOfAccount.setBs(chartOfAccountsView.getBs());
+			if (chartOfAccountsView.getCashFlowType() == null)
+				chartOfAccount.setCashFlowType(chartOfAccountsView.getCashFlowType());
 			else
-				branch.setBranchFAddress(Utils.escapeLiteral(null, branchesView.getBranchFAddress(), true).toString());
-			if (branchesView.getReportDHeader1() == null)
-				branch.setReportDHeader1(branchesView.getReportDHeader1());
+				chartOfAccount.setCashFlowType(Utils.escapeLiteral(null, chartOfAccountsView.getCashFlowType(), true).toString());
+			chartOfAccount.setDr(chartOfAccountsView.getDr());
+			chartOfAccount.setInactive(chartOfAccountsView.getInactive());
+			chartOfAccount.setInactiveDate(chartOfAccountsView.getInactiveDate());
+			if (chartOfAccountsView.getInactiveReason() == null)
+				chartOfAccount.setInactiveReason(chartOfAccountsView.getInactiveReason());
 			else
-				branch.setReportDHeader1(Utils.escapeLiteral(null, branchesView.getReportDHeader1(), true).toString());
-			if (branchesView.getReportFHeader1() == null)
-				branch.setReportFHeader1(branchesView.getReportFHeader1());
-			else
-				branch.setReportFHeader1(Utils.escapeLiteral(null, branchesView.getReportFHeader1(), true).toString());
-			if (branchesView.getReportDHeader2() == null)
-				branch.setReportDHeader2(branchesView.getReportDHeader2());
-			else
-				branch.setReportDHeader2(Utils.escapeLiteral(null, branchesView.getReportDHeader2(), true).toString());
-			if (branchesView.getReportFHeader2() == null)
-				branch.setReportFHeader2(branchesView.getReportFHeader2());
-			else
-				branch.setReportFHeader2(Utils.escapeLiteral(null, branchesView.getReportFHeader2(), true).toString());
-			if (branchesView.getReportDHeader3() == null)
-				branch.setReportDHeader3(branchesView.getReportDHeader3());
-			else
-				branch.setReportDHeader3(Utils.escapeLiteral(null, branchesView.getReportDHeader3(), true).toString());
-			if (branchesView.getReportFHeader3() == null)
-				branch.setReportFHeader3(branchesView.getReportFHeader3());
-			else
-				branch.setReportFHeader3(Utils.escapeLiteral(null, branchesView.getReportFHeader3(), true).toString());
-			if (branchesView.getTelephoneNo() == null)
-				branch.setTelephoneNo(branchesView.getTelephoneNo());
-			else
-				branch.setTelephoneNo(Utils.escapeLiteral(null, branchesView.getTelephoneNo(), true).toString());
-			branch.setCapital(branchesView.getCapital());
-			branch.setCityNo(branchesView.getCityNo());
-			branch.setCompanyNo(branchesView.getCompanyNo());
-			branch.setCrNo(branchesView.getCrNo());
-			branch.setLogo(branchesView.getLogo());
-			branch.setProvinceNo(branchesView.getProvinceNo());
-			branch.setTaxNo(branchesView.getTaxNo());
+				chartOfAccount.setInactiveReason(Utils.escapeLiteral(null, chartOfAccountsView.getInactiveReason(), true).toString());
+			chartOfAccount.setInactiveUser(chartOfAccountsView.getInactiveUser());
+			chartOfAccount.setLevel(chartOfAccountsView.getLevel());
+			chartOfAccount.setModifyDate(chartOfAccountsView.getModifyDate());
+			chartOfAccount.setModifyUser(chartOfAccountsView.getModifyUser());
+			chartOfAccount.setParentAcc(chartOfAccountsView.getParentAcc());
+			chartOfAccount.setSub(chartOfAccountsView.getSub());
 		} catch (SQLException e) {
 			throw new UnauthorizedException("resource");
 		}
-		return branch;
+		return chartOfAccount;
 	}
 
 }

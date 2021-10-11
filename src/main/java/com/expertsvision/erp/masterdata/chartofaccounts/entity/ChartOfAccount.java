@@ -53,7 +53,7 @@ public class ChartOfAccount implements Serializable {
 	private Timestamp inactiveDate;
 
 	@Column(name="inactive_reason")
-	private Timestamp inactiveReason;
+	private String inactiveReason;
 
 	@Column(name="inactive_user")
 	private Integer inactiveUser;
@@ -73,8 +73,8 @@ public class ChartOfAccount implements Serializable {
 	@Column(name="sub")
 	private Boolean sub;
 
-	@Column(name="tb")
-	private Boolean tb;
+	@Column(name="bs")
+	private Boolean bs;
 
 	public ChartOfAccount() {
 	}
@@ -175,11 +175,11 @@ public class ChartOfAccount implements Serializable {
 		this.inactiveDate = inactiveDate;
 	}
 
-	public Timestamp getInactiveReason() {
+	public String getInactiveReason() {
 		return this.inactiveReason;
 	}
 
-	public void setInactiveReason(Timestamp inactiveReason) {
+	public void setInactiveReason(String inactiveReason) {
 		this.inactiveReason = inactiveReason;
 	}
 
@@ -231,12 +231,12 @@ public class ChartOfAccount implements Serializable {
 		this.sub = sub;
 	}
 
-	public Boolean getTb() {
-		return this.tb;
+	public Boolean getBs() {
+		return this.bs;
 	}
 
-	public void setTb(Boolean tb) {
-		this.tb = tb;
+	public void setBs(Boolean bs) {
+		this.bs = bs;
 	}
 
 	@Override
@@ -246,7 +246,7 @@ public class ChartOfAccount implements Serializable {
 				+ addUser + ", cashFlowType=" + cashFlowType + ", dr=" + dr + ", inactive=" + inactive
 				+ ", inactiveDate=" + inactiveDate + ", inactiveReason=" + inactiveReason + ", inactiveUser="
 				+ inactiveUser + ", level=" + level + ", modifyDate=" + modifyDate + ", modifyUser=" + modifyUser
-				+ ", parentAcc=" + parentAcc + ", sub=" + sub + ", tb=" + tb + "]";
+				+ ", parentAcc=" + parentAcc + ", sub=" + sub + ", bs=" + bs + "]";
 	}
 
 }

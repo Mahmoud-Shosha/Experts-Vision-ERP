@@ -5,36 +5,43 @@ import java.util.List;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
-import com.expertsvision.erp.masterdata.branches.dto.BranchesViewFilter;
-import com.expertsvision.erp.masterdata.branches.entity.Branch;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesView;
+import com.expertsvision.erp.masterdata.chartofaccounts.dto.ChartOfAccountsViewFilter;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrency;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyView;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccount;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
 
 
 public interface ChartofaccountsDAO {
 	
-	List<BranchesView> getAllBranchViewList(UsersView loginUsersView);
+	List<ChartOfAccountsView> getAllChartOfAccountsViewList();
+	
+	List<AccountsCurrencyView> getAccountsCurrencyViewList(UsersView loginUsersView, Integer accNo);
 			
-	BranchesView getBranchView(UsersView loginUsersView, Integer branchNo);
+	ChartOfAccountsView getChartOfAccountsView(Integer accNo);
 	
-	SinglePage<BranchesView> getBranchViewSinglePage(UsersView loginUsersView, long pageNo);
+	SinglePage<ChartOfAccountsView> getChartOfAccountsViewSinglePage(long pageNo);
 	
-	SinglePage<BranchesView> getBranchViewLastPage(UsersView loginUsersView);
+	SinglePage<ChartOfAccountsView> getChartOfAccountsViewLastPage();
 	
-	Long getUserViewSinglePageNo(UsersView loginUsersView, Integer branchNo);
+	Long getUserViewSinglePageNo(Integer accNo);
 	
-	MultiplePages<BranchesView> getBranchViewMultiplePages(UsersView loginUsersView, long pageNo);
+	MultiplePages<ChartOfAccountsView> getChartOfAccountsViewMultiplePages(long pageNo);
 	
-	MultiplePages<BranchesView> getBranchViewFilteredMultiplePages(UsersView loginUsersView ,long pageNo, BranchesViewFilter branchesViewFilter);
+	MultiplePages<ChartOfAccountsView> getChartOfAccountsViewFilteredMultiplePages(long pageNo, ChartOfAccountsViewFilter chartOfAccountsViewFilter);
 	
-	Object getNextPK();
+	Object getNextPK(Integer parentAcc);
 	
-	void addBranch(Branch branch);
+	void addChartOfAccount(ChartOfAccount chartOfAccount, List<AccountsCurrency> accountsCurrencyList);
 	
-	void addBranchesPriv(BranchesPriv branchesPriv);
+	void addAccountsPriv(AccountsPriv accountsPriv);
 	
-	void updateBranch(Branch branch);
+	void updateChartOfAccount(ChartOfAccount chartOfAccount,
+			List<AccountsCurrency> accountsCurrencyForAddList,
+			List<AccountsCurrency> accountsCurrencyForDeleteList,
+			List<AccountsCurrency> accountsCurrencyForUpdateList);
 	
-	void deleteBranch(Integer branchNo);
+	void deleteChartOfAccount(Integer accNo);
 		
 }

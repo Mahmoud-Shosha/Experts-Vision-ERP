@@ -15,10 +15,14 @@ import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.GenerateSql;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
-import com.expertsvision.erp.masterdata.branches.dto.BranchesViewFilter;
-import com.expertsvision.erp.masterdata.branches.entity.Branch;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesView;
+import com.expertsvision.erp.masterdata.chartofaccounts.dto.ChartOfAccountsViewFilter;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrency;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyPK;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyView;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccount;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
+
 
 @Repository
 public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
@@ -26,291 +30,252 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	private final String BRANCHES_QUERY_FOR_VIEW = "SELECT branches_view.* FROM branches_priv AS priv "
-			+ "LEFT JOIN branches_view AS branches_view ON branches_view.branch_no = priv.branch_no "
-			+ "WHERE priv.user_id = :userId AND priv.view_priv = true "
-			+ "ORDER BY (branches_view.company_no, branches_view.branch_no) ";
+	private final String ACCOUNTS_CURRENCY_QUERY_FOR_VIEW = "SELECT accounts_currency_view.* FROM accounts_priv AS priv "
+			+ "LEFT JOIN accounts_currency_view AS accounts_currency_view "
+			+ "ON accounts_currency_view.acc_no = priv.acc_no AND accounts_currency_view.cur_code = priv.acc_curr "
+			+ "WHERE priv.user_id = :userId AND priv.acc_no = :accNo AND priv.view_priv = true "
+			+ "ORDER BY (accounts_currency_view.acc_no, accounts_currency_view.cur_code) ";
 
 	@Override
-	public List<BranchesView> getAllBranchViewList(UsersView loginUsersView) {
+	public List<ChartOfAccountsView> getAllChartOfAccountsViewList() {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT * FROM chart_of_accounts_view";
+		Query<ChartOfAccountsView> query = session.createNativeQuery(sql, ChartOfAccountsView.class);
+		List<ChartOfAccountsView> chartOfAccountsViewList = query.getResultList();
+		return chartOfAccountsViewList;
+	}
+	
+	@Override
+	public List<AccountsCurrencyView> getAccountsCurrencyViewList(UsersView loginUsersView, Integer accNo) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql;
-		Query<BranchesView> query;
+		Query<AccountsCurrencyView> query;
 		if (loginUsersView == null) {
-			sql = "SELECT * FROM branches_view";
-			query = session.createNativeQuery(sql, BranchesView.class);
+			sql = "SELECT * FROM accounts_currency_view WHERE acc_no = :accNo ";
+			query = session.createNativeQuery(sql, AccountsCurrencyView.class);
+			query.setParameter("accNo", accNo);
 		} else {
-			sql = BRANCHES_QUERY_FOR_VIEW;
-			query = session.createNativeQuery(sql, BranchesView.class);
+			sql = ACCOUNTS_CURRENCY_QUERY_FOR_VIEW;
+			query = session.createNativeQuery(sql, AccountsCurrencyView.class);
 			query.setParameter("userId", loginUsersView.getUserId());
+			query.setParameter("accNo", accNo);
 		}
-		List<BranchesView> branchViewList = query.getResultList();
-		return branchViewList;
+		List<AccountsCurrencyView> accountsCurrencyViewList = query.getResultList();
+		return accountsCurrencyViewList;
 	}
 
 	@Override
-	public BranchesView getBranchView(UsersView loginUsersView,Integer branchNo) {
-		Session session = sessionFactory.getCurrentSession();
-		String sql;
-		Query<BranchesView> query;
-		if (loginUsersView == null) {
-			sql = "SELECT * FROM branches_view WHERE branch_no = :branchNo";
-			query = session.createNativeQuery(sql, BranchesView.class);
-		} else {
-			sql = "SELECT * FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r WHERE branch_no = :branchNo";
-			query = session.createNativeQuery(sql, BranchesView.class);
-			query.setParameter("userId", loginUsersView.getUserId());
-		}
-		query.setParameter("branchNo", branchNo);
-		List<BranchesView> branchViewList = query.getResultList();
-		return branchViewList.isEmpty() ? null : branchViewList.get(0);
-	}
-
-	@Override
-	public SinglePage<BranchesView> getBranchViewSinglePage(UsersView loginUsersView, long pageNo) {
+	public ChartOfAccountsView getChartOfAccountsView(Integer accNo) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = null;
-		Query<BranchesView> query;
-		List<BranchesView> branchViewList = null;
+		sql = "SELECT * FROM chart_of_accounts_view WHERE acc_no = :accNo";
+		Query<ChartOfAccountsView> query = session.createNativeQuery(sql, ChartOfAccountsView.class);
+		query.setParameter("accNo", accNo);
+		List<ChartOfAccountsView> chartOfAccountsViewList = query.getResultList();
+		return chartOfAccountsViewList.isEmpty()? null : chartOfAccountsViewList.get(0);
+	}
+
+	@Override
+	public SinglePage<ChartOfAccountsView> getChartOfAccountsViewSinglePage(long pageNo) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = null;
+		List<ChartOfAccountsView> chartOfAccountsViewList = null;
 		long count;
 		if (pageNo > 0) {
-			if (loginUsersView == null) {
-				sql = "SELECT * FROM branches_view LIMIT 1 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
-			} else {
-				sql = "SELECT * FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r LIMIT 1 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
-				query.setParameter("userId", loginUsersView.getUserId());
-			}	
+			sql = "SELECT * FROM chart_of_accounts_view LIMIT 1 OFFSET :Offset";
+			Query<ChartOfAccountsView> query = session.createNativeQuery(sql, ChartOfAccountsView.class);
 			query.setParameter("Offset", pageNo - 1);
-			branchViewList = query.getResultList();
+			chartOfAccountsViewList = query.getResultList();
 		}
-		if (pageNo <= 0 || branchViewList.isEmpty()) {
-			if (loginUsersView == null) {
-				sql = "SELECT COUNT(*) FROM branches_view";
+		if (pageNo <= 0 || chartOfAccountsViewList.isEmpty()) {
+				sql = "SELECT COUNT(*) FROM chart_of_accounts_view";
 				@SuppressWarnings("unchecked")
 				Query<BigInteger> query2 = session.createNativeQuery(sql);
 				count = query2.getSingleResult().longValue();
-			} else {
-				sql = "SELECT COUNT(*) FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r";
-				@SuppressWarnings("unchecked")
-				Query<BigInteger> query2 = session.createNativeQuery(sql);
-				query2.setParameter("userId", loginUsersView.getUserId());
-				count = query2.getSingleResult().longValue();
-			}
-			return new SinglePage<BranchesView>(null, pageNo, count);
+			return new SinglePage<ChartOfAccountsView>(null, pageNo, count);
 		} else {
-			return new SinglePage<BranchesView>(branchViewList.get(0), pageNo, null);
+			return new SinglePage<ChartOfAccountsView>(chartOfAccountsViewList.get(0), pageNo, null);
 		}
 	}
 
 	@Override
-	public SinglePage<BranchesView> getBranchViewLastPage(UsersView loginUsersView) {
+	public SinglePage<ChartOfAccountsView> getChartOfAccountsViewLastPage() {
 		Session session = sessionFactory.getCurrentSession();
-		String sql;
-		Query<BranchesView> query;
-		long count;
-		if (loginUsersView == null) {
-			sql = "SELECT * FROM branches_view ORDER BY(company_no, branch_no) DESC LIMIT 1";
-			query = session.createNativeQuery(sql, BranchesView.class);
+		String sql = "SELECT * FROM chart_of_accounts_view ORDER BY(acc_no) DESC LIMIT 1";
+		Query<ChartOfAccountsView> query = session.createNativeQuery(sql, ChartOfAccountsView.class);
+		List<ChartOfAccountsView> chartOfAccountsViewList = query.getResultList();
+		sql = "SELECT COUNT(*) FROM chart_of_accounts_view";
+		@SuppressWarnings("unchecked")
+		Query<BigInteger> query2 = session.createNativeQuery(sql);
+		long count = query2.getSingleResult().longValue();
+		if (chartOfAccountsViewList.isEmpty()) {
+			return new SinglePage<ChartOfAccountsView>(null, count, count);
 		} else {
-			sql = "SELECT * FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r ORDER BY(company_no, branch_no) DESC LIMIT 1";
-			query = session.createNativeQuery(sql, BranchesView.class);
-			query.setParameter("userId", loginUsersView.getUserId());
-		}
-		if (loginUsersView == null) {
-			sql = "SELECT COUNT(*) FROM branches_view";
-			@SuppressWarnings("unchecked")
-			Query<BigInteger> query2 = session.createNativeQuery(sql);
-			count = query2.getSingleResult().longValue();
-		} else {
-			sql = "SELECT COUNT(*) FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r";
-			@SuppressWarnings("unchecked")
-			Query<BigInteger> query2 = session.createNativeQuery(sql);
-			query2.setParameter("userId", loginUsersView.getUserId());
-			count = query2.getSingleResult().longValue();
-		}
-		List<BranchesView> branchViewList = query.getResultList();
-		if (branchViewList.isEmpty()) {
-			return new SinglePage<BranchesView>(null, count, count);
-		} else {
-			return new SinglePage<BranchesView>(branchViewList.get(0), count, count);
+			return new SinglePage<ChartOfAccountsView>(chartOfAccountsViewList.get(0), count, count);
 		}
 	}
 
 	@Override
-	public Long getUserViewSinglePageNo(UsersView loginUsersView, Integer branchNo) {
+	public Long getUserViewSinglePageNo(Integer accNo) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql;
-		List<BigInteger> singlePageNoList;
-		if (loginUsersView == null) {
-			sql = "SELECT row_number FROM" + "			(SELECT company_no, branch_no, ROW_NUMBER()"
-					+ "						OVER(ORDER BY (company_no, branch_no)) FROM branches_view)"
-					+ "			AS row_number " + "WHERE branch_no = :branchNo";
-			@SuppressWarnings("unchecked")
-			Query<BigInteger> query = session.createNativeQuery(sql);
-			query.setParameter("branchNo", branchNo);
-			singlePageNoList = query.getResultList();
-		} else {
-			sql = "SELECT row_number FROM" + "			(SELECT company_no, branch_no, ROW_NUMBER()"
-					+ "						OVER(ORDER BY (company_no, branch_no)) FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r)"
-					+ "			AS row_number " + "WHERE branch_no = :branchNo";
-			@SuppressWarnings("unchecked")
-			Query<BigInteger> query = session.createNativeQuery(sql);
-			query.setParameter("branchNo", branchNo);
-			query.setParameter("userId", loginUsersView.getUserId());
-			singlePageNoList = query.getResultList();
-		}
+		String sql = "SELECT row_number FROM" +
+					 "			(SELECT acc_no, ROW_NUMBER()" +
+					 "						OVER(ORDER BY (acc_no)) FROM chart_of_accounts_view)" +
+					 "			AS row_number " +
+					 "WHERE acc_no = :accNo";
+		@SuppressWarnings("unchecked")
+		Query<BigInteger> query = session.createNativeQuery(sql);
+		query.setParameter("accNo", accNo);
+		List<BigInteger> singlePageNoList = query.getResultList();
 		return singlePageNoList.isEmpty() ? null : singlePageNoList.get(0).longValue();
 	}
 
 	@Override
-	public MultiplePages<BranchesView> getBranchViewMultiplePages(UsersView loginUsersView, long pageNo) {
+	public MultiplePages<ChartOfAccountsView> getChartOfAccountsViewMultiplePages(long pageNo) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = null;
-		Query<BranchesView> query;
-		List<BranchesView> branchViewList = null;
-		long count;
+		List<ChartOfAccountsView> chartOfAccountsViewList = null;
 		if (pageNo > 0) {
-			if (loginUsersView == null) {
-				sql = "SELECT * FROM  branches_view LIMIT 30 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
-			} else {
-				sql = "SELECT * FROM  (" + BRANCHES_QUERY_FOR_VIEW + ") AS r LIMIT 30 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
-				query.setParameter("userId", loginUsersView.getUserId());
-			}
+			sql = "SELECT * FROM  chart_of_accounts_view LIMIT 30 OFFSET :Offset";
+			Query<ChartOfAccountsView> query = session.createNativeQuery(sql, ChartOfAccountsView.class);
 			query.setParameter("Offset", (pageNo - 1) * 30);
-			branchViewList = query.getResultList();
+			chartOfAccountsViewList = query.getResultList();
 		}
-		if (loginUsersView == null) {
-			sql = "SELECT COUNT(*) FROM branches_view AS foo";
-			@SuppressWarnings("unchecked")
-			Query<BigInteger> query2 = session.createNativeQuery(sql);
-			count = query2.getSingleResult().longValue();
+		sql = "SELECT COUNT(*) FROM chart_of_accounts AS foo";
+		@SuppressWarnings("unchecked")
+		Query<BigInteger> query2 = session.createNativeQuery(sql);
+		long count = query2.getSingleResult().longValue();
+		if (pageNo <= 0 || chartOfAccountsViewList.isEmpty()) {
+			return new MultiplePages<ChartOfAccountsView>(null, pageNo, (long)Math.ceil(count/30.0));
 		} else {
-			sql = "SELECT COUNT(*) FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r";
-			@SuppressWarnings("unchecked")
-			Query<BigInteger> query2 = session.createNativeQuery(sql);
-			query2.setParameter("userId", loginUsersView.getUserId());
-			count = query2.getSingleResult().longValue();
-		}
-		if (pageNo <= 0 || branchViewList.isEmpty()) {
-			return new MultiplePages<BranchesView>(null, pageNo, (long) Math.ceil(count / 30.0));
-		} else {
-			return new MultiplePages<BranchesView>(branchViewList, pageNo, (long) Math.ceil(count / 30.0));
+			return new MultiplePages<ChartOfAccountsView>(chartOfAccountsViewList, pageNo, (long)Math.ceil(count/30.0));
 		}
 	}
 
 	@Override
-	public MultiplePages<BranchesView> getBranchViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
-			BranchesViewFilter branchesViewFilter) {
+	public MultiplePages<ChartOfAccountsView> getChartOfAccountsViewFilteredMultiplePages(long pageNo, ChartOfAccountsViewFilter chartOfAccountsViewFilter) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = null;
-		Query<BranchesView> query;
-		List<BranchesView> branchViewList = null;
-		long count;
-		String filterQuery;
+		List<ChartOfAccountsView> chartOfAccountsViewList = null;
 		Map<String, Object> filters = new HashMap<String, Object>();
-		filters.put("branch_no", branchesViewFilter.getBranchNo());
-		filters.put("company_no", branchesViewFilter.getCompanyNo());
-		filters.put("branch_d_name", branchesViewFilter.getBranchDName());
-		filters.put("branch_f_name", branchesViewFilter.getBranchFName());
+		filters.put("acc_d_name", chartOfAccountsViewFilter.getAccDName());
+		filters.put("acc_f_name", chartOfAccountsViewFilter.getAccFName());
+		filters.put("acc_no", chartOfAccountsViewFilter.getAccNo());
+		filters.put("bs", chartOfAccountsViewFilter.getBs());
+		filters.put("parent_acc", chartOfAccountsViewFilter.getParentAcc());
+		filters.put("sub", chartOfAccountsViewFilter.getSub());
+		String filterQuery = GenerateSql.generateFilterQuery("chart_of_accounts_view", filters);
 		if (pageNo > 0) {
-			if (loginUsersView == null) {
-				filterQuery = GenerateSql.generateFilterQuery("branches_view", filters);
-				sql = filterQuery + " LIMIT 30 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
-			} else {
-				filterQuery = GenerateSql.generateFilterQuery(" (" + BRANCHES_QUERY_FOR_VIEW + ") AS r ", filters);
-				sql = filterQuery + " LIMIT 30 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
-				query.setParameter("userId", loginUsersView.getUserId());
-			}
+			sql = filterQuery + " LIMIT 30 OFFSET :Offset";
+			Query<ChartOfAccountsView> query = session.createNativeQuery(sql, ChartOfAccountsView.class);
 			query.setParameter("Offset", (pageNo - 1) * 30);
-			branchViewList = query.getResultList();
+			chartOfAccountsViewList = query.getResultList();
 		}
-		if (loginUsersView == null) {
-			filterQuery = GenerateSql.generateFilterQuery("branches_view", filters);
-			sql = "SELECT COUNT(*) FROM (" + filterQuery + ") As filteredRowsCount";
-			@SuppressWarnings("unchecked")
-			Query<BigInteger> query2 = session.createNativeQuery(sql);
-			count = query2.getSingleResult().longValue();
+		sql = "SELECT COUNT(*) FROM (" + filterQuery + ") As filteredRowsCount";
+		@SuppressWarnings("unchecked")
+		Query<BigInteger> query2 = session.createNativeQuery(sql);
+		long count = query2.getSingleResult().longValue();
+		if (pageNo <= 0 || chartOfAccountsViewList.isEmpty()) {
+			return new MultiplePages<ChartOfAccountsView>(null, pageNo, (long)Math.ceil(count/30.0));
 		} else {
-			filterQuery = GenerateSql.generateFilterQuery(" (" + BRANCHES_QUERY_FOR_VIEW + ") AS r ", filters);
-			sql = "SELECT COUNT(*) FROM (" + filterQuery + ") As filteredRowsCount";
-			@SuppressWarnings("unchecked")
-			Query<BigInteger> query2 = session.createNativeQuery(sql);
-			query2.setParameter("userId", loginUsersView.getUserId());
-			count = query2.getSingleResult().longValue();
-		}
-		if (pageNo <= 0 || branchViewList.isEmpty()) {
-			return new MultiplePages<BranchesView>(null, pageNo, (long) Math.ceil(count / 30.0));
-		} else {
-			return new MultiplePages<BranchesView>(branchViewList, pageNo, (long) Math.ceil(count / 30.0));
+			return new MultiplePages<ChartOfAccountsView>(chartOfAccountsViewList, pageNo, (long)Math.ceil(count/30.0));
 		}
 	}
 	
 	@Override
-	public Object getNextPK() {
+	public Object getNextPK(Integer parentAcc) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT max(branch_no) + 1 FROM branches";
+		String sql = "SELECT max(acc_no) FROM chart_of_accounts WHERE parent_acc = :parentAcc";
 		@SuppressWarnings("unchecked")
 		Query<Object> query = session.createNativeQuery(sql);
+		query.setParameter("parentAcc", parentAcc);
 		Object nextPK = query.getSingleResult();
-		if (nextPK == null) nextPK = 1;
 		return nextPK;
 	}
 
 	@Override
-	public void addBranch(Branch branch) {
+	public void addChartOfAccount(ChartOfAccount chartOfAccount, List<AccountsCurrency> accountsCurrencyList) {
 		Session session = sessionFactory.getCurrentSession();
-		session.save(branch);
+		session.save(chartOfAccount);
+		session.flush();
+		if (accountsCurrencyList != null) {
+			for (AccountsCurrency obj: accountsCurrencyList) {
+				session.save(obj);
+			}
+			session.flush();
+		}
+	}
+
+	@Override
+	public void addAccountsPriv(AccountsPriv accountsPriv) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(accountsPriv);
+	}
+
+	@Override
+	public void updateChartOfAccount(ChartOfAccount chartOfAccount,
+			List<AccountsCurrency> accountsCurrencyForAddList,
+			List<AccountsCurrency> accountsCurrencyForDeleteList,
+			List<AccountsCurrency> accountsCurrencyForUpdateList) {
+		Session session = sessionFactory.getCurrentSession();
+		ChartOfAccount DBChartOfAccount = session.get(ChartOfAccount.class, chartOfAccount.getAccNo());
+		DBChartOfAccount.setAccDName(chartOfAccount.getAccDName());
+		DBChartOfAccount.setAccDtl(chartOfAccount.getAccDtl());
+		DBChartOfAccount.setAccFName(chartOfAccount.getAccFName());
+		DBChartOfAccount.setAccGroup(chartOfAccount.getAccGroup());
+		DBChartOfAccount.setAccType(chartOfAccount.getAccType());
+		DBChartOfAccount.setBs(chartOfAccount.getBs());
+		DBChartOfAccount.setCashFlowType(chartOfAccount.getCashFlowType());
+		DBChartOfAccount.setDr(chartOfAccount.getDr());
+		DBChartOfAccount.setInactive(chartOfAccount.getInactive());
+		DBChartOfAccount.setInactiveDate(chartOfAccount.getInactiveDate());
+		DBChartOfAccount.setInactiveReason(chartOfAccount.getInactiveReason());
+		DBChartOfAccount.setInactiveUser(chartOfAccount.getInactiveUser());
+		DBChartOfAccount.setLevel(chartOfAccount.getLevel());
+		DBChartOfAccount.setModifyDate(chartOfAccount.getModifyDate());
+		DBChartOfAccount.setModifyUser(chartOfAccount.getModifyUser());
+		DBChartOfAccount.setParentAcc(chartOfAccount.getParentAcc());
+		DBChartOfAccount.setSub(chartOfAccount.getSub());
+		session.merge(DBChartOfAccount);
+		session.flush();
+		
+		// Add the details
+		if (accountsCurrencyForAddList != null) {
+			for (AccountsCurrency obj : accountsCurrencyForAddList) {
+				session.save(obj);
+			}
+		}
+		// Update the details
+		if (accountsCurrencyForUpdateList != null) {
+			for (AccountsCurrency obj : accountsCurrencyForUpdateList) {
+				AccountsCurrency DBAccountsCurrency = session.get(AccountsCurrency.class,
+						new AccountsCurrencyPK(obj.getAccNo(), obj.getCurCode()));
+				DBChartOfAccount.setAccDName(chartOfAccount.getAccDName());
+				DBAccountsCurrency.setActive(obj.getActive());
+				DBAccountsCurrency.setModifyDate(obj.getModifyDate());
+				DBAccountsCurrency.setModifyUser(obj.getModifyUser());
+				DBAccountsCurrency.setUsed(obj.getUsed());
+				session.merge(DBChartOfAccount);
+			}
+		}
+		// Delete the details
+		if (accountsCurrencyForDeleteList != null) {
+			String sql = "DELETE FROM accounts_currency WHERE acc_no = :accNo AND cur_code = :curCode";
+			Query<?> query = session.createNativeQuery(sql);
+			query.setParameter("accNo", chartOfAccount.getAccNo());
+			for (AccountsCurrency obj : accountsCurrencyForDeleteList) {
+				query.setParameter("curCode", obj.getCurCode());
+				query.executeUpdate();
+			}
+		}
 		session.flush();
 	}
 
 	@Override
-	public void addBranchesPriv(BranchesPriv branchesPriv) {
+	public void deleteChartOfAccount(Integer accNo) {
 		Session session = sessionFactory.getCurrentSession();
-		session.save(branchesPriv);
-	}
-
-	@Override
-	public void updateBranch(Branch branch) {
-		Session session = sessionFactory.getCurrentSession();
-		Branch DBBranch = session.get(Branch.class, branch.getBranchNo());
-		DBBranch.setModifyDate(branch.getModifyDate());
-		DBBranch.setModifyUser(branch.getModifyUser());
-		DBBranch.setBranchDName(branch.getBranchDName());
-		DBBranch.setBranchFName(branch.getBranchFName());
-		DBBranch.setCountryNo(branch.getCountryNo());
-		DBBranch.setBranchDAddress(branch.getBranchDAddress());
-		DBBranch.setBranchFAddress(branch.getBranchFAddress());
-		DBBranch.setCapital(branch.getCapital());
-		DBBranch.setCityNo(branch.getCityNo());
-		DBBranch.setCompanyNo(branch.getCompanyNo());
-		DBBranch.setCrNo(branch.getCrNo());
-		DBBranch.setLogo(branch.getLogo());
-		DBBranch.setProvinceNo(branch.getProvinceNo());
-		DBBranch.setReportDHeader1(branch.getReportDHeader1());
-		DBBranch.setReportDHeader2(branch.getReportDHeader2());
-		DBBranch.setReportDHeader3(branch.getReportDHeader3());
-		DBBranch.setReportFHeader1(branch.getReportFHeader1());
-		DBBranch.setReportFHeader2(branch.getReportFHeader2());
-		DBBranch.setReportFHeader3(branch.getReportFHeader3());
-		DBBranch.setShortcutD(branch.getShortcutD());
-		DBBranch.setShortcutF(branch.getShortcutF());
-		DBBranch.setTaxNo(branch.getTaxNo());
-		DBBranch.setTelephoneNo(branch.getTelephoneNo());
-		session.merge(DBBranch);
-		session.flush();
-	}
-
-	@Override
-	public void deleteBranch(Integer branchNo) {
-		Session session = sessionFactory.getCurrentSession();
-		Branch DBBranch = session.get(Branch.class, branchNo);
-		session.delete(DBBranch);
+		ChartOfAccount chartOfAccount = session.get(ChartOfAccount.class, accNo);
+		session.delete(chartOfAccount);
 		session.flush();
 	}
 
