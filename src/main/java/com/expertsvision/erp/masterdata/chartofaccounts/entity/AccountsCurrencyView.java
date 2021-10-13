@@ -3,7 +3,9 @@ package com.expertsvision.erp.masterdata.chartofaccounts.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.sql.Timestamp;
 
@@ -76,6 +78,11 @@ public class AccountsCurrencyView implements Serializable {
 	@JsonProperty("used")
 	@Column(name="used")
 	private Boolean used;
+	
+	@Transient
+	@JsonProperty("action")
+	@JsonInclude(Include.NON_NULL)
+	private String action;
 
 	
 	public AccountsCurrencyView() {
@@ -193,13 +200,21 @@ public class AccountsCurrencyView implements Serializable {
 		this.used = used;
 	}
 
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
 	@Override
 	public String toString() {
 		return "AccountsCurrencyView [accNo=" + accNo + ", active=" + active + ", addDate=" + addDate + ", addUser="
 				+ addUser + ", addUserDName=" + addUserDName + ", addUserFName=" + addUserFName + ", curCode=" + curCode
 				+ ", currencyDName=" + currencyDName + ", currencyFName=" + currencyFName + ", modifyDate=" + modifyDate
 				+ ", modifyUser=" + modifyUser + ", modifyUserDName=" + modifyUserDName + ", modifyUserFName="
-				+ modifyUserFName + ", used=" + used + "]";
+				+ modifyUserFName + ", used=" + used + ", action=" + action + "]";
 	}
 
 }

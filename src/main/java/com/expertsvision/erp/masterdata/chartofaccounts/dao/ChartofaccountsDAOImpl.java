@@ -250,7 +250,6 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 			for (AccountsCurrency obj : accountsCurrencyForUpdateList) {
 				AccountsCurrency DBAccountsCurrency = session.get(AccountsCurrency.class,
 						new AccountsCurrencyPK(obj.getAccNo(), obj.getCurCode()));
-				DBChartOfAccount.setAccDName(chartOfAccount.getAccDName());
 				DBAccountsCurrency.setActive(obj.getActive());
 				DBAccountsCurrency.setModifyDate(obj.getModifyDate());
 				DBAccountsCurrency.setModifyUser(obj.getModifyUser());
@@ -277,6 +276,16 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 		ChartOfAccount chartOfAccount = session.get(ChartOfAccount.class, accNo);
 		session.delete(chartOfAccount);
 		session.flush();
+	}
+	
+	@Override
+	public boolean hasSubAccounts(Integer accNo) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT 1 FROM chart_of_accounts WHERE parent_acc = :parentAcc";
+		@SuppressWarnings("unchecked")
+		Query<Object> query = session.createNativeQuery(sql);
+		query.setParameter("parentAcc", accNo);
+		return query.getResultList().size() > 0;
 	}
 
 }

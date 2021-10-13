@@ -43,5 +43,7 @@ public interface ChartofaccountsDAO {
 			List<AccountsCurrency> accountsCurrencyForUpdateList);
 	
 	void deleteChartOfAccount(Integer accNo);
+	
+	boolean hasSubAccounts(Integer accNo);
 		
 }
