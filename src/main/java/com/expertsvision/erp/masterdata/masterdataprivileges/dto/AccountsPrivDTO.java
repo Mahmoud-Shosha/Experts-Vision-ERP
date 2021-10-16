@@ -5,33 +5,39 @@ import java.sql.Timestamp;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccountsPrivDTO {
-
+	
 	@JsonProperty("user_id")
 	private Integer userId;
 	
 	@JsonProperty("admin_group")
 	private Boolean adminGroup;
 
-	@JsonProperty("branch_no")
-	private Integer branchNo;
+	@JsonProperty("acc_no")
+	private Integer accNo;
+
+	@JsonProperty("acc_cur")
+	private String accCurr;
+	
+	@JsonProperty("group_no")
+	private Integer groupNo;
 
 	@JsonProperty("add_priv")
 	private Boolean addPriv;
-
+	
 	@JsonProperty("view_priv")
 	private Boolean viewPriv;
 
+	@JsonProperty("add_date")
+	private Timestamp addDate;
+	
 	@JsonProperty("add_user")
 	private Integer addUser;
 
-	@JsonProperty("add_date")
-	private Timestamp addDate;
+	@JsonProperty("modify_date")
+	private Timestamp modifyDate;
 
 	@JsonProperty("modify_user")
 	private Integer modifyUser;
-
-	@JsonProperty("modify_date")
-	private Timestamp modifyDate;
 
 	@JsonProperty("can_change_add_priv")
 	private Boolean canChangeAddPriv;
@@ -57,11 +63,23 @@ public class AccountsPrivDTO {
 	@JsonProperty("modify_user_f_name")
 	private String modifyUserFName;
 
-	@JsonProperty("branch_d_name")
-	private String branchDName;
+	@JsonProperty("acc_d_name")
+	private String accDName;
 
-	@JsonProperty("branch_f_name")
-	private String branchFName;
+	@JsonProperty("acc_f_name")
+	private String accFName;
+	
+	@JsonProperty("currency_d_name")
+	private String currencyDName;
+
+	@JsonProperty("currency_f_name")
+	private String currencyFName;
+	
+	@JsonProperty("group_d_name")
+	private String groupDName;
+	
+	@JsonProperty("group_f_name")
+	private String groupFName;
 
 	public Integer getUserId() {
 		return userId;
@@ -71,12 +89,28 @@ public class AccountsPrivDTO {
 		this.userId = userId;
 	}
 
-	public Integer getBranchNo() {
-		return branchNo;
+	public Boolean getAdminGroup() {
+		return adminGroup;
 	}
 
-	public void setBranchNo(Integer branchNo) {
-		this.branchNo = branchNo;
+	public void setAdminGroup(Boolean adminGroup) {
+		this.adminGroup = adminGroup;
+	}
+
+	public Integer getAccNo() {
+		return accNo;
+	}
+
+	public void setAccNo(Integer accNo) {
+		this.accNo = accNo;
+	}
+
+	public String getAccCurr() {
+		return accCurr;
+	}
+
+	public void setAccCurr(String accCurr) {
+		this.accCurr = accCurr;
 	}
 
 	public Boolean getAddPriv() {
@@ -95,14 +129,6 @@ public class AccountsPrivDTO {
 		this.viewPriv = viewPriv;
 	}
 
-	public Integer getAddUser() {
-		return addUser;
-	}
-
-	public void setAddUser(Integer addUser) {
-		this.addUser = addUser;
-	}
-
 	public Timestamp getAddDate() {
 		return addDate;
 	}
@@ -111,12 +137,12 @@ public class AccountsPrivDTO {
 		this.addDate = addDate;
 	}
 
-	public Integer getModifyUser() {
-		return modifyUser;
+	public Integer getAddUser() {
+		return addUser;
 	}
 
-	public void setModifyUser(Integer modifyUser) {
-		this.modifyUser = modifyUser;
+	public void setAddUser(Integer addUser) {
+		this.addUser = addUser;
 	}
 
 	public Timestamp getModifyDate() {
@@ -125,6 +151,14 @@ public class AccountsPrivDTO {
 
 	public void setModifyDate(Timestamp modifyDate) {
 		this.modifyDate = modifyDate;
+	}
+
+	public Integer getModifyUser() {
+		return modifyUser;
+	}
+
+	public void setModifyUser(Integer modifyUser) {
+		this.modifyUser = modifyUser;
 	}
 
 	public Boolean getCanChangeAddPriv() {
@@ -191,28 +225,60 @@ public class AccountsPrivDTO {
 		this.modifyUserFName = modifyUserFName;
 	}
 
-	public String getBranchDName() {
-		return branchDName;
+	public String getAccDName() {
+		return accDName;
 	}
 
-	public void setBranchDName(String branchDName) {
-		this.branchDName = branchDName;
+	public void setAccDName(String accDName) {
+		this.accDName = accDName;
 	}
 
-	public String getBranchFName() {
-		return branchFName;
+	public String getAccFName() {
+		return accFName;
 	}
 
-	public void setBranchFName(String branchFName) {
-		this.branchFName = branchFName;
+	public void setAccFName(String accFName) {
+		this.accFName = accFName;
 	}
 
-	public Boolean getAdminGroup() {
-		return adminGroup;
+	public String getCurrencyDName() {
+		return currencyDName;
 	}
 
-	public void setAdminGroup(Boolean adminGroup) {
-		this.adminGroup = adminGroup;
+	public void setCurrencyDName(String currencyDName) {
+		this.currencyDName = currencyDName;
+	}
+
+	public String getCurrencyFName() {
+		return currencyFName;
+	}
+
+	public void setCurrencyFName(String currencyFName) {
+		this.currencyFName = currencyFName;
+	}
+
+	public Integer getGroupNo() {
+		return groupNo;
+	}
+
+	public void setGroupNo(Integer groupNo) {
+		this.groupNo = groupNo;
+	}
+
+	public String getGroupDName() {
+		return groupDName;
+	}
+
+	public void setGroupDName(String groupDName) {
+		this.groupDName = groupDName;
+	}
+
+	public String getGroupFName() {
+		return groupFName;
+	}
+
+	public void setGroupFName(String groupFName) {
+		this.groupFName = groupFName;
 	}
 
 }

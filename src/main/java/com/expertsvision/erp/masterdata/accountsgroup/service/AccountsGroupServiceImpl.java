@@ -352,8 +352,7 @@ public class AccountsGroupServiceImpl implements AccountsGroupService {
 		Map<String, Object> defaultValues = new HashMap<>();
 		Map<String, Object> info = new HashMap<>();
 		PreData preData = new PreData(readOnly, defaultValues, info);
-		// Fill preData object
-		defaultValues.put("group_no", accountsGroupDAO.getNextPK());
+		// No preData
 		// return the data
 		return preData;
 	}

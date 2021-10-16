@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyPK;
-import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
@@ -257,9 +256,9 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 	public List<AccountsPrivDTO> getAccountsPrivs(UsersView loginUser, AccountsPrivFilter filter) {
 		// prepare the queryString
 		String queryString;
-		List<BranchesPrivDTO> branchesPrivDTOList = new ArrayList<>();
+		List<AccountsPrivDTO> accountsPrivDTOList = new ArrayList<>();
 		Object[] objArr;
-		BranchesPrivDTO branchesPrivDTO;
+		AccountsPrivDTO accountsPrivDTO;
 		StringBuilder sb = new StringBuilder();
 		if (loginUser.getAdminUser() || loginUser.getSuperAdmin())
 			sb.append("SELECT m.*, true AS can_change_add_priv, true AS can_change_view_priv, ");
@@ -269,21 +268,33 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 		.append("_group.admin_group AS admin_group, ")
 		.append("add_user.user_d_name AS add_user_d_name, add_user.user_f_name AS add_user_f_name, ")
 		.append("modify_user.user_d_name As modify_user_d_name, modify_user.user_f_name As modify_user_f_name, ")
-		.append("branches.branch_d_name AS branch_d_name, branches.branch_f_name AS branch_f_name ")
-		.append("FROM branches_priv AS m ");
+		.append("chart_of_accounts.acc_d_name AS acc_d_name, chart_of_accounts.acc_f_name AS acc_f_name, ")
+		.append("currency.currency_code AS currency_code, currency.currency_d_name AS currency_d_name, currency.currency_f_name AS currency_f_name, ")
+		.append("accounts_group.group_no AS group_no, accounts_group.group_d_name AS group_d_name, accounts_group.group_f_name AS group_f_name ")
+		.append("FROM accounts_priv AS m ");
 		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
-			sb.append("LEFT JOIN branches_priv n ON n.user_id = :managerUserId AND n.branch_no = m.branch_no ");
-		sb.append("LEFT JOIN branches AS branches ON m.branch_no = branches.branch_no ")
+			sb.append("LEFT JOIN accounts_priv n ON n.user_id = :managerUserId AND n.acc_no = m.acc_no ");
+		sb.append("LEFT JOIN chart_of_accounts AS accounts ON m.acc_no = accounts.acc_no ")
+		.append("LEFT JOIN currency AS currency ON m.acc_cur = currency.currency_code ")
 		.append("LEFT JOIN users AS _user ON m.user_id = _user.user_id ")
 		.append("LEFT JOIN users_groups AS _group ON _user.group_no = _group.group_no ")
+		.append("LEFT JOIN accounts_group AS accounts_group ON m.group_no = accounts_group.group_no ")
 		.append("LEFT JOIN users AS add_user ON m.add_user = add_user.user_id ")
 		.append("LEFT JOIN users AS modify_user ON m.modify_user = modify_user.user_id WHERE 1 = 1");
 		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
 			sb.append(" AND n.view_priv = true ");
-		if (filter.getToBranchNo() != null) {
-			sb.append(" AND m.branch_no BETWEEN :fromBranchNo AND :toBranchNo ");
-		} else if (filter.getFromBranchNo() != null) {
-			sb.append(" AND m.branch_no = :fromBranchNo ");
+		if (filter.getToAccountNo() != null) {
+			sb.append(" AND m.acc_no BETWEEN :fromAccNo AND :toAccNo ");
+		} else if (filter.getFromAccountNo() != null) {
+			sb.append(" AND m.acc_no = :fromAccNo ");
+		}
+		if (filter.getToGroupNo() != null) {
+			sb.append(" AND accounts.acc_group BETWEEN :fromGroupNo AND :toGroupNo ");
+		} else if (filter.getFromGroupNo() != null) {
+			sb.append(" AND accounts.acc_group = :fromGroupNo ");
+		}
+		if ((filter.getCurrencyList() != null) && (!filter.getCurrencyList().isEmpty())) {
+			sb.append(" AND m.acc_cur IN :currencyList ");
 		}
 		if (filter.getToUserId() != null) {
 			sb.append(" AND m.user_id BETWEEN :fromUserId AND :toUserId ");
@@ -297,16 +308,25 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 			sb.append(" AND m.user_id IN ");
 			sb.append(filterBySubordinatesQueryWhere);
 		}
-		sb.append(" ORDER BY branch_no, user_id ");
+		sb.append(" ORDER BY acc_no, acc_cur, user_id ");
 		queryString = sb.toString();
 		// prepare the query
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createNativeQuery(queryString);
-		if (filter.getToBranchNo() != null) {
-			query.setParameter("fromBranchNo", filter.getFromBranchNo());
-			query.setParameter("toBranchNo", filter.getToBranchNo());
-		} else if (filter.getFromBranchNo() != null) {
-			query.setParameter("fromBranchNo", filter.getFromBranchNo());
+		if (filter.getToAccountNo() != null) {
+			query.setParameter("fromAccNo", filter.getFromAccountNo());
+			query.setParameter("toAccNo", filter.getToAccountNo());
+		} else if (filter.getFromAccountNo() != null) {
+			query.setParameter("fromAccNo", filter.getFromAccountNo());
+		}
+		if (filter.getToGroupNo() != null) {
+			query.setParameter("fromGroupNo", filter.getFromGroupNo());
+			query.setParameter("toGroupNo", filter.getToGroupNo());
+		} else if (filter.getFromGroupNo() != null) {
+			query.setParameter("fromGroupNo", filter.getFromGroupNo());
+		}
+		if ((filter.getCurrencyList() != null) && (!filter.getCurrencyList().isEmpty())) {
+			query.setParameter("currencyList", filter.getCurrencyList());
 		}
 		if (filter.getToUserId() != null) {
 			query.setParameter("fromUserId", filter.getFromUserId());
@@ -324,31 +344,36 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 		List<Object> result = query.getResultList();
 		for (Object obj : result) {
 			objArr = (Object[])obj;
-			branchesPrivDTO = new BranchesPrivDTO();
-			branchesPrivDTO.setUserId((Integer)objArr[0]);
-			branchesPrivDTO.setBranchNo((Integer)objArr[1]);
-			branchesPrivDTO.setAddPriv((Boolean)objArr[2]);
-			branchesPrivDTO.setViewPriv((Boolean)objArr[3]);
-			branchesPrivDTO.setAddUser((Integer)objArr[4]);
-			branchesPrivDTO.setAddDate((Timestamp)objArr[5]);
-			branchesPrivDTO.setModifyUser((Integer)objArr[6]);
-			branchesPrivDTO.setModifyDate((Timestamp)objArr[7]);
-			branchesPrivDTO.setCanChangeAddPriv((Boolean)objArr[8]);
-			branchesPrivDTO.setCanChangeViewPriv((Boolean)objArr[9]);
-			branchesPrivDTO.setUserDName((String)objArr[10]);
-			branchesPrivDTO.setUserFName((String)objArr[11]);
-			branchesPrivDTO.setAdminGroup((Boolean)(objArr[12]==null?false:objArr[12]));
-			branchesPrivDTO.setAddUserDName((String)objArr[13]);
-			branchesPrivDTO.setAddUserFName((String)objArr[14]);
-			branchesPrivDTO.setModifyUserDName((String)objArr[15]);
-			branchesPrivDTO.setModifyUserFName((String)objArr[16]);
-			branchesPrivDTO.setBranchDName((String)objArr[17]);
-			branchesPrivDTO.setBranchFName((String)objArr[18]);
-			// set branchesPrivDTO data
-			branchesPrivDTOList.add(branchesPrivDTO);
+			accountsPrivDTO = new AccountsPrivDTO();
+			accountsPrivDTO.setAccCurr((String)objArr[20]);
+			accountsPrivDTO.setAccDName((String)objArr[18]);
+			accountsPrivDTO.setAccFName((String)objArr[19]);
+			accountsPrivDTO.setAccNo((Integer)objArr[1]);
+			accountsPrivDTO.setAddDate((Timestamp)objArr[6]);
+			accountsPrivDTO.setAddPriv((Boolean)objArr[3]);
+			accountsPrivDTO.setAddUser((Integer)objArr[5]);
+			accountsPrivDTO.setAddUserDName((String)objArr[14]);
+			accountsPrivDTO.setAddUserFName((String)objArr[15]);
+			accountsPrivDTO.setAdminGroup((Boolean)(objArr[13]==null?false:objArr[13]));
+			accountsPrivDTO.setCanChangeAddPriv((Boolean)objArr[9]);
+			accountsPrivDTO.setCanChangeViewPriv((Boolean)objArr[10]);
+			accountsPrivDTO.setCurrencyDName((String)objArr[21]);
+			accountsPrivDTO.setCurrencyFName((String)objArr[22]);
+			accountsPrivDTO.setGroupDName((String)objArr[24]);
+			accountsPrivDTO.setGroupFName((String)objArr[25]);
+			accountsPrivDTO.setGroupNo((Integer)objArr[23]);
+			accountsPrivDTO.setModifyDate((Timestamp)objArr[8]);
+			accountsPrivDTO.setModifyUser((Integer)objArr[7]);
+			accountsPrivDTO.setModifyUserDName((String)objArr[16]);
+			accountsPrivDTO.setModifyUserFName((String)objArr[17]);
+			accountsPrivDTO.setUserDName((String)objArr[11]);
+			accountsPrivDTO.setUserFName((String)objArr[12]);
+			accountsPrivDTO.setUserId((Integer)objArr[0]);
+			accountsPrivDTO.setViewPriv((Boolean)objArr[4]);
+			// set accountsPrivDTO data
+			accountsPrivDTOList.add(accountsPrivDTO);
 		}
-//		return branchesPrivDTOList;
-		return null;
+		return accountsPrivDTOList;
 	}
 
 }

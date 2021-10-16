@@ -1,14 +1,25 @@
 package com.expertsvision.erp.masterdata.masterdataprivileges.dto;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccountsPrivFilter {
-
-	@JsonProperty("from_branch_no")
-	private Integer FromBranchNo;
 	
-	@JsonProperty("to_branch_no")
-	private Integer toBranchNo;
+	@JsonProperty("from_account_no")
+	private Integer fromAccountNo;
+	
+	@JsonProperty("to_account_no")
+	private Integer toAccountNo;
+
+	@JsonProperty("from_group_no")
+	private Integer fromGroupNo;
+	
+	@JsonProperty("to_group_no")
+	private Integer toGroupNo;
+	
+	@JsonProperty("currency_list")
+	private List<String> currencyList;
 	
 	@JsonProperty("from_user_id")
 	private Integer fromUserId;
@@ -19,20 +30,44 @@ public class AccountsPrivFilter {
 	@JsonProperty("group_no")
 	private Integer groupNo;
 
-	public Integer getFromBranchNo() {
-		return FromBranchNo;
+	public Integer getFromAccountNo() {
+		return fromAccountNo;
 	}
 
-	public void setFromBranchNo(Integer fromBranchNo) {
-		FromBranchNo = fromBranchNo;
+	public void setFromAccountNo(Integer fromAccountNo) {
+		this.fromAccountNo = fromAccountNo;
 	}
 
-	public Integer getToBranchNo() {
-		return toBranchNo;
+	public Integer getToAccountNo() {
+		return toAccountNo;
 	}
 
-	public void setToBranchNo(Integer toBranchNo) {
-		this.toBranchNo = toBranchNo;
+	public void setToAccountNo(Integer toAccountNo) {
+		this.toAccountNo = toAccountNo;
+	}
+
+	public Integer getFromGroupNo() {
+		return fromGroupNo;
+	}
+
+	public void setFromGroupNo(Integer fromGroupNo) {
+		this.fromGroupNo = fromGroupNo;
+	}
+
+	public Integer getToGroupNo() {
+		return toGroupNo;
+	}
+
+	public void setToGroupNo(Integer toGroupNo) {
+		this.toGroupNo = toGroupNo;
+	}
+
+	public List<String> getCurrencyList() {
+		return currencyList;
+	}
+
+	public void setCurrencyList(List<String> currencyList) {
+		this.currencyList = currencyList;
 	}
 
 	public Integer getFromUserId() {
@@ -58,5 +93,5 @@ public class AccountsPrivFilter {
 	public void setGroupNo(Integer groupNo) {
 		this.groupNo = groupNo;
 	}
-	
+
 }

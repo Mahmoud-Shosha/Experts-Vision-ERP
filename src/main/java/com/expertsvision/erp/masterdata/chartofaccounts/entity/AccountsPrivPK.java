@@ -18,6 +18,14 @@ public class AccountsPrivPK implements Serializable {
 
 	public AccountsPrivPK() {
 	}
+	
+	public AccountsPrivPK(Integer userId, Integer accNo, String accCurr) {
+		super();
+		this.userId = userId;
+		this.accNo = accNo;
+		this.accCurr = accCurr;
+	}
+
 	public Integer getUserId() {
 		return this.userId;
 	}
