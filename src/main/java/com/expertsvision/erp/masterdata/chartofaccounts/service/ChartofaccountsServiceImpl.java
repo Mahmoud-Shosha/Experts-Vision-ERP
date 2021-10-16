@@ -68,6 +68,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 	private final List<String> LIST_CASH_FLOW = Arrays.asList("1", "2");
 	
 	private final List<String> LIST_CHART_OF_ACC = Arrays.asList("1", "2", "3", "4", "5");
+	
+	private final List<String> CC_POST = Arrays.asList("1", "2", "3", "4");
 
 	@Override
 	@Transactional
@@ -275,12 +277,15 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			coreValidationService.greaterThanOrEqualZero(chartOfAccountsView.getAccGroup(), "group");
 		coreValidationService.notNull(chartOfAccountsView.getDr(), "acc_nature");
 		coreValidationService.notNull(chartOfAccountsView.getBs(), "report_type");
+		coreValidationService.notNull(chartOfAccountsView.getCcPost(), "cc_post");
 		coreValidationService.notNull(chartOfAccountsView.getInactive(), "inactive");
 		if (!chartOfAccountsView.getSub()) {
 			chartOfAccountsView.setAccType(null);
 			chartOfAccountsView.setCashFlowType(null);
 			chartOfAccountsView.setAccountCurrencyList(null);
 		}
+		if (!CC_POST.contains(chartOfAccountsView.getCcPost()))
+			throw new ValidationException("invalid", "cc_post");
 		if (chartOfAccountsView.getAccDtl() != null) {
 			if (chartOfAccountsView.getAccDtl().isBlank())
 				chartOfAccountsView.setAccDtl(null);
@@ -350,7 +355,17 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				throw new ValidationException("invalid", "acc_level");
 		}
 		if (!chartOfAccountsView.getParentAcc().equals(0) && !chartOfAccountsView.getBs().equals(parentAcc.getBs()))
-			throw new ValidationException("invalid", "report_type");		
+			throw new ValidationException("invalid", "report_type");	
+		switch (accPara.getCcPost()) {
+			case "1":
+				if (!chartOfAccountsView.getCcPost().equals("1"))
+					throw new ValidationException("invalid", "cc_post");	
+				break;
+			case "2":
+				if (!chartOfAccountsView.getBs())
+					throw new ValidationException("invalid", "cc_post");	
+				break;
+		}
 		// Database validation for details
 		if (chartOfAccountsView.getAccountCurrencyList() != null) {
 			Set<String> valuesSetForAdd = new HashSet<>();
@@ -431,12 +446,15 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			coreValidationService.greaterThanOrEqualZero(chartOfAccountsView.getAccGroup(), "group");
 		coreValidationService.notNull(chartOfAccountsView.getDr(), "acc_nature");
 		coreValidationService.notNull(chartOfAccountsView.getBs(), "report_type");
+		coreValidationService.notNull(chartOfAccountsView.getCcPost(), "cc_post");
 		coreValidationService.notNull(chartOfAccountsView.getInactive(), "inactive");
 		if (!chartOfAccountsView.getSub()) {
 			chartOfAccountsView.setAccType(null);
 			chartOfAccountsView.setCashFlowType(null);
 			chartOfAccountsView.setAccountCurrencyList(null);
 		}
+		if (!CC_POST.contains(chartOfAccountsView.getCcPost()))
+			throw new ValidationException("invalid", "cc_post");
 		if (chartOfAccountsView.getAccDtl() != null) {
 			if (chartOfAccountsView.getAccDtl().isBlank())
 				chartOfAccountsView.setAccDtl(null);
@@ -511,6 +529,16 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		}
 		if (!chartOfAccountsView.getParentAcc().equals(0) && !chartOfAccountsView.getBs().equals(parentAcc.getBs()))
 			throw new ValidationException("invalid", "report_type");
+		switch (accPara.getCcPost()) {
+			case "1":
+				if (!chartOfAccountsView.getCcPost().equals("1"))
+					throw new ValidationException("invalid", "cc_post");	
+				break;
+			case "2":
+				if (!chartOfAccountsView.getBs())
+					throw new ValidationException("invalid", "cc_post");	
+				break;
+		}
 		// Database validation for details
 		if (chartOfAccountsView.getAccountCurrencyList() != null) {
 			Set<String> valuesSetForAdd = new HashSet<>();
@@ -650,6 +678,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		// Fill preData object
 		AccPara accPara = accParaService.getAccPara();
 		info.put("sub_level", accPara.getSubAccLvl());
+		info.put("cc_post", accPara.getCcPost());
 		// return the data
 		return preData;
 	}
@@ -675,6 +704,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		// Fill preData object
 		AccPara accPara = accParaService.getAccPara();
 		info.put("sub_level", accPara.getSubAccLvl());
+		info.put("cc_post", accPara.getCcPost());
 		// return the data
 		return preData;
 	}

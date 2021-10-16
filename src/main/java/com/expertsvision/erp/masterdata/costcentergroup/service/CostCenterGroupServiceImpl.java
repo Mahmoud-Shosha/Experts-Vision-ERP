@@ -329,7 +329,7 @@ public class CostCenterGroupServiceImpl implements CostCenterGroupService {
 		Map<String, Object> info = new HashMap<>();
 		PreData preData = new PreData(readOnly, defaultValues, info);
 		// Fill preData object
-		defaultValues.put("nextPK", costCenterGroupDAO.getNextPK());
+		defaultValues.put("group_no", costCenterGroupDAO.getNextPK());
 		// return the data
 		return preData;
 	}
@@ -354,7 +354,7 @@ public class CostCenterGroupServiceImpl implements CostCenterGroupService {
 		Map<String, Object> info = new HashMap<>();
 		PreData preData = new PreData(readOnly, defaultValues, info);
 		// Fill preData object
-		defaultValues.put("nextPK", costCenterGroupDAO.getNextPK());
+		defaultValues.put("group_no", costCenterGroupDAO.getNextPK());
 		// return the data
 		return preData;
 	}

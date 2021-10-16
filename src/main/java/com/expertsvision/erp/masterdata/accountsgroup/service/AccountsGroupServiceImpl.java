@@ -328,7 +328,7 @@ public class AccountsGroupServiceImpl implements AccountsGroupService {
 		Map<String, Object> info = new HashMap<>();
 		PreData preData = new PreData(readOnly, defaultValues, info);
 		// Fill preData object
-		defaultValues.put("nextPK", accountsGroupDAO.getNextPK());
+		defaultValues.put("group_no", accountsGroupDAO.getNextPK());
 		// return the data
 		return preData;
 	}
@@ -353,7 +353,7 @@ public class AccountsGroupServiceImpl implements AccountsGroupService {
 		Map<String, Object> info = new HashMap<>();
 		PreData preData = new PreData(readOnly, defaultValues, info);
 		// Fill preData object
-		defaultValues.put("nextPK", accountsGroupDAO.getNextPK());
+		defaultValues.put("group_no", accountsGroupDAO.getNextPK());
 		// return the data
 		return preData;
 	}

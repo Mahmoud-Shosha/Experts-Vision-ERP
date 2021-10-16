@@ -256,7 +256,6 @@ public class CurrencyServiceImpl implements CurrencyService {
 			currencyView.setCurrencyFName(null);
 		coreValidationService.notNull(currencyView.getExchangeRate(), "ex_rate");
 		coreValidationService.greaterThanZero(currencyView.getExchangeRate(), "ex_rate");
-		coreValidationService.notNull(currencyView.getFractionNo(), "fraction_no");
 		coreValidationService.notNull(currencyView.getLocalCurrency(), "local_currency");
 		if (currencyView.getLocalCurrency()) {
 			currencyView.setMaxExRate(null);
@@ -277,8 +276,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 			if (currencyView.getPosExRate() != null)
 				coreValidationService.greaterThanZero(currencyView.getPosExRate(), "pos_ex_rate");
 		}
-		coreValidationService.notNull(currencyView.getFractionDName(), "fraction_name");
-		coreValidationService.notBlank(currencyView.getFractionDName(), "fraction_name");
+		if ((currencyView.getFractionDName() != null) && currencyView.getFractionDName().isBlank())
+			currencyView.setFractionDName(null);
 		if ((currencyView.getFractionFName() != null) && currencyView.getFractionFName().isBlank())
 			currencyView.setFractionFName(null);
 		// Non-database validation for details
@@ -382,7 +381,6 @@ public class CurrencyServiceImpl implements CurrencyService {
 			currencyView.setCurrencyFName(null);
 		coreValidationService.notNull(currencyView.getExchangeRate(), "ex_rate");
 		coreValidationService.greaterThanZero(currencyView.getExchangeRate(), "ex_rate");
-		coreValidationService.notNull(currencyView.getFractionNo(), "fraction_no");
 		coreValidationService.notNull(currencyView.getLocalCurrency(), "local_currency");
 		if (currencyView.getLocalCurrency()) {
 			currencyView.setMaxExRate(null);
@@ -403,8 +401,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 			if (currencyView.getPosExRate() != null)
 				coreValidationService.greaterThanZero(currencyView.getPosExRate(), "pos_ex_rate");
 		}
-		coreValidationService.notNull(currencyView.getFractionDName(), "fraction_name");
-		coreValidationService.notBlank(currencyView.getFractionDName(), "fraction_name");
+		if ((currencyView.getFractionDName() != null) && currencyView.getFractionDName().isBlank())
+			currencyView.setFractionDName(null);
 		if ((currencyView.getFractionFName() != null) && currencyView.getFractionFName().isBlank())
 			currencyView.setFractionFName(null);
 		// Non-database validation for details
@@ -616,7 +614,10 @@ public class CurrencyServiceImpl implements CurrencyService {
 			else
 				currency.setCurrencyFName(Utils.escapeLiteral(null, currencyView.getCurrencyFName(), true).toString());
 			currency.setExchangeRate(currencyView.getExchangeRate());
-			currency.setFractionDName(Utils.escapeLiteral(null, currencyView.getFractionDName(), true).toString());
+			if (currencyView.getFractionDName() == null)
+				currency.setFractionDName(currencyView.getFractionDName());
+			else
+				currency.setFractionDName(Utils.escapeLiteral(null, currencyView.getFractionDName(), true).toString());
 			if (currencyView.getFractionFName() == null)
 				currency.setFractionFName(currencyView.getFractionFName());
 			else

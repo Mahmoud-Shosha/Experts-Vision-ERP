@@ -142,6 +142,9 @@ public class ChartOfAccountsView implements Serializable {
 	@Column(name="bs")
 	private Boolean bs;
 	
+	@Column(name="cc_post")
+	private String ccPost;
+	
 	@JsonProperty("account_currency_list")
 	@Transient
 	@JsonInclude(Include.NON_NULL)
@@ -397,6 +400,14 @@ public class ChartOfAccountsView implements Serializable {
 
 	public void setAccountCurrencyList(List<AccountsCurrencyView> accountCurrencyList) {
 		this.accountCurrencyList = accountCurrencyList;
+	}
+
+	public String getCcPost() {
+		return ccPost;
+	}
+
+	public void setCcPost(String ccPost) {
+		this.ccPost = ccPost;
 	}
 
 	@Override

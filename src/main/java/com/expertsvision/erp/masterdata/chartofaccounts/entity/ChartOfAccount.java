@@ -42,6 +42,9 @@ public class ChartOfAccount implements Serializable {
 
 	@Column(name="cash_flow_type")
 	private String cashFlowType;
+	
+	@Column(name="cc_post")
+	private String ccPost;
 
 	@Column(name="dr")
 	private Boolean dr;
@@ -237,6 +240,14 @@ public class ChartOfAccount implements Serializable {
 
 	public void setBs(Boolean bs) {
 		this.bs = bs;
+	}
+
+	public String getCcPost() {
+		return ccPost;
+	}
+
+	public void setCcPost(String ccPost) {
+		this.ccPost = ccPost;
 	}
 
 	@Override

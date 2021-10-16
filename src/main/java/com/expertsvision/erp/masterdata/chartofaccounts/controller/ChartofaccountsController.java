@@ -21,8 +21,9 @@ import com.expertsvision.erp.core.response.Response;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.NextPK;
+import com.expertsvision.erp.core.utils.PreData;
 import com.expertsvision.erp.core.utils.SinglePage;
-import com.expertsvision.erp.masterdata.branches.service.BranchesService;
+import com.expertsvision.erp.masterdata.chartofaccounts.dto.ChartOfAccountsViewFilter;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
 import com.expertsvision.erp.masterdata.chartofaccounts.service.ChartofaccountsService;
 
@@ -50,33 +51,33 @@ public class ChartofaccountsController {
 		return response.response(chartOfAccountsView, HttpStatus.OK);
 	}
 
-	@GetMapping("pageNo/{branchesNo}")
-	public ResponseEntity<Object> getChartOfAccountsViewSinglePageNo(@PathVariable("branchesNo") Integer branchesNo) {
+	@GetMapping("pageNo/{accNo}")
+	public ResponseEntity<Object> getChartOfAccountsViewSinglePageNo(@PathVariable("accNo") Integer accNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		long singlePageNo = branchesService.getChartOfAccountsViewSinglePageNo(loginUser, branchesNo);
+		long singlePageNo = chartofaccountsService.getChartOfAccountsViewSinglePageNo(loginUser, accNo);
 		Map<String, Long> singlePageNoMap = new HashMap<>();
 		singlePageNoMap.put("page_no", singlePageNo);
 		return response.response(singlePageNoMap, HttpStatus.OK);
 	}
 
 	@GetMapping("/page/{pageNo}")
-	public ResponseEntity<Object> getMessagesViewSinglePage(@PathVariable("pageNo") Long pageNo) {
+	public ResponseEntity<Object> getChartOfAccountsViewSinglePage(@PathVariable("pageNo") Long pageNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		SinglePage<ChartOfAccountsView> singlePage = branchesService.getChartOfAccountsViewSinglePage(loginUser, pageNo);
+		SinglePage<ChartOfAccountsView> singlePage = chartofaccountsService.getChartOfAccountsViewSinglePage(loginUser, pageNo);
 		return response.response(singlePage, HttpStatus.OK);
 	}
 
 	@GetMapping("/lastPage")
 	public ResponseEntity<Object> getChartOfAccountsViewLastPage() {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		SinglePage<ChartOfAccountsView> singlePage = branchesService.getChartOfAccountsViewLastPage(loginUser);
+		SinglePage<ChartOfAccountsView> singlePage = chartofaccountsService.getChartOfAccountsViewLastPage(loginUser);
 		return response.response(singlePage, HttpStatus.OK);
 	}
 
 	@GetMapping("/pages/{pageNo}")
 	public ResponseEntity<Object> getChartOfAccountsViewMultiplePages(@PathVariable("pageNo") Long pageNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		MultiplePages<ChartOfAccountsView> multiplePages = branchesService.getChartOfAccountsViewMultiplePages(loginUser,
+		MultiplePages<ChartOfAccountsView> multiplePages = chartofaccountsService.getChartOfAccountsViewMultiplePages(loginUser,
 				pageNo);
 		return response.response(multiplePages, HttpStatus.OK);
 	}
@@ -85,37 +86,51 @@ public class ChartofaccountsController {
 	public ResponseEntity<Object> getChartOfAccountsViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
 			@RequestBody ChartOfAccountsViewFilter chartOfAccountsViewFilter) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		MultiplePages<ChartOfAccountsView> multiplePages = branchesService
+		MultiplePages<ChartOfAccountsView> multiplePages = chartofaccountsService
 				.getChartOfAccountsViewFilteredMultiplePages(loginUser, pageNo, chartOfAccountsViewFilter);
 		return response.response(multiplePages, HttpStatus.OK);
 	}
 
-	@GetMapping("/nextPK")
-	public ResponseEntity<Object> getNextPK() {
+	@GetMapping("/nextPK/{parentAcc}")
+	public ResponseEntity<Object> getNextPK(@PathVariable("parentAcc") Integer parentAcc) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Object PK = branchesService.getNextPK(loginUser);
+		Object PK = chartofaccountsService.getNextPK(loginUser, parentAcc);
 		return response.response(NextPK.build(PK), HttpStatus.OK);
 	}
 	
 	@PostMapping(path = "")
 	public ResponseEntity<Object> addUsersGroup(@RequestBody ChartOfAccountsView chartOfAccountsView) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		branchesService.addBranches(loginUser, chartOfAccountsView);
-		return response.response("added", "branch", HttpStatus.OK);
+		chartofaccountsService.addChartOfAccount(loginUser, chartOfAccountsView);
+		return response.response("added", "account", HttpStatus.OK);
 	}
 
 	@PutMapping("")
 	public ResponseEntity<Object> updateUsersGroup(@RequestBody ChartOfAccountsView chartOfAccountsView) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		branchesService.updateBranches(loginUser, chartOfAccountsView);
-		return response.response("updated", "branch", HttpStatus.OK);
+		chartofaccountsService.updateChartOfAccount(loginUser, chartOfAccountsView);
+		return response.response("updated", "account", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/{branchesNo}")
-	public ResponseEntity<Object> deleteUsersGroup(@PathVariable("branchesNo") Integer branchesNo) {
+	@DeleteMapping("/{accNo}")
+	public ResponseEntity<Object> deleteUsersGroup(@PathVariable("accNo") Integer accNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		branchesService.deleteBranches(loginUser, branchesNo);
-		return response.response("deleted", "branch", HttpStatus.OK);
+		chartofaccountsService.deleteChartOfAccount(loginUser, accNo);
+		return response.response("deleted", "account", HttpStatus.OK);
+	}
+	
+	@GetMapping("/preAdd")
+	public ResponseEntity<Object> preAdd() {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PreData preData = chartofaccountsService.preAdd(loginUser);
+		return response.response(preData, HttpStatus.OK);
+	}
+	
+	@GetMapping("/preModify")
+	public ResponseEntity<Object> preModify() {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PreData preData = chartofaccountsService.preModify(loginUser);
+		return response.response(preData, HttpStatus.OK);
 	}
 
 }
