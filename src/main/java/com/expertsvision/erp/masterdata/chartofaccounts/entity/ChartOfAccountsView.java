@@ -142,6 +142,7 @@ public class ChartOfAccountsView implements Serializable {
 	@Column(name="bs")
 	private Boolean bs;
 	
+	@JsonProperty("cc_post")
 	@Column(name="cc_post")
 	private String ccPost;
 	

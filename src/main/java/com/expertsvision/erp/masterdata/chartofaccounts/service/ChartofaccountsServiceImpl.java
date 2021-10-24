@@ -238,8 +238,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			return null;
 		Integer PK = (Integer)chartofaccountsDAO.getNextPK(parentAcc);
 		if (PK == null) return null;
-		Double childDigits = Double.parseDouble(PK.toString().substring(parentAcc.toString().length()));
-		if ((Math.pow(10, childDigits) - 1) > childDigits)
+		String childDigitsString = PK.toString().substring(parentAcc.toString().length());
+		if ((Math.pow(10, childDigitsString.length()) - 1) > Integer.parseInt(childDigitsString))
 			return ++PK;
 		else
 			return null;
@@ -308,8 +308,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		if (chartOfAccountsView.getAccountCurrencyList() != null) {
 			for (AccountsCurrencyView obj : chartOfAccountsView.getAccountCurrencyList()) {
 				obj.setAccNo(chartOfAccountsView.getAccNo());
-				coreValidationService.notNull(obj.getCurCode(), "cur_code");
-				coreValidationService.notBlank(obj.getCurCode(), "cur_code");
+				coreValidationService.notNull(obj.getCurCode(), "currency_code");
+				coreValidationService.notBlank(obj.getCurCode(), "currency_code");
 				coreValidationService.notNull(obj.getActive(), "active");
 				coreValidationService.notNull(obj.getUsed(), "used");
 				switch (obj.getAction()) {
@@ -477,8 +477,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		if (chartOfAccountsView.getAccountCurrencyList() != null) {
 			for (AccountsCurrencyView obj : chartOfAccountsView.getAccountCurrencyList()) {
 				obj.setAccNo(chartOfAccountsView.getAccNo());
-				coreValidationService.notNull(obj.getCurCode(), "cur_code");
-				coreValidationService.notBlank(obj.getCurCode(), "cur_code");
+				coreValidationService.notNull(obj.getCurCode(), "currency_code");
+				coreValidationService.notBlank(obj.getCurCode(), "currency_code");
 				coreValidationService.notNull(obj.getActive(), "active");
 				coreValidationService.notNull(obj.getUsed(), "used");
 				switch (obj.getAction()) {
@@ -760,6 +760,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		ChartOfAccount chartOfAccount = new ChartOfAccount();
 		try {
 			chartOfAccount.setAccDName(Utils.escapeLiteral(null, chartOfAccountsView.getAccDName(), true).toString());
+			chartOfAccount.setCcPost(Utils.escapeLiteral(null, chartOfAccountsView.getCcPost(), true).toString());
 			if (chartOfAccountsView.getAccDtl() == null)
 				chartOfAccount.setAccDtl(chartOfAccountsView.getAccDtl());
 			else
