@@ -272,7 +272,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		coreValidationService.notNull(chartOfAccountsView.getLevel(), "acc_level");
 		coreValidationService.greaterThanZero(chartOfAccountsView.getLevel(), "acc_level");
 		coreValidationService.notNull(chartOfAccountsView.getParentAcc(), "parent_acc");
-		coreValidationService.greaterThanZero(chartOfAccountsView.getParentAcc(), "parent_acc");
+		coreValidationService.greaterThanOrEqualZero(chartOfAccountsView.getParentAcc(), "parent_acc");
 		if (chartOfAccountsView.getAccGroup() != null) 
 			coreValidationService.greaterThanOrEqualZero(chartOfAccountsView.getAccGroup(), "group");
 		coreValidationService.notNull(chartOfAccountsView.getDr(), "acc_nature");
@@ -316,7 +316,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				case "add":
 					break;
 				default:
-					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "cur_code", obj.getCurCode());
+					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "currency_code", obj.getCurCode());
 				}
 			}
 		}
@@ -441,7 +441,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		coreValidationService.notNull(chartOfAccountsView.getLevel(), "acc_level");
 		coreValidationService.greaterThanZero(chartOfAccountsView.getLevel(), "acc_level");
 		coreValidationService.notNull(chartOfAccountsView.getParentAcc(), "parent_acc");
-		coreValidationService.greaterThanZero(chartOfAccountsView.getParentAcc(), "parent_acc");
+		coreValidationService.greaterThanOrEqualZero(chartOfAccountsView.getParentAcc(), "parent_acc");
 		if (chartOfAccountsView.getAccGroup() != null) 
 			coreValidationService.greaterThanOrEqualZero(chartOfAccountsView.getAccGroup(), "group");
 		coreValidationService.notNull(chartOfAccountsView.getDr(), "acc_nature");
@@ -487,7 +487,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				case "delete":
 					break;
 				default:
-					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "cur_code", obj.getCurCode());
+					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "currency_code", obj.getCurCode());
 				}
 			}
 		}
