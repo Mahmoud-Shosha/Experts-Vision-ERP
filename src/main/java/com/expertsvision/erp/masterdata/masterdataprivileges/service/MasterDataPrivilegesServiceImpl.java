@@ -243,6 +243,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 		if(usersView.getAdminUser() || usersView.getSuperAdmin()) return;
 		// PREPARE VARAIBLES
 		StringBuilder sql = new StringBuilder();
+		fromUsersView = inMemoryUsersService.getUsersView(fromUsersView.getUserId());
 		if ((fromUsersView.getGroupNo() != null
 				&& inMemoryUsersGroupsService.getUsersGroupsView(fromUsersView.getGroupNo()).getAdminGroup())
 				|| (usersView.getGroupNo() != null
@@ -486,9 +487,6 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 	
 	
 	// $$$$$$$$$$$$$$$ For AccountsPriv $$$$$$$$$$$$$$$ 
-	
-	// Continue here .....
-	// Donot forget to add them in the controller
 	
 	@Override
 	@Transactional

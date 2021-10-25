@@ -466,7 +466,7 @@ public class UsersServiceImpl implements UsersService {
 						|| !inMemoryUsersGroupsService.getUsersGroupsView(loginUser.getGroupNo()).getAdminGroup())) {
 					throw new ValidationException("cannot_change_group");
 				}
-				masterDataPrivilegesService.updateMasterDataPrivileges(usersView, usersView, update_date, true, true);
+				masterDataPrivilegesService.updateMasterDataPrivileges(loginUser, usersView, update_date, true, true);
 			} else if ((DBUsersView.getGroupNo() != null)
 					&& inMemoryUsersGroupsService.getUsersGroupsView(DBUsersView.getGroupNo()).getAdminGroup()
 					&& !usersView.getGroupNo().equals(DBUsersView.getGroupNo())) {

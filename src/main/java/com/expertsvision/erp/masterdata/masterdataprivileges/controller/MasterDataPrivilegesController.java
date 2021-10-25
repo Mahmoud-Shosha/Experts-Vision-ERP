@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.expertsvision.erp.core.response.Response;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.service.MasterDataPrivilegesService;
@@ -42,6 +45,20 @@ public class MasterDataPrivilegesController {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		masterDataPrivilegesService.updateBrachesPriv(loginUser, branchesPrivList);
 		return response.response("updated", "branches_prvs", HttpStatus.OK);
+	}
+	
+	@PostMapping("/accounts")
+	public ResponseEntity<Object> getAccountsPrivs(@RequestBody AccountsPrivFilter accountsPrivFilter) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<AccountsPrivDTO> accountsPrivDTOList = masterDataPrivilegesService.getAccountsPrivs(loginUser, accountsPrivFilter);
+		return response.response(accountsPrivDTOList, HttpStatus.OK);
+	}
+	
+	@PutMapping("/accounts")
+	public ResponseEntity<Object> updateAccountsPriv(@RequestBody List<AccountsPriv> accountsPrivList) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		masterDataPrivilegesService.updateAccountsPriv(loginUser, accountsPrivList);
+		return response.response("updated", "accounts_prvs", HttpStatus.OK);
 	}
 
 }

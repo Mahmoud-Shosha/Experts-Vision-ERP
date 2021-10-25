@@ -212,7 +212,7 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 	@Override
 	public List<AccountsCurrencyPK> getAccountsCurrencyPKFromPrivsTable(Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "SELECT accNo, curCode FROM AccountsPriv WHERE userId = :userId";
+		String hql = "SELECT accNo, accCurr FROM AccountsPriv WHERE userId = :userId";
 		Query query = session.createQuery(hql);
 		query.setParameter("userId", userId);
 		@SuppressWarnings("unchecked")
@@ -227,7 +227,7 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 	@Override
 	public List<Object[]> getAccountsPrivs(Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "SELECT accNo, curCode, addPriv, viewPriv FROM AccountsPriv WHERE userId = :userId";
+		String hql = "SELECT accNo, accCurr, addPriv, viewPriv FROM AccountsPriv WHERE userId = :userId";
 		Query query = session.createQuery(hql);
 		query.setParameter("userId", userId);
 		@SuppressWarnings("unchecked")
@@ -238,7 +238,7 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 	@Override
 	public List<Object[]> getAccountsPrivs(Set<Integer> userIdList, Set<Integer> accNoList, Set<String> curCodeList) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "SELECT user_id, accNo, curCode, add_priv, view_priv FROM accountsPriv "
+		String hql = "SELECT user_id, accNo, accCurr, add_priv, view_priv FROM accountsPriv "
 				    +"WHERE user_id IN :userIdList AND accNo IN :accNoList AND curCode IN :curCodeList";
 		Query query = session.createNativeQuery(hql);
 		query.setParameter("userIdList", userIdList);
@@ -249,8 +249,7 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 		return result;
 	}
 	
-	// Continue here .....
-	// Donot forget to continue in the servie
+
 	@Override
 	@Transactional
 	public List<AccountsPrivDTO> getAccountsPrivs(UsersView loginUser, AccountsPrivFilter filter) {
@@ -268,17 +267,17 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 		.append("_group.admin_group AS admin_group, ")
 		.append("add_user.user_d_name AS add_user_d_name, add_user.user_f_name AS add_user_f_name, ")
 		.append("modify_user.user_d_name As modify_user_d_name, modify_user.user_f_name As modify_user_f_name, ")
-		.append("chart_of_accounts.acc_d_name AS acc_d_name, chart_of_accounts.acc_f_name AS acc_f_name, ")
+		.append("accounts.acc_d_name AS acc_d_name, accounts.acc_f_name AS acc_f_name, ")
 		.append("currency.currency_code AS currency_code, currency.currency_d_name AS currency_d_name, currency.currency_f_name AS currency_f_name, ")
-		.append("accounts_group.group_no AS group_no, accounts_group.group_d_name AS group_d_name, accounts_group.group_f_name AS group_f_name ")
+		.append("accounts.acc_group AS group_no, accounts_group.group_d_name AS group_d_name, accounts_group.group_f_name AS group_f_name ")
 		.append("FROM accounts_priv AS m ");
 		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
 			sb.append("LEFT JOIN accounts_priv n ON n.user_id = :managerUserId AND n.acc_no = m.acc_no ");
 		sb.append("LEFT JOIN chart_of_accounts AS accounts ON m.acc_no = accounts.acc_no ")
-		.append("LEFT JOIN currency AS currency ON m.acc_cur = currency.currency_code ")
+		.append("LEFT JOIN currency AS currency ON m.acc_curr = currency.currency_code ")
 		.append("LEFT JOIN users AS _user ON m.user_id = _user.user_id ")
 		.append("LEFT JOIN users_groups AS _group ON _user.group_no = _group.group_no ")
-		.append("LEFT JOIN accounts_group AS accounts_group ON m.group_no = accounts_group.group_no ")
+		.append("LEFT JOIN accounts_group AS accounts_group ON accounts.acc_group = accounts_group.group_no ")
 		.append("LEFT JOIN users AS add_user ON m.add_user = add_user.user_id ")
 		.append("LEFT JOIN users AS modify_user ON m.modify_user = modify_user.user_id WHERE 1 = 1");
 		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
@@ -294,7 +293,7 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 			sb.append(" AND accounts.acc_group = :fromGroupNo ");
 		}
 		if ((filter.getCurrencyList() != null) && (!filter.getCurrencyList().isEmpty())) {
-			sb.append(" AND m.acc_cur IN :currencyList ");
+			sb.append(" AND m.acc_curr IN :currencyList ");
 		}
 		if (filter.getToUserId() != null) {
 			sb.append(" AND m.user_id BETWEEN :fromUserId AND :toUserId ");
@@ -308,7 +307,7 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 			sb.append(" AND m.user_id IN ");
 			sb.append(filterBySubordinatesQueryWhere);
 		}
-		sb.append(" ORDER BY acc_no, acc_cur, user_id ");
+		sb.append(" ORDER BY m.acc_no, m.acc_curr, m.user_id ");
 		queryString = sb.toString();
 		// prepare the query
 		Session session = sessionFactory.getCurrentSession();
