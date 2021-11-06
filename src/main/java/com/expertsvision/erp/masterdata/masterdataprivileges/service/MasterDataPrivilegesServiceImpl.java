@@ -32,18 +32,22 @@ import com.expertsvision.erp.masterdata.branches.entity.BranchesPrivPK;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyPK;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPrivPK;
+import com.expertsvision.erp.masterdata.costcenters.entity.CostCenterPriv;
+import com.expertsvision.erp.masterdata.costcenters.entity.CostCenterPrivPK;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dao.MasterDataPrivilegesDAO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivFilter;
 
 @Service
 public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesService {
 
 	@Autowired
 	private MasterDataPrivilegesDAO masterDataPrivilegesDAO;
-	
+
 	@Autowired
 	private UsersService usersService;
 
@@ -58,13 +62,13 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 	@Autowired
 	@Lazy
 	private InMemoryUsersService inMemoryUsersService;
-	
+
 	@Autowired
 	private CoreValidationService coreValidationService;
-	
+
 	@Autowired
 	private UsersDAO usersViewDAO;
-	
+
 	@Autowired
 	private GeneralDAO generalDAO;
 
@@ -77,7 +81,8 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 	@Override
 	public void generateMasterDataPrivileges(UsersView loginUser, UsersView usersView, Timestamp currentDate,
 			boolean viewPriv, boolean addPriv) {
-		if(usersView.getAdminUser() || usersView.getSuperAdmin()) return;
+		if (usersView.getAdminUser() || usersView.getSuperAdmin())
+			return;
 		// PREPARE VARAIBLES
 		if (usersView.getGroupNo() != null
 				&& inMemoryUsersGroupsService.getUsersGroupsView(usersView.getGroupNo()).getAdminGroup()) {
@@ -102,6 +107,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 			}
 		}
 		// "ChartOfAccounts" is in module no 2
+		// "CostCenter" is in module no 2
 		if (inMemoryModulesService.getModulesView(2).getActive()) {
 			// LOOP OVER ALL AccountsPriv
 			AccountsPriv accountPriv = null;
@@ -118,17 +124,32 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 				accountPriv.setViewPriv(viewPriv);
 				entityPrvsList.add(accountPriv);
 			}
+			// LOOP OVER ALL CostCenters
+			CostCenterPriv costCenterPriv = null;
+			for (Integer PK : masterDataPrivilegesDAO.getCostCenterPK()) {
+				costCenterPriv = new CostCenterPriv();
+				costCenterPriv.setCostCenter(PK);
+				costCenterPriv.setAddDate(currentDate);
+				costCenterPriv.setAddPriv(addPriv);
+				costCenterPriv.setAddUser(loginUser.getUserId());
+				costCenterPriv.setModifyDate(null);
+				costCenterPriv.setModifyUser(null);
+				costCenterPriv.setUserId(usersView.getUserId());
+				costCenterPriv.setViewPriv(viewPriv);
+				entityPrvsList.add(costCenterPriv);
+			}
 		}
 		// LOOP OVER PRIVS TO SAVE THEM
 		for (Object object : entityPrvsList) {
 			masterDataPrivilegesDAO.addMasterDataPrivileges(object);
 		}
 	}
-	
+
 	@Override
 	public void updateMasterDataPrivileges(UsersView loginUser, UsersView usersView, Timestamp currentDate,
 			boolean viewPriv, boolean addPriv) {
-		if(usersView.getAdminUser() || usersView.getSuperAdmin()) return;
+		if (usersView.getAdminUser() || usersView.getSuperAdmin())
+			return;
 		// PREPARE VARAIBLES
 		StringBuilder sql = new StringBuilder();
 		if (usersView.getGroupNo() != null
@@ -157,6 +178,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 			}
 		}
 		// "ChartOfAccounts" is in module no 2
+		// "CostCenter" is in module no 2
 		if (inMemoryModulesService.getModulesView(2).getActive()) {
 			// LOOP OVER ALL AccountsPriv
 			for (AccountsCurrencyPK PK : masterDataPrivilegesDAO.getAccountsCurrencyPK()) {
@@ -177,6 +199,23 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 				sql.append(PK.getAccNo());
 				sql.append(";");
 			}
+			// LOOP OVER ALL CostCenters
+			for (Integer PK : masterDataPrivilegesDAO.getCostCenterPK()) {
+				sql.append("UPDATE cost_center_priv SET ");
+				sql.append("add_priv=");
+				sql.append(addPriv);
+				sql.append(", view_priv=");
+				sql.append(viewPriv);
+				sql.append(", modify_user=");
+				sql.append(loginUser.getUserId());
+				sql.append(", modify_date='");
+				sql.append(currentDate);
+				sql.append("' WHERE user_id=");
+				sql.append(usersView.getUserId());
+				sql.append(" AND cost_center=");
+				sql.append(PK);
+				sql.append(";");
+			}
 		}
 		// SAVE ALL PRIVS
 		masterDataPrivilegesDAO.updateBulkMasterDataPrivileges(sql.toString());
@@ -185,7 +224,8 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 	@Override
 	public void generateMasterDataPrivilegesFromAnotherUser(UsersView loginUser, UsersView usersView,
 			Integer fromUserId, Timestamp currentDate) {
-		if(usersView.getAdminUser() || usersView.getSuperAdmin()) return;
+		if (usersView.getAdminUser() || usersView.getSuperAdmin())
+			return;
 		// PREPARE VARAIBLES
 		UsersView fromUsersView = inMemoryUsersService.getUsersView(fromUserId);
 		if ((fromUsersView.getGroupNo() != null
@@ -213,21 +253,36 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 				}
 			}
 			// "ChartOfAccounts" is in module no 2
+			// "CostCenter" is in module no 2
 			if (inMemoryModulesService.getModulesView(2).getActive()) {
 				// LOOP OVER ALL AccountsPriv
 				AccountsPriv accountPriv = null;
 				for (Object[] obj : masterDataPrivilegesDAO.getAccountsPrivs(fromUserId)) {
 					accountPriv = new AccountsPriv();
-					accountPriv.setAccCurr((String)obj[1]);
-					accountPriv.setAccNo((Integer)obj[0]);
+					accountPriv.setAccCurr((String) obj[1]);
+					accountPriv.setAccNo((Integer) obj[0]);
 					accountPriv.setAddDate(currentDate);
-					accountPriv.setAddPriv((Boolean)obj[2]);
+					accountPriv.setAddPriv((Boolean) obj[2]);
 					accountPriv.setAddUser(loginUser.getUserId());
 					accountPriv.setModifyDate(null);
 					accountPriv.setModifyUser(null);
 					accountPriv.setUserId(usersView.getUserId());
-					accountPriv.setViewPriv((Boolean)obj[3]);
+					accountPriv.setViewPriv((Boolean) obj[3]);
 					entityPrvsList.add(accountPriv);
+				}
+				// LOOP OVER ALL CostCenter
+				CostCenterPriv CostCenterPriv = null;
+				for (Object[] obj : masterDataPrivilegesDAO.getCostCentersPrivs(fromUserId)) {
+					CostCenterPriv = new CostCenterPriv();
+					CostCenterPriv.setCostCenter((Integer) obj[0]);
+					CostCenterPriv.setAddDate(currentDate);
+					CostCenterPriv.setAddPriv((Boolean) obj[1]);
+					CostCenterPriv.setAddUser(loginUser.getUserId());
+					CostCenterPriv.setModifyDate(null);
+					CostCenterPriv.setModifyUser(null);
+					CostCenterPriv.setUserId(usersView.getUserId());
+					CostCenterPriv.setViewPriv((Boolean) obj[2]);
+					entityPrvsList.add(CostCenterPriv);
 				}
 			}
 			// LOOP OVER PRIVS TO SAVE THEM
@@ -238,9 +293,10 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 	}
 
 	@Override
-	public void updateMasterDataPrivilegesFromAnotherUser(UsersView loginUser, UsersView usersView, UsersView fromUsersView,
-			Timestamp currentDate) {
-		if(usersView.getAdminUser() || usersView.getSuperAdmin()) return;
+	public void updateMasterDataPrivilegesFromAnotherUser(UsersView loginUser, UsersView usersView,
+			UsersView fromUsersView, Timestamp currentDate) {
+		if (usersView.getAdminUser() || usersView.getSuperAdmin())
+			return;
 		// PREPARE VARAIBLES
 		StringBuilder sql = new StringBuilder();
 		fromUsersView = inMemoryUsersService.getUsersView(fromUsersView.getUserId());
@@ -272,6 +328,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 				}
 			}
 			// "ChartOfAccounts" is in module no 2
+			// "CostCenter" is in module no 2
 			if (inMemoryModulesService.getModulesView(2).getActive()) {
 				// LOOP OVER ALL AccountsPriv
 				for (Object[] obj : masterDataPrivilegesDAO.getAccountsPrivs(fromUsersView.getUserId())) {
@@ -292,12 +349,29 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 					sql.append((Integer) obj[0]);
 					sql.append(";");
 				}
+				// LOOP OVER ALL CostCenter
+				for (Object[] obj : masterDataPrivilegesDAO.getCostCentersPrivs(fromUsersView.getUserId())) {
+					sql.append("UPDATE cost_center_priv SET ");
+					sql.append("add_priv=");
+					sql.append((Boolean) obj[1]);
+					sql.append(", view_priv=");
+					sql.append((Boolean) obj[2]);
+					sql.append(", modify_user=");
+					sql.append(loginUser.getUserId());
+					sql.append(", modify_date='");
+					sql.append(currentDate);
+					sql.append("' WHERE user_id=");
+					sql.append(usersView.getUserId());
+					sql.append(" AND cost_center=");
+					sql.append((Integer) obj[0]);
+					sql.append(";");
+				}
 			}
 			// SAVE ALL PRIVS TO SAVE THEM
 			masterDataPrivilegesDAO.updateBulkMasterDataPrivileges(sql.toString());
 		}
 	}
-	
+
 	@Override
 	public void updateGroupUsersMasterDataPrivileges(UsersView loginUser, UsersView fromUsersView, Integer groupNo,
 			Timestamp currentDate) {
@@ -343,8 +417,11 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 				}
 			}
 		}
-		List<AccountsCurrencyPK> existPKList2 = masterDataPrivilegesDAO.getAccountsCurrencyPKFromPrivsTable(usersView.getUserId());
+		List<AccountsCurrencyPK> existPKList2 = masterDataPrivilegesDAO
+				.getAccountsCurrencyPKFromPrivsTable(usersView.getUserId());
+		List<Integer> existPKList3 = masterDataPrivilegesDAO.getCostCenterPKFromPrivsTable(usersView.getUserId());
 		// "ChartOfAccounts" is in module no 2
+		// "CostCenter" is in module no 2
 		if (inMemoryModulesService.getModulesView(2).getActive()) {
 			// LOOP OVER ALL AccountsPriv
 			AccountsPriv accountPriv = null;
@@ -363,15 +440,33 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 					entityPrvsList.add(accountPriv);
 				}
 			}
+			// LOOP OVER ALL CostCenters
+			CostCenterPriv costCenterPriv = null;
+			for (Integer PK : masterDataPrivilegesDAO.getCostCenterPK()) {
+				if (!existPKList3.contains(PK)) {
+					costCenterPriv = new CostCenterPriv();
+					costCenterPriv.setCostCenter(PK);
+					costCenterPriv.setAddDate(currentDate);
+					costCenterPriv.setAddPriv(addPriv);
+					costCenterPriv.setAddUser(loginUser.getUserId());
+					costCenterPriv.setModifyDate(null);
+					costCenterPriv.setModifyUser(null);
+					costCenterPriv.setUserId(usersView.getUserId());
+					costCenterPriv.setViewPriv(viewPriv);
+					entityPrvsList.add(costCenterPriv);
+				}
+			}
 		}
 		// LOOP OVER PRIVS TO SAVE THEM
-		for (Object object : entityPrvsList) {
+		for (
+
+		Object object : entityPrvsList) {
 			masterDataPrivilegesDAO.addMasterDataPrivileges(object);
 		}
 	}
-	
-	// $$$$$$$$$$$$$$$ For BranchesPriv $$$$$$$$$$$$$$$ 
-	
+
+	// $$$$$$$$$$$$$$$ For BranchesPriv $$$$$$$$$$$$$$$
+
 	@Override
 	@Transactional
 	public List<BranchesPrivDTO> getBranchesPrivs(UsersView loginUser, BranchesPrivFilter filter) {
@@ -384,8 +479,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 			}
 			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
 					FormsActions.INCLUDE);
-			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
-					FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES, FormsActions.VIEW);
 		}
 		if (filter.getToBranchNo() != null)
 			coreValidationService.notNull(filter.getFromBranchNo(), "branch_no");
@@ -394,7 +488,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 		List<BranchesPrivDTO> branchesPrivDTOList = masterDataPrivilegesDAO.getBranchesPrivs(loginUser, filter);
 		return branchesPrivDTOList;
 	}
-	
+
 	@Override
 	@Transactional
 	public void updateBrachesPriv(UsersView loginUser, List<BranchesPriv> branchesPrivList) {
@@ -407,8 +501,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 			}
 			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
 					FormsActions.INCLUDE);
-			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
-					FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES, FormsActions.VIEW);
 			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
 					FormsActions.MODIFY);
 		}
@@ -443,51 +536,40 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 			List<Object[]> loginUserPrvsList = masterDataPrivilegesDAO.getBranchesPrivs(tempHashSet, givenBranchNoSet);
 			List<Object[]> DBUserPrvsList = masterDataPrivilegesDAO.getBranchesPrivs(givenUserNoSet, givenBranchNoSet);
 			for (Object[] objArr : loginUserPrvsList) {
-				loginUserPrvsMap.put((Integer)objArr[1], objArr);
+				loginUserPrvsMap.put((Integer) objArr[1], objArr);
 			}
 			for (Object[] objArr : DBUserPrvsList) {
-				DBUserPrvsMap.put(new BranchesPrivPK((Integer)objArr[0], (Integer)objArr[1]), objArr);
+				DBUserPrvsMap.put(new BranchesPrivPK((Integer) objArr[0], (Integer) objArr[1]), objArr);
 			}
 			for (BranchesPriv prv : branchesPrivList) {
 				if (loginUserPrvsMap.get(prv.getBranchNo()) == null)
 					throw new ValidationException("not_exist", "branch_no");
-				if ((prv.getViewPriv()!=DBUserPrvsMap.get(new BranchesPrivPK(prv.getUserId(), prv.getBranchNo()))[3])
-						&& !(Boolean)loginUserPrvsMap.get(prv.getBranchNo())[3])
+				if ((prv.getViewPriv() != DBUserPrvsMap.get(new BranchesPrivPK(prv.getUserId(), prv.getBranchNo()))[3])
+						&& !(Boolean) loginUserPrvsMap.get(prv.getBranchNo())[3])
 					throw new UnauthorizedException("view_prv");
-				if ((prv.getAddPriv()!=DBUserPrvsMap.get(new BranchesPrivPK(prv.getUserId(), prv.getBranchNo()))[2])
-						&& !(Boolean)loginUserPrvsMap.get(prv.getBranchNo())[2])
+				if ((prv.getAddPriv() != DBUserPrvsMap.get(new BranchesPrivPK(prv.getUserId(), prv.getBranchNo()))[2])
+						&& !(Boolean) loginUserPrvsMap.get(prv.getBranchNo())[2])
 					throw new UnauthorizedException("add_prv");
 			}
 		} else {
 			Set<Integer> DBBranchNoSet = generalDAO.getThemIfExist("branches", "branch_no", givenBranchNoSet);
-			for (Integer obj: givenBranchNoSet) {
+			for (Integer obj : givenBranchNoSet) {
 				if (!DBBranchNoSet.contains(obj))
 					throw new ValidationException("not_exist", "branch_no");
 			}
 		}
 		// LOOP OVER ALL PRVS
 		for (BranchesPriv prv : branchesPrivList) {
-			sql.append("UPDATE branches_priv SET ")
-			.append("add_priv=")
-			.append(prv.getAddPriv())
-			.append(", view_priv=")
-			.append(prv.getViewPriv())
-			.append(", modify_user=")
-			.append(loginUser.getUserId())
-			.append(", modify_date='")
-			.append(currentDate)
-			.append("' WHERE user_id=")
-			.append(prv.getUserId())
-			.append(" AND branch_no=")
-			.append(prv.getBranchNo())
-			.append(";");
+			sql.append("UPDATE branches_priv SET ").append("add_priv=").append(prv.getAddPriv()).append(", view_priv=")
+					.append(prv.getViewPriv()).append(", modify_user=").append(loginUser.getUserId())
+					.append(", modify_date='").append(currentDate).append("' WHERE user_id=").append(prv.getUserId())
+					.append(" AND branch_no=").append(prv.getBranchNo()).append(";");
 		}
 		masterDataPrivilegesDAO.updateBulkMasterDataPrivileges(sql.toString());
 	}
-	
-	
-	// $$$$$$$$$$$$$$$ For AccountsPriv $$$$$$$$$$$$$$$ 
-	
+
+	// $$$$$$$$$$$$$$$ For AccountsPriv $$$$$$$$$$$$$$$
+
 	@Override
 	@Transactional
 	public List<AccountsPrivDTO> getAccountsPrivs(UsersView loginUser, AccountsPrivFilter filter) {
@@ -500,8 +582,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 			}
 			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
 					FormsActions.INCLUDE);
-			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
-					FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES, FormsActions.VIEW);
 		}
 		if (filter.getToAccountNo() != null)
 			coreValidationService.notNull(filter.getFromAccountNo(), "acc_no");
@@ -512,7 +593,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 		List<AccountsPrivDTO> accountsPrivDTOList = masterDataPrivilegesDAO.getAccountsPrivs(loginUser, filter);
 		return accountsPrivDTOList;
 	}
-	
+
 	@Override
 	@Transactional
 	public void updateAccountsPriv(UsersView loginUser, List<AccountsPriv> accountsPrivList) {
@@ -525,8 +606,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 			}
 			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
 					FormsActions.INCLUDE);
-			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
-					FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES, FormsActions.VIEW);
 			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
 					FormsActions.MODIFY);
 		}
@@ -561,51 +641,152 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 		if (!loginUser.getAdminUser() && !loginUser.getSuperAdmin()) {
 			Set<Integer> tempHashSet = new HashSet<>();
 			tempHashSet.add(loginUser.getUserId());
-			List<Object[]> loginUserPrvsList = masterDataPrivilegesDAO.getAccountsPrivs(tempHashSet, givenAccNoSet, givenAccountCurrencyCodeSet);
-			List<Object[]> DBUserPrvsList = masterDataPrivilegesDAO.getAccountsPrivs(givenUserNoSet, givenAccNoSet, givenAccountCurrencyCodeSet);
+			List<Object[]> loginUserPrvsList = masterDataPrivilegesDAO.getAccountsPrivs(tempHashSet, givenAccNoSet,
+					givenAccountCurrencyCodeSet);
+			List<Object[]> DBUserPrvsList = masterDataPrivilegesDAO.getAccountsPrivs(givenUserNoSet, givenAccNoSet,
+					givenAccountCurrencyCodeSet);
 			for (Object[] objArr : loginUserPrvsList) {
-				loginUserPrvsMap.put(new AccountsCurrencyPK((Integer)objArr[1], (String)objArr[2]), objArr);
+				loginUserPrvsMap.put(new AccountsCurrencyPK((Integer) objArr[1], (String) objArr[2]), objArr);
 			}
 			for (Object[] objArr : DBUserPrvsList) {
-				DBUserPrvsMap.put(new AccountsPrivPK((Integer)objArr[0], (Integer)objArr[1], (String)objArr[2]), objArr);
+				DBUserPrvsMap.put(new AccountsPrivPK((Integer) objArr[0], (Integer) objArr[1], (String) objArr[2]),
+						objArr);
 			}
 			for (AccountsPriv prv : accountsPrivList) {
 				if (loginUserPrvsMap.get(new AccountsCurrencyPK(prv.getAccNo(), prv.getAccCurr())) == null)
 					throw new ValidationException("not_exist", "acc_no");
-				if ((prv.getViewPriv()!=DBUserPrvsMap.get(new AccountsPrivPK(prv.getUserId(), prv.getAccNo(), prv.getAccCurr()))[4])
-						&& !(Boolean)loginUserPrvsMap.get(new AccountsCurrencyPK(prv.getAccNo(), prv.getAccCurr()))[4])
+				if ((prv.getViewPriv() != DBUserPrvsMap
+						.get(new AccountsPrivPK(prv.getUserId(), prv.getAccNo(), prv.getAccCurr()))[4])
+						&& !(Boolean) loginUserPrvsMap.get(new AccountsCurrencyPK(prv.getAccNo(), prv.getAccCurr()))[4])
 					throw new UnauthorizedException("view_prv");
-				if ((prv.getAddPriv()!=DBUserPrvsMap.get(new AccountsPrivPK(prv.getUserId(), prv.getAccNo(), prv.getAccCurr()))[3])
-						&& !(Boolean)loginUserPrvsMap.get(new AccountsCurrencyPK(prv.getAccNo(), prv.getAccCurr()))[3])
+				if ((prv.getAddPriv() != DBUserPrvsMap
+						.get(new AccountsPrivPK(prv.getUserId(), prv.getAccNo(), prv.getAccCurr()))[3])
+						&& !(Boolean) loginUserPrvsMap.get(new AccountsCurrencyPK(prv.getAccNo(), prv.getAccCurr()))[3])
 					throw new UnauthorizedException("add_prv");
 			}
 		} else {
 			Set<Integer> DBAccNoSet = generalDAO.getThemIfExist("chart_of_accounts", "acc_no", givenAccNoSet);
-			for (Integer obj: givenAccNoSet) {
+			for (Integer obj : givenAccNoSet) {
 				if (!DBAccNoSet.contains(obj))
 					throw new ValidationException("not_exist", "acc_no");
 			}
 		}
 		// LOOP OVER ALL PRVS
 		for (AccountsPriv prv : accountsPrivList) {
-			sql.append("UPDATE accounts_priv SET ")
-			.append("add_priv=")
-			.append(prv.getAddPriv())
-			.append(", view_priv=")
-			.append(prv.getViewPriv())
-			.append(", modify_user=")
-			.append(loginUser.getUserId())
-			.append(", modify_date='")
-			.append(currentDate)
-			.append("' WHERE user_id=")
-			.append(prv.getUserId())
-			.append(" AND acc_no=")
-			.append(prv.getAccNo())
-			.append(" AND acc_curr='")
-			.append(prv.getAccCurr())
-			.append("';");
+			sql.append("UPDATE accounts_priv SET ").append("add_priv=").append(prv.getAddPriv()).append(", view_priv=")
+					.append(prv.getViewPriv()).append(", modify_user=").append(loginUser.getUserId())
+					.append(", modify_date='").append(currentDate).append("' WHERE user_id=").append(prv.getUserId())
+					.append(" AND acc_no=").append(prv.getAccNo()).append(" AND acc_curr='").append(prv.getAccCurr())
+					.append("';");
 		}
 		masterDataPrivilegesDAO.updateBulkMasterDataPrivileges(sql.toString());
 	}
 
+	// $$$$$$$$$$$$$$$ For CostCenterPriv $$$$$$$$$$$$$$$
+
+	@Override
+	@Transactional
+	public List<CostCenterPrivDTO> getCostCenterPrivs(UsersView loginUser, CostCenterPrivFilter filter) {
+		// Check module, form, privileges
+		if (!loginUser.getSuperAdmin()) {
+			if (loginUser.getAdminUser()) {
+				coreValidationService.activeModule(Forms.MASTER_DATA_PRIVILEGES);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.MASTER_DATA_PRIVILEGES);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
+					FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES, FormsActions.VIEW);
+		}
+		if (filter.getToCcNo() != null)
+			coreValidationService.notNull(filter.getFromCcNo(), "cc_no");
+		if (filter.getToUserId() != null)
+			coreValidationService.notNull(filter.getFromUserId(), "user_no");
+		if (filter.getToGroupNo() != null)
+			coreValidationService.notNull(filter.getFromGroupNo(), "group_no");
+		List<CostCenterPrivDTO> costCenterPrivDTOList = masterDataPrivilegesDAO.getCostCentersPrivs(loginUser, filter);
+		return costCenterPrivDTOList;
+	}
+
+	@Override
+	@Transactional
+	public void updateCostCenterPriv(UsersView loginUser, List<CostCenterPriv> costCenterPrivList) {
+		// Check module, form, privileges
+		if (!loginUser.getSuperAdmin()) {
+			if (loginUser.getAdminUser()) {
+				coreValidationService.activeModule(Forms.MASTER_DATA_PRIVILEGES);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.MASTER_DATA_PRIVILEGES);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
+					FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUser, Forms.MASTER_DATA_PRIVILEGES,
+					FormsActions.MODIFY);
+		}
+		Set<Integer> givenUserNoSet = new HashSet<>();
+		Set<Integer> givenCcNoSet = new HashSet<>();
+		Set<Integer> subordinatesUsersNoSet = new HashSet<>();
+		Map<Integer, Object[]> loginUserPrvsMap = new HashMap<>();
+		Map<CostCenterPrivPK, Object[]> DBUserPrvsMap = new HashMap<>();
+		StringBuilder sql = new StringBuilder();
+		Timestamp currentDate = new Timestamp(new Date().getTime());
+		List<UsersView> subordinatesUsersView = usersViewDAO.getUsersViewSubordinateList(loginUser.getUserId());
+		Set<Integer> adminGroupNoList = inMemoryUsersGroupsService.getAdminGroupNoList();
+		for (UsersView obj : subordinatesUsersView) {
+			if (!obj.getUserId().equals(loginUser.getUserId()) && !obj.getAdminUser() && !obj.getSuperAdmin())
+				subordinatesUsersNoSet.add(obj.getUserId());
+		}
+		for (CostCenterPriv prv : costCenterPrivList) {
+			coreValidationService.notNull(prv.getUserId(), "user_no", "cc_no", prv.getCostCenter());
+			coreValidationService.notNull(prv.getCostCenter(), "cc_no", "user_no", prv.getUserId());
+			coreValidationService.notNull(prv.getAddPriv(), "add_prv", "cc_no", prv.getCostCenter());
+			coreValidationService.notNull(prv.getViewPriv(), "view_prv", "cc_no", prv.getCostCenter());
+			if (!subordinatesUsersNoSet.contains(prv.getUserId()))
+				throw new UnauthorizedException("user_no");
+			if (adminGroupNoList.contains(inMemoryUsersService.getUsersView(prv.getUserId()).getGroupNo()))
+				throw new UnauthorizedException("user_no");
+			givenUserNoSet.add(prv.getUserId());
+			givenCcNoSet.add(prv.getCostCenter());
+		}
+		if (!loginUser.getAdminUser() && !loginUser.getSuperAdmin()) {
+			Set<Integer> tempHashSet = new HashSet<>();
+			tempHashSet.add(loginUser.getUserId());
+			List<Object[]> loginUserPrvsList = masterDataPrivilegesDAO.getCostCentersPrivs(tempHashSet, givenCcNoSet);
+			List<Object[]> DBUserPrvsList = masterDataPrivilegesDAO.getCostCentersPrivs(givenUserNoSet, givenCcNoSet);
+			for (Object[] objArr : loginUserPrvsList) {
+				loginUserPrvsMap.put((Integer) objArr[1], objArr);
+			}
+			for (Object[] objArr : DBUserPrvsList) {
+				DBUserPrvsMap.put(new CostCenterPrivPK((Integer) objArr[0], (Integer) objArr[1]), objArr);
+			}
+			for (CostCenterPriv prv : costCenterPrivList) {
+				if (loginUserPrvsMap.get(prv.getCostCenter()) == null)
+					throw new ValidationException("not_exist", "cc_no");
+				if ((prv.getViewPriv() != DBUserPrvsMap
+						.get(new CostCenterPrivPK(prv.getUserId(), prv.getCostCenter()))[3])
+						&& !(Boolean) loginUserPrvsMap.get(prv.getCostCenter())[3])
+					throw new UnauthorizedException("view_prv");
+				if ((prv.getAddPriv() != DBUserPrvsMap
+						.get(new CostCenterPrivPK(prv.getUserId(), prv.getCostCenter()))[2])
+						&& !(Boolean) loginUserPrvsMap.get(prv.getCostCenter())[2])
+					throw new UnauthorizedException("add_prv");
+			}
+		} else {
+			Set<Integer> DBCcNoSet = generalDAO.getThemIfExist("cost_center", "cc_no", givenCcNoSet);
+			for (Integer obj : givenCcNoSet) {
+				if (!DBCcNoSet.contains(obj))
+					throw new ValidationException("not_exist", "cc_no");
+			}
+		}
+		// LOOP OVER ALL PRVS
+		for (CostCenterPriv prv : costCenterPrivList) {
+			sql.append("UPDATE cost_center_priv SET ").append("add_priv=").append(prv.getAddPriv())
+					.append(", view_priv=").append(prv.getViewPriv()).append(", modify_user=")
+					.append(loginUser.getUserId()).append(", modify_date='").append(currentDate)
+					.append("' WHERE user_id=").append(prv.getUserId()).append(" AND cost_center=")
+					.append(prv.getCostCenter()).append(";");
+		}
+		masterDataPrivilegesDAO.updateBulkMasterDataPrivileges(sql.toString());
+	}
 }

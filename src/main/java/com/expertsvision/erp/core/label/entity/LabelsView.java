@@ -3,6 +3,9 @@ package com.expertsvision.erp.core.label.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Subselect;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Timestamp;
@@ -14,6 +17,8 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name="labels_view")
+@Immutable
+@Subselect("select * from labels_view")
 @IdClass(LabelsPK.class)
 @NamedQuery(name="LabelsView.findAll", query="SELECT l FROM LabelsView l")
 public class LabelsView implements Serializable {

@@ -63,13 +63,13 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 	@Lazy
 	private InMemoryUsersGroupsService inMemoryUsersGroupsService;
 	
-	private final List<String> CASH_FLOW_ANALYSIS = Arrays.asList("1", "2", "3", "4", "5", "6", "7");
+	private final List<String> CASH_FLOW_ANALYSIS = Arrays.asList("1", "2", "3", "4", "5");
 	
-	private final List<String> LIST_CASH_FLOW = Arrays.asList("1", "2");
+	private final List<String> LIST_CASH_FLOW = Arrays.asList("1", "2", "3");
 	
-	private final List<String> LIST_CHART_OF_ACC = Arrays.asList("1", "2", "3", "4", "5");
+	private final List<String> LIST_CHART_OF_ACC = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8");
 	
-	private final List<String> CC_POST = Arrays.asList("1", "2", "3", "4");
+	private final List<String> CC_POST = Arrays.asList("1", "2", "3");
 
 	@Override
 	@Transactional
@@ -361,7 +361,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				if (!chartOfAccountsView.getCcPost().equals("1"))
 					throw new ValidationException("invalid", "cc_post");	
 				break;
-			case "2":
+			case "4":
 				if (!chartOfAccountsView.getBs())
 					throw new ValidationException("invalid", "cc_post");	
 				break;

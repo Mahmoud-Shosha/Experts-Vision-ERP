@@ -1,0 +1,1394 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-152">
+        <createTable tableName="accounts_currency_view">
+            <column name="acc_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="accounts_currency_viewPK"/>
+            </column>
+            <column name="cur_code" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="accounts_currency_viewPK"/>
+            </column>
+            <column name="active" type="BOOLEAN"/>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="currency_d_name" type="VARCHAR(255)"/>
+            <column name="currency_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="used" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-153">
+        <createTable tableName="accounts_group_view">
+            <column name="group_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="accounts_group_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="group_d_name" type="VARCHAR(255)"/>
+            <column name="group_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-154">
+        <createTable tableName="branches_view">
+            <column name="branch_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="branches_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="branch_d_address" type="VARCHAR(255)"/>
+            <column name="branch_d_name" type="VARCHAR(255)"/>
+            <column name="branch_f_address" type="VARCHAR(255)"/>
+            <column name="branch_f_name" type="VARCHAR(255)"/>
+            <column name="capital" type="INTEGER"/>
+            <column name="city_d_name" type="VARCHAR(255)"/>
+            <column name="city_f_name" type="VARCHAR(255)"/>
+            <column name="city_no" type="INTEGER"/>
+            <column name="company_d_name" type="VARCHAR(255)"/>
+            <column name="company_f_name" type="VARCHAR(255)"/>
+            <column name="company_no" type="INTEGER"/>
+            <column name="country_d_name" type="VARCHAR(255)"/>
+            <column name="country_f_name" type="VARCHAR(255)"/>
+            <column name="country_no" type="INTEGER"/>
+            <column name="cr_no" type="INTEGER"/>
+            <column name="logo" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="province_d_name" type="VARCHAR(255)"/>
+            <column name="province_f_name" type="VARCHAR(255)"/>
+            <column name="province_no" type="INTEGER"/>
+            <column name="report_d_header1" type="VARCHAR(255)"/>
+            <column name="report_d_header2" type="VARCHAR(255)"/>
+            <column name="report_d_header3" type="VARCHAR(255)"/>
+            <column name="report_f_header1" type="VARCHAR(255)"/>
+            <column name="report_f_header2" type="VARCHAR(255)"/>
+            <column name="report_f_header3" type="VARCHAR(255)"/>
+            <column name="shortcut_d" type="VARCHAR(255)"/>
+            <column name="shortcut_f" type="VARCHAR(255)"/>
+            <column name="tax_no" type="INTEGER"/>
+            <column name="telephone_no" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-155">
+        <createTable tableName="chart_of_accounts_view">
+            <column name="acc_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="chart_of_accounts_viewPK"/>
+            </column>
+            <column name="acc_d_name" type="VARCHAR(255)"/>
+            <column name="acc_dtl" type="VARCHAR(255)"/>
+            <column name="acc_f_name" type="VARCHAR(255)"/>
+            <column name="acc_group" type="INTEGER"/>
+            <column name="acc_type" type="VARCHAR(255)"/>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="bs" type="BOOLEAN"/>
+            <column name="cash_flow_type" type="VARCHAR(255)"/>
+            <column name="cc_post" type="VARCHAR(255)"/>
+            <column name="dr" type="BOOLEAN"/>
+            <column name="group_d_name" type="VARCHAR(255)"/>
+            <column name="group_f_name" type="VARCHAR(255)"/>
+            <column name="inactive" type="BOOLEAN"/>
+            <column name="inactive_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="inactive_reason" type="VARCHAR(255)"/>
+            <column name="inactive_user" type="INTEGER"/>
+            <column name="inactive_user_d_name" type="VARCHAR(255)"/>
+            <column name="inactive_user_f_name" type="VARCHAR(255)"/>
+            <column name="level" type="INTEGER"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="parent_acc" type="INTEGER"/>
+            <column name="parent_acc_d_name" type="VARCHAR(255)"/>
+            <column name="parent_acc_f_name" type="VARCHAR(255)"/>
+            <column name="sub" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-156">
+        <createTable tableName="city_view">
+            <column name="city_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="city_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="city_d_name" type="VARCHAR(255)"/>
+            <column name="city_f_name" type="VARCHAR(255)"/>
+            <column name="country_no" type="INTEGER"/>
+            <column name="country_no_d_name" type="VARCHAR(255)"/>
+            <column name="country_no_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="province_no" type="INTEGER"/>
+            <column name="province_no_d_name" type="VARCHAR(255)"/>
+            <column name="province_no_f_name" type="VARCHAR(255)"/>
+            <column name="region_no" type="INTEGER"/>
+            <column name="region_no_d_name" type="VARCHAR(255)"/>
+            <column name="region_no_f_name" type="VARCHAR(255)"/>
+            <column name="shortcut" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-157">
+        <createTable tableName="company_groups_view">
+            <column name="group_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="company_groups_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="group_d_name" type="VARCHAR(255)"/>
+            <column name="group_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-158">
+        <createTable tableName="company_view">
+            <column name="company_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="company_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="company_d_name" type="VARCHAR(255)"/>
+            <column name="company_f_name" type="VARCHAR(255)"/>
+            <column name="company_group" type="INTEGER"/>
+            <column name="company_mail" type="VARCHAR(255)"/>
+            <column name="company_website" type="VARCHAR(255)"/>
+            <column name="country_d_name" type="VARCHAR(255)"/>
+            <column name="country_f_name" type="VARCHAR(255)"/>
+            <column name="country_no" type="INTEGER"/>
+            <column name="group_d_name" type="VARCHAR(255)"/>
+            <column name="group_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="shortcut_d" type="VARCHAR(255)"/>
+            <column name="shortcut_f" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-159">
+        <createTable tableName="cost_center_group_view">
+            <column name="group_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="cost_center_group_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="group_d_name" type="VARCHAR(255)"/>
+            <column name="group_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-160">
+        <createTable tableName="cost_center_view">
+            <column name="cc_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="cost_center_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="cc_d_name" type="VARCHAR(255)"/>
+            <column name="cc_f_name" type="VARCHAR(255)"/>
+            <column name="cc_group" type="INTEGER"/>
+            <column name="group_d_name" type="VARCHAR(255)"/>
+            <column name="group_f_name" type="VARCHAR(255)"/>
+            <column name="inactive" type="BOOLEAN"/>
+            <column name="inactive_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="inactive_reason" type="VARCHAR(255)"/>
+            <column name="inactive_user" type="INTEGER"/>
+            <column name="inactive_user_d_name" type="VARCHAR(255)"/>
+            <column name="inactive_user_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="parent_cc" type="INTEGER"/>
+            <column name="parent_cc_d_name" type="VARCHAR(255)"/>
+            <column name="parent_cc_f_name" type="VARCHAR(255)"/>
+            <column name="sub" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-161">
+        <createTable tableName="country_view">
+            <column name="country_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="country_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="country_d_name" type="VARCHAR(255)"/>
+            <column name="country_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="region_no" type="INTEGER"/>
+            <column name="region_no_d_name" type="VARCHAR(255)"/>
+            <column name="region_no_f_name" type="VARCHAR(255)"/>
+            <column name="shortcut" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-162">
+        <createTable tableName="currency_history_view">
+            <column name="currency_code" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="currency_history_viewPK"/>
+            </column>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="currency_history_viewPK"/>
+            </column>
+            <column name="exchange_rate" type="numeric(19, 2)"/>
+            <column name="max_ex_rate" type="numeric(19, 2)"/>
+            <column name="min_ex_rate" type="numeric(19, 2)"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-163">
+        <createTable tableName="currency_values_view">
+            <column name="currency_code" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="currency_values_viewPK"/>
+            </column>
+            <column name="value" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="currency_values_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-164">
+        <createTable tableName="currency_view">
+            <column name="currency_code" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="currency_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="currency_d_name" type="VARCHAR(255)"/>
+            <column name="currency_f_name" type="VARCHAR(255)"/>
+            <column name="exchange_rate" type="numeric(19, 2)"/>
+            <column name="fraction_d_name" type="VARCHAR(255)"/>
+            <column name="fraction_f_name" type="VARCHAR(255)"/>
+            <column name="fraction_no" type="INTEGER"/>
+            <column name="local_currency" type="BOOLEAN"/>
+            <column name="max_ex_rate" type="numeric(19, 2)"/>
+            <column name="min_ex_rate" type="numeric(19, 2)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="pos_ex_rate" type="numeric(19, 2)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-165">
+        <createTable tableName="emp_info_view">
+            <column name="emp_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="emp_info_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="emp_d_name" type="VARCHAR(255)"/>
+            <column name="emp_f_name" type="VARCHAR(255)"/>
+            <column name="inactive" type="BOOLEAN"/>
+            <column name="inactive_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="inactive_reason" type="VARCHAR(255)"/>
+            <column name="inactive_user" type="INTEGER"/>
+            <column name="inactive_user_d_name" type="VARCHAR(255)"/>
+            <column name="inactive_user_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-166">
+        <createTable tableName="flag_detail_main_tree">
+            <column name="flag_code" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="flag_detail_main_treePK"/>
+            </column>
+            <column name="flag_value" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="flag_detail_main_treePK"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="flag_detail_main_treePK"/>
+            </column>
+            <column name="active" type="BOOLEAN"/>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_priv" type="BOOLEAN"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="delete_priv" type="BOOLEAN"/>
+            <column name="flag_priv" type="BOOLEAN"/>
+            <column name="flag_sr" type="INTEGER"/>
+            <column name="label_code" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_priv" type="BOOLEAN"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="print_priv" type="BOOLEAN"/>
+            <column name="view_priv" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-167">
+        <createTable tableName="flag_detail_view">
+            <column name="flag_code" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="flag_detail_viewPK"/>
+            </column>
+            <column name="flag_value" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="flag_detail_viewPK"/>
+            </column>
+            <column name="active" type="BOOLEAN"/>
+            <column name="flag_priv" type="BOOLEAN"/>
+            <column name="flag_sr" type="INTEGER"/>
+            <column name="label_code" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-168">
+        <createTable tableName="flag_master_view">
+            <column name="flag_code" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="flag_master_viewPK"/>
+            </column>
+            <column name="label_code" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-169">
+        <createTable tableName="flag_priv_view">
+            <column name="flag_code" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="flag_priv_viewPK"/>
+            </column>
+            <column name="flag_value" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="flag_priv_viewPK"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="flag_priv_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_priv" type="BOOLEAN"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="delete_priv" type="BOOLEAN"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_priv" type="BOOLEAN"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="print_priv" type="BOOLEAN"/>
+            <column name="user_d_name" type="VARCHAR(255)"/>
+            <column name="user_f_name" type="VARCHAR(255)"/>
+            <column name="view_priv" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-170">
+        <createTable tableName="form_privilage_view">
+            <column name="form_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="form_privilage_viewPK"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="form_privilage_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_priv" type="BOOLEAN"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="audit_priv" type="BOOLEAN"/>
+            <column name="delete_priv" type="BOOLEAN"/>
+            <column name="form_d_name" type="VARCHAR(255)"/>
+            <column name="form_f_name" type="VARCHAR(255)"/>
+            <column name="include_priv" type="BOOLEAN"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_priv" type="BOOLEAN"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="post_priv" type="BOOLEAN"/>
+            <column name="print_priv" type="BOOLEAN"/>
+            <column name="view_priv" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-171">
+        <createTable tableName="forms_view">
+            <column name="form_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="forms_viewPK"/>
+            </column>
+            <column name="active" type="BOOLEAN"/>
+            <column name="flag_code" type="VARCHAR(255)"/>
+            <column name="form_d_name" type="VARCHAR(255)"/>
+            <column name="form_f_name" type="VARCHAR(255)"/>
+            <column name="form_order" type="INTEGER"/>
+            <column name="main" type="BOOLEAN"/>
+            <column name="module_no" type="INTEGER"/>
+            <column name="module_no_d_name" type="VARCHAR(255)"/>
+            <column name="module_no_f_name" type="VARCHAR(255)"/>
+            <column name="parent_form" type="INTEGER"/>
+            <column name="parent_form_d_name" type="VARCHAR(255)"/>
+            <column name="parent_form_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-172">
+        <createTable tableName="language_view">
+            <column name="lang_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="language_viewPK"/>
+            </column>
+            <column name="active" type="BOOLEAN"/>
+            <column name="lang_dfl" type="BOOLEAN"/>
+            <column name="lang_dir" type="INTEGER"/>
+            <column name="lang_ext" type="VARCHAR(255)"/>
+            <column name="lang_name" type="VARCHAR(255)"/>
+            <column name="report_ext" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-173">
+        <createTable tableName="messages_view">
+            <column name="lang_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="messages_viewPK"/>
+            </column>
+            <column name="message_code" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="messages_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="lang_no_name" type="VARCHAR(255)"/>
+            <column name="message_desc" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-174">
+        <createTable tableName="modules_view">
+            <column name="module_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="modules_viewPK"/>
+            </column>
+            <column name="active" type="BOOLEAN"/>
+            <column name="module_d_name" type="VARCHAR(255)"/>
+            <column name="module_f_name" type="VARCHAR(255)"/>
+            <column name="order_no" type="INTEGER"/>
+            <column name="shortcut" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-175">
+        <createTable tableName="province_view">
+            <column name="province_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="province_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="country_no" type="INTEGER"/>
+            <column name="country_no_d_name" type="VARCHAR(255)"/>
+            <column name="country_no_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="province_d_name" type="VARCHAR(255)"/>
+            <column name="province_f_name" type="VARCHAR(255)"/>
+            <column name="region_no" type="INTEGER"/>
+            <column name="region_no_d_name" type="VARCHAR(255)"/>
+            <column name="region_no_f_name" type="VARCHAR(255)"/>
+            <column name="shortcut" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-176">
+        <createTable tableName="region_view">
+            <column name="region_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="region_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="region_d_name" type="VARCHAR(255)"/>
+            <column name="region_f_name" type="VARCHAR(255)"/>
+            <column name="shortcut" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-177">
+        <createTable tableName="users_groups_view">
+            <column name="group_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_groups_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="admin_group" type="BOOLEAN"/>
+            <column name="group_d_name" type="VARCHAR(255)"/>
+            <column name="group_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-178">
+        <createTable tableName="users_view">
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="admin_user" type="BOOLEAN"/>
+            <column name="direct_mang" type="INTEGER"/>
+            <column name="direct_mang_d_name" type="VARCHAR(255)"/>
+            <column name="direct_mang_f_name" type="VARCHAR(255)"/>
+            <column name="group_no" type="INTEGER"/>
+            <column name="group_no_d_name" type="VARCHAR(255)"/>
+            <column name="group_no_f_name" type="VARCHAR(255)"/>
+            <column name="inactive" type="BOOLEAN"/>
+            <column name="inactive_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="inactive_reason" type="VARCHAR(255)"/>
+            <column name="inactive_user" type="INTEGER"/>
+            <column name="inactive_user_d_name" type="VARCHAR(255)"/>
+            <column name="inactive_user_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="super_admin" type="BOOLEAN"/>
+            <column name="user_d_name" type="VARCHAR(255)"/>
+            <column name="user_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-179">
+        <createTable tableName="zone_view">
+            <column name="zone_no" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="zone_viewPK"/>
+            </column>
+            <column name="add_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="add_user" type="INTEGER"/>
+            <column name="add_user_d_name" type="VARCHAR(255)"/>
+            <column name="add_user_f_name" type="VARCHAR(255)"/>
+            <column name="city_no" type="INTEGER"/>
+            <column name="city_no_d_name" type="VARCHAR(255)"/>
+            <column name="city_no_f_name" type="VARCHAR(255)"/>
+            <column name="country_no" type="INTEGER"/>
+            <column name="country_no_d_name" type="VARCHAR(255)"/>
+            <column name="country_no_f_name" type="VARCHAR(255)"/>
+            <column name="modify_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modify_user" type="INTEGER"/>
+            <column name="modify_user_d_name" type="VARCHAR(255)"/>
+            <column name="modify_user_f_name" type="VARCHAR(255)"/>
+            <column name="province_no" type="INTEGER"/>
+            <column name="province_no_d_name" type="VARCHAR(255)"/>
+            <column name="province_no_f_name" type="VARCHAR(255)"/>
+            <column name="region_no" type="INTEGER"/>
+            <column name="region_no_d_name" type="VARCHAR(255)"/>
+            <column name="region_no_f_name" type="VARCHAR(255)"/>
+            <column name="zone_d_name" type="VARCHAR(255)"/>
+            <column name="zone_f_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-180">
+        <createIndex indexName="IX_accounts_privPK" tableName="accounts_priv" unique="true">
+            <column name="acc_curr"/>
+            <column name="acc_no"/>
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-181">
+        <createIndex indexName="IX_branches_privPK" tableName="branches_priv" unique="true">
+            <column name="branch_no"/>
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-182">
+        <createIndex indexName="IX_flag_detailPK" tableName="flag_detail" unique="true">
+            <column name="flag_code"/>
+            <column name="flag_value"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-183">
+        <createIndex indexName="IX_flag_privPK" tableName="flag_priv" unique="true">
+            <column name="flag_code"/>
+            <column name="flag_value"/>
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-184">
+        <createIndex indexName="IX_form_privilagePK" tableName="form_privilage" unique="true">
+            <column name="form_no"/>
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-185">
+        <createIndex indexName="IX_labelsPK" tableName="labels" unique="true">
+            <column name="label_code"/>
+            <column name="lang_no"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-186">
+        <createIndex indexName="IX_messagesPK" tableName="messages" unique="true">
+            <column name="lang_no"/>
+            <column name="message_code"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-187">
+        <dropForeignKeyConstraint baseTableName="accounts_group" constraintName="Add_user"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-188">
+        <dropForeignKeyConstraint baseTableName="accounts_priv" constraintName="Add_user_fk"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-189">
+        <dropForeignKeyConstraint baseTableName="users" constraintName="Inactive_user"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-190">
+        <dropForeignKeyConstraint baseTableName="users" constraintName="Modify_user"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-191">
+        <dropForeignKeyConstraint baseTableName="accounts_priv" constraintName="Modify_user_fk"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-192">
+        <dropForeignKeyConstraint baseTableName="accounts_priv" constraintName="acc_curr_fk"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-193">
+        <dropForeignKeyConstraint baseTableName="chart_of_accounts" constraintName="acc_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-194">
+        <dropForeignKeyConstraint baseTableName="tax_types_dtl" constraintName="acc_no"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-195">
+        <dropForeignKeyConstraint baseTableName="cash_in_hand" constraintName="acc_no_fk"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-196">
+        <dropForeignKeyConstraint baseTableName="tax_types_dtl" constraintName="account"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-197">
+        <dropForeignKeyConstraint baseTableName="accounts_currency" constraintName="accounts_no"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-198">
+        <dropForeignKeyConstraint baseTableName="branches_priv" constraintName="branch_fk"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-199">
+        <dropForeignKeyConstraint baseTableName="cash_in_hand" constraintName="branch_no_fk"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-200">
+        <dropForeignKeyConstraint baseTableName="cash_in_hand_priv" constraintName="cash_no_fk"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-201">
+        <dropForeignKeyConstraint baseTableName="cost_center" constraintName="cc_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-202">
+        <dropForeignKeyConstraint baseTableName="branches" constraintName="city"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-203">
+        <dropForeignKeyConstraint baseTableName="branches" constraintName="company"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-204">
+        <dropForeignKeyConstraint baseTableName="company" constraintName="company-group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-205">
+        <dropForeignKeyConstraint baseTableName="cost_center_priv" constraintName="cost_center"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-206">
+        <dropForeignKeyConstraint baseTableName="branches" constraintName="country"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-207">
+        <dropForeignKeyConstraint baseTableName="company" constraintName="country_fkey"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-208">
+        <dropForeignKeyConstraint baseTableName="accounts_currency" constraintName="currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-209">
+        <dropForeignKeyConstraint baseTableName="cash_in_hand_dtl" constraintName="currency_fk"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-210">
+        <dropForeignKeyConstraint baseTableName="currency_history" constraintName="currency_history_currency_code"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-211">
+        <dropForeignKeyConstraint baseTableName="currency_values" constraintName="currency_values_currency_code"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-212">
+        <dropForeignKeyConstraint baseTableName="users" constraintName="direct_mang"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-213">
+        <dropForeignKeyConstraint baseTableName="city" constraintName="fk_city_province"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-214">
+        <dropForeignKeyConstraint baseTableName="country" constraintName="fk_country_zone"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-215">
+        <dropForeignKeyConstraint baseTableName="forms" constraintName="fk_forms_modules"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-216">
+        <dropForeignKeyConstraint baseTableName="form_privilage" constraintName="fk_forms_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-217">
+        <dropForeignKeyConstraint baseTableName="labels" constraintName="fk_labels_language"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-218">
+        <dropForeignKeyConstraint baseTableName="messages" constraintName="fk_messages_language"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-219">
+        <dropForeignKeyConstraint baseTableName="province" constraintName="fk_province_country"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-220">
+        <dropForeignKeyConstraint baseTableName="users" constraintName="fk_users_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-221">
+        <dropForeignKeyConstraint baseTableName="form_privilage" constraintName="fk_users_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-222">
+        <dropForeignKeyConstraint baseTableName="forms" constraintName="flag_code"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-223">
+        <dropForeignKeyConstraint baseTableName="flag_master" constraintName="label_code"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-224">
+        <dropForeignKeyConstraint baseTableName="doc_type" constraintName="lang"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-225">
+        <dropForeignKeyConstraint baseTableName="doc_type" constraintName="module"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-226">
+        <dropForeignKeyConstraint baseTableName="forms" constraintName="parent_form"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-227">
+        <dropForeignKeyConstraint baseTableName="branches" constraintName="province"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-228">
+        <dropForeignKeyConstraint baseTableName="tax_types_dtl" constraintName="tax_no"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-229">
+        <dropForeignKeyConstraint baseTableName="cost_center_priv" constraintName="user"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-230">
+        <dropForeignKeyConstraint baseTableName="accounts_priv" constraintName="user_fk"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-231">
+        <dropForeignKeyConstraint baseTableName="currency" constraintName="user_fkey"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-232">
+        <dropForeignKeyConstraint baseTableName="cash_in_hand" constraintName="user_no_fk"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-233">
+        <dropForeignKeyConstraint baseTableName="country" constraintName="userm_fkey"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-234">
+        <dropUniqueConstraint constraintName="acc_d_name" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-235">
+        <dropUniqueConstraint constraintName="acc_f_name" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-236">
+        <dropUniqueConstraint constraintName="group_dname" tableName="accounts_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-237">
+        <dropUniqueConstraint constraintName="group_fname" tableName="accounts_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-238">
+        <dropView viewName="accounts_currency_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-239">
+        <dropView viewName="accounts_group_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-240">
+        <dropView viewName="branches_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-241">
+        <dropView viewName="chart_of_accounts_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-242">
+        <dropView viewName="city_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-243">
+        <dropView viewName="company_groups_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-244">
+        <dropView viewName="company_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-245">
+        <dropView viewName="cost_center_group_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-246">
+        <dropView viewName="cost_center_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-247">
+        <dropView viewName="country_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-248">
+        <dropView viewName="currency_history_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-249">
+        <dropView viewName="currency_values_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-250">
+        <dropView viewName="currency_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-251">
+        <dropView viewName="emp_info_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-252">
+        <dropView viewName="flag_detail_main_tree"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-253">
+        <dropView viewName="flag_detail_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-254">
+        <dropView viewName="flag_master_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-255">
+        <dropView viewName="flag_priv_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-256">
+        <dropView viewName="form_privilage_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-257">
+        <dropView viewName="forms_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-258">
+        <dropView viewName="labels_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-259">
+        <dropView viewName="language_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-260">
+        <dropView viewName="messages_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-261">
+        <dropView viewName="modules_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-262">
+        <dropView viewName="province_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-263">
+        <dropView viewName="region_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-264">
+        <dropView viewName="users_groups_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-265">
+        <dropView viewName="users_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-266">
+        <dropView viewName="zone_view"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-267">
+        <dropTable tableName="cash_in_hand"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-268">
+        <dropTable tableName="cash_in_hand_dtl"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-269">
+        <dropTable tableName="cash_in_hand_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-270">
+        <dropTable tableName="cost_center_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-271">
+        <dropTable tableName="doc_type"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-272">
+        <dropTable tableName="tax_types_dtl"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-273">
+        <dropTable tableName="tax_types_mst"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-274">
+        <dropTable tableName="user_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-1">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="acc_d_name" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-2">
+        <dropNotNullConstraint columnDataType="boolean" columnName="active" tableName="accounts_currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-3">
+        <dropNotNullConstraint columnDataType="boolean" columnName="active" tableName="flag_detail"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-4">
+        <dropNotNullConstraint columnDataType="boolean" columnName="active" tableName="forms"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-5">
+        <dropNotNullConstraint columnDataType="boolean" columnName="active" tableName="language"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-6">
+        <dropNotNullConstraint columnDataType="boolean" columnName="active" tableName="modules"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-7">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="Company"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-8">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="accounts_currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-9">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="accounts_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-10">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="accounts_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-11">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="branches"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-12">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="branches_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-13">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-14">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="city"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-15">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="company_groups"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-16">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="cost_center"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-17">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="cost_center_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-18">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-19">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="emp_info"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-20">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="flag_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-21">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-22">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="labels"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-23">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="messages"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-24">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="users"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-25">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="users_groups"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-26">
+        <dropNotNullConstraint columnDataType="timestamp" columnName="add_date" tableName="zone"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-27">
+        <dropNotNullConstraint columnDataType="boolean" columnName="add_priv" tableName="accounts_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-28">
+        <dropNotNullConstraint columnDataType="boolean" columnName="add_priv" tableName="branches_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-29">
+        <dropNotNullConstraint columnDataType="boolean" columnName="add_priv" tableName="flag_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-30">
+        <dropNotNullConstraint columnDataType="boolean" columnName="add_priv" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-31">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="Company"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-32">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="accounts_currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-33">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="accounts_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-34">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="accounts_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-35">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="branches"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-36">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="branches_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-37">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-38">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="city"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-39">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="company_groups"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-40">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="cost_center"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-41">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="cost_center_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-42">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-43">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="currency_values"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-44">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="emp_info"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-45">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="flag_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-46">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-47">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="labels"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-48">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="messages"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-49">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="users"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-50">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="users_groups"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-51">
+        <dropNotNullConstraint columnDataType="int" columnName="add_user" tableName="zone"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-52">
+        <dropNotNullConstraint columnDataType="boolean" columnName="admin_group" tableName="users_groups"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-53">
+        <dropNotNullConstraint columnDataType="boolean" columnName="admin_user" tableName="users"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-54">
+        <dropNotNullConstraint columnDataType="boolean" columnName="audit_priv" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-55">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="branch_d_name" tableName="branches"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-56">
+        <dropNotNullConstraint columnDataType="boolean" columnName="bs" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-57">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="cc_d_name" tableName="cost_center"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-58">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="cc_post" tableName="acc_para"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-59">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="cc_post" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-60">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="city_d_name" tableName="city"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-61">
+        <dropNotNullConstraint columnDataType="int" columnName="city_no" tableName="zone"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-62">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="company_d_name" tableName="Company"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-63">
+        <dropNotNullConstraint columnDataType="int" columnName="company_group" tableName="Company"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-64">
+        <dropNotNullConstraint columnDataType="int" columnName="company_no" tableName="branches"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-65">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="country_d_name" tableName="country"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-66">
+        <dropNotNullConstraint columnDataType="int" columnName="country_no" tableName="province"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-67">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="currency_d_name" tableName="currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-68">
+        <dropNotNullConstraint columnDataType="boolean" columnName="delete_priv" tableName="flag_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-69">
+        <dropNotNullConstraint columnDataType="boolean" columnName="delete_priv" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-70">
+        <dropNotNullConstraint columnDataType="int" columnName="direct_mang" tableName="users"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-71">
+        <dropNotNullConstraint columnDataType="boolean" columnName="dr" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-72">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="emp_d_name" tableName="emp_info"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-73">
+        <dropNotNullConstraint columnDataType="number(19,2)" columnName="exchange_rate" tableName="currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-74">
+        <dropNotNullConstraint columnDataType="number(19,2)" columnName="exchange_rate" tableName="currency_history"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-75">
+        <dropNotNullConstraint columnDataType="boolean" columnName="flag_priv" tableName="flag_detail"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-76">
+        <dropNotNullConstraint columnDataType="int" columnName="flag_sr" tableName="flag_detail"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-77">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="form_d_name" tableName="forms"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-78">
+        <dropNotNullConstraint columnDataType="int" columnName="form_order" tableName="forms"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-79">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="fraction_d_name" tableName="currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-80">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="group_d_name" tableName="accounts_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-81">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="group_d_name" tableName="company_groups"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-82">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="group_d_name" tableName="cost_center_group"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-83">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="group_d_name" tableName="users_groups"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-84">
+        <dropNotNullConstraint columnDataType="boolean" columnName="inactive" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-85">
+        <dropNotNullConstraint columnDataType="boolean" columnName="inactive" tableName="cost_center"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-86">
+        <dropNotNullConstraint columnDataType="boolean" columnName="inactive" tableName="emp_info"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-87">
+        <dropNotNullConstraint columnDataType="boolean" columnName="inactive" tableName="users"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-88">
+        <dropNotNullConstraint columnDataType="boolean" columnName="include_priv" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-89">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="label_code" tableName="flag_detail"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-90">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="label_code" tableName="flag_master"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-91">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="label_desc" tableName="labels"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-92">
+        <dropNotNullConstraint columnDataType="boolean" columnName="lang_dfl" tableName="language"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-93">
+        <dropNotNullConstraint columnDataType="int" columnName="lang_dir" tableName="language"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-94">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="lang_ext" tableName="language"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-95">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="lang_name" tableName="language"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-96">
+        <dropNotNullConstraint columnDataType="int" columnName="lang_no" tableName="flag_detail"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-97">
+        <dropNotNullConstraint columnDataType="int" columnName="lang_no" tableName="flag_master"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-98">
+        <dropNotNullConstraint columnDataType="int" columnName="level" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-99">
+        <dropNotNullConstraint columnDataType="boolean" columnName="local_currency" tableName="currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-100">
+        <dropNotNullConstraint columnDataType="boolean" columnName="main" tableName="forms"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-101">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="message_desc" tableName="messages"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-102">
+        <dropNotNullConstraint columnDataType="boolean" columnName="modify_priv" tableName="flag_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-103">
+        <dropNotNullConstraint columnDataType="boolean" columnName="modify_priv" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-104">
+        <dropNotNullConstraint columnDataType="int" columnName="modify_user" tableName="currency_history"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-105">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="module_d_name" tableName="modules"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-106">
+        <dropNotNullConstraint columnDataType="int" columnName="module_no" tableName="forms"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-107">
+        <dropNotNullConstraint columnDataType="int" columnName="order_no" tableName="modules"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-108">
+        <dropNotNullConstraint columnDataType="int" columnName="parent_acc" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-109">
+        <dropNotNullConstraint columnDataType="int" columnName="parent_cc" tableName="cost_center"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-110">
+        <dropNotNullConstraint columnDataType="int" columnName="parent_form" tableName="forms"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-111">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="password" tableName="users"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-112">
+        <dropNotNullConstraint columnDataType="boolean" columnName="post_priv" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-113">
+        <dropNotNullConstraint columnDataType="boolean" columnName="print_priv" tableName="flag_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-114">
+        <dropNotNullConstraint columnDataType="boolean" columnName="print_priv" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-115">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="province_d_name" tableName="province"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-116">
+        <dropNotNullConstraint columnDataType="int" columnName="province_no" tableName="city"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-117">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="region_d_name" tableName="region"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-118">
+        <dropNotNullConstraint columnDataType="int" columnName="region_no" tableName="country"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-119">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="report_ext" tableName="language"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-120">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="shortcut" tableName="city"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-121">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="shortcut" tableName="country"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-122">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="shortcut" tableName="modules"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-123">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="shortcut" tableName="province"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-124">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="shortcut" tableName="region"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-125">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="shortcut_d" tableName="Company"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-126">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="shortcut_d" tableName="branches"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-127">
+        <dropNotNullConstraint columnDataType="boolean" columnName="sub" tableName="chart_of_accounts"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-128">
+        <dropNotNullConstraint columnDataType="boolean" columnName="sub" tableName="cost_center"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-129">
+        <dropNotNullConstraint columnDataType="int" columnName="sub_acc_lvl" tableName="acc_para"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-130">
+        <dropNotNullConstraint columnDataType="boolean" columnName="super_admin" tableName="users"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-131">
+        <dropNotNullConstraint columnDataType="boolean" columnName="used" tableName="accounts_currency"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-132">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="user_d_name" tableName="users"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-133">
+        <dropNotNullConstraint columnDataType="boolean" columnName="view_priv" tableName="accounts_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-134">
+        <dropNotNullConstraint columnDataType="boolean" columnName="view_priv" tableName="branches_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-135">
+        <dropNotNullConstraint columnDataType="boolean" columnName="view_priv" tableName="flag_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-136">
+        <dropNotNullConstraint columnDataType="boolean" columnName="view_priv" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-137">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="zone_d_name" tableName="zone"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-138">
+        <dropPrimaryKey tableName="accounts_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-139">
+        <addPrimaryKey columnNames="acc_curr, acc_no, user_id" constraintName="accounts_privPK" tableName="accounts_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-140">
+        <dropPrimaryKey tableName="branches_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-141">
+        <addPrimaryKey columnNames="branch_no, user_id" constraintName="branches_privPK" tableName="branches_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-142">
+        <dropPrimaryKey tableName="flag_detail"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-143">
+        <addPrimaryKey columnNames="flag_code, flag_value" constraintName="flag_detailPK" tableName="flag_detail"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-144">
+        <dropPrimaryKey tableName="flag_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-145">
+        <addPrimaryKey columnNames="flag_code, flag_value, user_id" constraintName="flag_privPK" tableName="flag_priv"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-146">
+        <dropPrimaryKey tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-147">
+        <addPrimaryKey columnNames="form_no, user_id" constraintName="form_privilagePK" tableName="form_privilage"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-148">
+        <dropPrimaryKey tableName="labels"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-149">
+        <addPrimaryKey columnNames="label_code, lang_no" constraintName="labelsPK" tableName="labels"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-150">
+        <dropPrimaryKey tableName="messages"/>
+    </changeSet>
+    <changeSet author="pc-hp1 (generated)" id="1635882006646-151">
+        <addPrimaryKey columnNames="lang_no, message_code" constraintName="messagesPK" tableName="messages"/>
+    </changeSet>
+</databaseChangeLog>

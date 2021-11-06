@@ -9,6 +9,8 @@ import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivDTO
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivFilter;
 
 
 public interface MasterDataPrivilegesDAO {
@@ -37,5 +39,16 @@ public interface MasterDataPrivilegesDAO {
 	List<Object[]> getAccountsPrivs(Set<Integer> userIdList, Set<Integer> accNoList, Set<String> curCodeList);
 	
 	List<AccountsPrivDTO> getAccountsPrivs(UsersView loginUser, AccountsPrivFilter filter);
+	
+
+	List<Integer> getCostCenterPK();
+	
+	List<Integer> getCostCenterPKFromPrivsTable(Integer userId);
+	
+	List<Object[]> getCostCentersPrivs(Integer userId);
+	
+	List<Object[]> getCostCentersPrivs(Set<Integer> userIdList, Set<Integer> ccNoList);
+	
+	List<CostCenterPrivDTO> getCostCentersPrivs(UsersView loginUser, CostCenterPrivFilter filter);
 		
 }

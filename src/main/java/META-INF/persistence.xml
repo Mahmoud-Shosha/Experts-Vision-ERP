@@ -64,5 +64,8 @@
 		<class>com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView</class>
 		<class>com.expertsvision.erp.masterdata.employees.entity.EmpInfo</class>
 		<class>com.expertsvision.erp.masterdata.employees.entity.EmpInfoView</class>
+		<class>com.expertsvision.erp.masterdata.costcenters.entity.CostCenter</class>
+		<class>com.expertsvision.erp.masterdata.costcenters.entity.CostCenterView</class>
+		<class>com.expertsvision.erp.masterdata.costcenters.entity.CostCenterPriv</class>
 	</persistence-unit>
 </persistence>

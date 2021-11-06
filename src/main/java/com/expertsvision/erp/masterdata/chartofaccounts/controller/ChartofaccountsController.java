@@ -59,7 +59,7 @@ public class ChartofaccountsController {
 				pageNo);
 		return response.response(singlePage, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/lastPage")
 	public ResponseEntity<Object> getChartOfAccountsViewLastPage() {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
