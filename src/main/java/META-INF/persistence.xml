@@ -67,5 +67,19 @@
 		<class>com.expertsvision.erp.masterdata.costcenters.entity.CostCenter</class>
 		<class>com.expertsvision.erp.masterdata.costcenters.entity.CostCenterView</class>
 		<class>com.expertsvision.erp.masterdata.costcenters.entity.CostCenterPriv</class>
+		<class>com.expertsvision.erp.masterdata.banks.entity.Bank</class>
+		<class>com.expertsvision.erp.masterdata.banks.entity.BanksDtl</class>
+		<class>com.expertsvision.erp.masterdata.banks.entity.BanksDtlPK</class>
+		<class>com.expertsvision.erp.masterdata.banks.entity.BanksDtlView</class>
+		<class>com.expertsvision.erp.masterdata.banks.entity.BanksPriv</class>
+		<class>com.expertsvision.erp.masterdata.banks.entity.BanksPrivPK</class>
+		<class>com.expertsvision.erp.masterdata.banks.entity.BanksView</class>
+		<class>com.expertsvision.erp.masterdata.cash.entity.CashInHand</class>
+		<class>com.expertsvision.erp.masterdata.cash.entity.CashInHandDtl</class>
+		<class>com.expertsvision.erp.masterdata.cash.entity.CashInHandDtlPK</class>
+		<class>com.expertsvision.erp.masterdata.cash.entity.CashInHandDtlView</class>
+		<class>com.expertsvision.erp.masterdata.cash.entity.CashInHandPriv</class>
+		<class>com.expertsvision.erp.masterdata.cash.entity.CashInHandPrivPK</class>
+		<class>com.expertsvision.erp.masterdata.cash.entity.CashInHandView</class>
 	</persistence-unit>
 </persistence>

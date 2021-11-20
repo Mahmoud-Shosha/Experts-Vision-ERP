@@ -62,13 +62,13 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 	@Autowired
 	@Lazy
 	private InMemoryUsersGroupsService inMemoryUsersGroupsService;
-	
+
 	private final List<String> CASH_FLOW_ANALYSIS = Arrays.asList("1", "2", "3", "4", "5");
-	
+
 	private final List<String> LIST_CASH_FLOW = Arrays.asList("1", "2", "3");
-	
+
 	private final List<String> LIST_CHART_OF_ACC = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8");
-	
+
 	private final List<String> CC_POST = Arrays.asList("1", "2", "3");
 
 	@Override
@@ -81,7 +81,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
@@ -99,7 +100,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
@@ -109,7 +111,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		if (chartOfAccountsView.getSub()) {
 			if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 				loginUsersView = null;
-			chartOfAccountsView.setAccountCurrencyList(chartofaccountsDAO.getAccountsCurrencyViewList(loginUsersView, accNo));
+			chartOfAccountsView
+					.setAccountCurrencyList(chartofaccountsDAO.getAccountsCurrencyViewList(loginUsersView, accNo));
 		}
 		return chartOfAccountsView;
 	}
@@ -124,7 +127,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
@@ -133,7 +137,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		if (coav != null && coav.getSub()) {
 			if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 				loginUsersView = null;
-			coav.setAccountCurrencyList(chartofaccountsDAO.getAccountsCurrencyViewList(loginUsersView, coav.getAccNo()));
+			coav.setAccountCurrencyList(
+					chartofaccountsDAO.getAccountsCurrencyViewList(loginUsersView, coav.getAccNo()));
 		}
 		return singlePage;
 	}
@@ -148,7 +153,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		SinglePage<ChartOfAccountsView> singlePage = chartofaccountsDAO.getChartOfAccountsViewLastPage();
@@ -156,7 +162,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		if (coav != null && coav.getSub()) {
 			if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 				loginUsersView = null;
-			coav.setAccountCurrencyList(chartofaccountsDAO.getAccountsCurrencyViewList(loginUsersView, coav.getAccNo()));
+			coav.setAccountCurrencyList(
+					chartofaccountsDAO.getAccountsCurrencyViewList(loginUsersView, coav.getAccNo()));
 		}
 		return singlePage;
 	}
@@ -171,7 +178,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
@@ -184,7 +192,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 
 	@Override
 	@Transactional
-	public MultiplePages<ChartOfAccountsView> getChartOfAccountsViewMultiplePages(UsersView loginUsersView, long pageNo) {
+	public MultiplePages<ChartOfAccountsView> getChartOfAccountsViewMultiplePages(UsersView loginUsersView,
+			long pageNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
@@ -192,18 +201,20 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
-		MultiplePages<ChartOfAccountsView> multiplePages = chartofaccountsDAO.getChartOfAccountsViewMultiplePages(pageNo);
+		MultiplePages<ChartOfAccountsView> multiplePages = chartofaccountsDAO
+				.getChartOfAccountsViewMultiplePages(pageNo);
 		return multiplePages;
 	}
 
 	@Override
 	@Transactional
-	public MultiplePages<ChartOfAccountsView> getChartOfAccountsViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
-			ChartOfAccountsViewFilter chartOfAccountsViewFilter) {
+	public MultiplePages<ChartOfAccountsView> getChartOfAccountsViewFilteredMultiplePages(UsersView loginUsersView,
+			long pageNo, ChartOfAccountsViewFilter chartOfAccountsViewFilter) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
@@ -211,15 +222,16 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
-		MultiplePages<ChartOfAccountsView> multiplePages = chartofaccountsDAO.getChartOfAccountsViewFilteredMultiplePages(pageNo,
-				chartOfAccountsViewFilter);
+		MultiplePages<ChartOfAccountsView> multiplePages = chartofaccountsDAO
+				.getChartOfAccountsViewFilteredMultiplePages(pageNo, chartOfAccountsViewFilter);
 		return multiplePages;
 	}
-	
+
 	@Override
 	@Transactional
 	public Object getNextPK(UsersView loginUsersView, Integer parentAcc) {
@@ -230,14 +242,16 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 		}
 		// Return requested data
 		if (parentAcc.equals(0))
 			return null;
-		Integer PK = (Integer)chartofaccountsDAO.getNextPK(parentAcc);
-		if (PK == null) return null;
+		Integer PK = (Integer) chartofaccountsDAO.getNextPK(parentAcc);
+		if (PK == null)
+			return null;
 		String childDigitsString = PK.toString().substring(parentAcc.toString().length());
 		if ((Math.pow(10, childDigitsString.length()) - 1) > Integer.parseInt(childDigitsString))
 			return ++PK;
@@ -255,7 +269,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.ADD);
 		}
@@ -273,7 +288,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		coreValidationService.greaterThanZero(chartOfAccountsView.getLevel(), "acc_level");
 		coreValidationService.notNull(chartOfAccountsView.getParentAcc(), "parent_acc");
 		coreValidationService.greaterThanOrEqualZero(chartOfAccountsView.getParentAcc(), "parent_acc");
-		if (chartOfAccountsView.getAccGroup() != null) 
+		if (chartOfAccountsView.getAccGroup() != null)
 			coreValidationService.greaterThanOrEqualZero(chartOfAccountsView.getAccGroup(), "group");
 		coreValidationService.notNull(chartOfAccountsView.getDr(), "acc_nature");
 		coreValidationService.notNull(chartOfAccountsView.getBs(), "report_type");
@@ -310,13 +325,13 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				obj.setAccNo(chartOfAccountsView.getAccNo());
 				coreValidationService.notNull(obj.getCurCode(), "currency_code");
 				coreValidationService.notBlank(obj.getCurCode(), "currency_code");
-				coreValidationService.notNull(obj.getActive(), "active");
 				coreValidationService.notNull(obj.getUsed(), "used");
 				switch (obj.getAction()) {
 				case "add":
 					break;
 				default:
-					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "currency_code", obj.getCurCode());
+					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "currency_code",
+							obj.getCurCode());
 				}
 			}
 		}
@@ -347,7 +362,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		} else {
 			if (parentAcc == null)
 				throw new ValidationException("not_exist", "parent_acc");
-			if (!chartOfAccount.getLevel().equals(parentAcc.getLevel()+1))
+			if (!chartOfAccount.getLevel().equals(parentAcc.getLevel() + 1))
 				throw new ValidationException("invalid", "acc_level");
 		}
 		if (chartOfAccountsView.getSub()) {
@@ -355,16 +370,16 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				throw new ValidationException("invalid", "acc_level");
 		}
 		if (!chartOfAccountsView.getParentAcc().equals(0) && !chartOfAccountsView.getBs().equals(parentAcc.getBs()))
-			throw new ValidationException("invalid", "report_type");	
+			throw new ValidationException("invalid", "report_type");
 		switch (accPara.getCcPost()) {
-			case "1":
-				if (!chartOfAccountsView.getCcPost().equals("1"))
-					throw new ValidationException("invalid", "cc_post");	
-				break;
-			case "4":
-				if (!chartOfAccountsView.getBs())
-					throw new ValidationException("invalid", "cc_post");	
-				break;
+		case "1":
+			if (!chartOfAccountsView.getCcPost().equals("1"))
+				throw new ValidationException("invalid", "cc_post");
+			break;
+		case "4":
+			if (!chartOfAccountsView.getBs())
+				throw new ValidationException("invalid", "cc_post");
+			break;
 		}
 		// Database validation for details
 		if (chartOfAccountsView.getAccountCurrencyList() != null) {
@@ -381,17 +396,17 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				accountsCurrency.setModifyUser(null);
 				AccountsCurrencyForAddList.add(accountsCurrency);
 				if (valuesSetForAdd.contains(obj.getCurCode())) {
-					throw new DetailValidationException("already_exist_detail", "currency",
-							obj.getCurCode(), "acc_no", chartOfAccountsView.getAccNo());
+					throw new DetailValidationException("already_exist_detail", "currency", obj.getCurCode(), "acc_no",
+							chartOfAccountsView.getAccNo());
 				} else {
 					valuesSetForAdd.add(obj.getCurCode());
 				}
 			}
-			DBValuesSetForAdd = generalDAO.getThemIfExist("accounts_currency",
-					"acc_no = :accNo", parameters, "cur_code", valuesSetForAdd);
+			DBValuesSetForAdd = generalDAO.getThemIfExist("accounts_currency", "acc_no = :accNo", parameters,
+					"cur_code", valuesSetForAdd);
 			if (DBValuesSetForAdd != null && !DBValuesSetForAdd.isEmpty())
-				throw new DetailValidationException("already_exist_detail", "currency",
-						DBValuesSetForAdd.toArray()[0], "acc_no", chartOfAccountsView.getAccNo());
+				throw new DetailValidationException("already_exist_detail", "currency", DBValuesSetForAdd.toArray()[0],
+						"acc_no", chartOfAccountsView.getAccNo());
 		}
 		// Add the chartOfAccountes
 		chartOfAccount.setAddDate(add_date);
@@ -406,7 +421,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			chartOfAccount.setInactiveUser(null);
 			chartOfAccount.setInactiveReason(null);
 		}
-		chartofaccountsDAO.addChartOfAccount(chartOfAccount, AccountsCurrencyForAddList); 
+		chartofaccountsDAO.addChartOfAccount(chartOfAccount, AccountsCurrencyForAddList);
 		for (AccountsCurrency obj : AccountsCurrencyForAddList) {
 			generateChartOfAccountesPrivsForAllUsers(obj.getAccNo(), obj.getCurCode(), add_date);
 		}
@@ -422,9 +437,11 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.MODIFY);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.MODIFY);
 		}
 		Timestamp update_date = new Timestamp(new Date().getTime());
 		List<AccountsCurrency> AccountsCurrencyForAddList = new ArrayList<>();
@@ -442,7 +459,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		coreValidationService.greaterThanZero(chartOfAccountsView.getLevel(), "acc_level");
 		coreValidationService.notNull(chartOfAccountsView.getParentAcc(), "parent_acc");
 		coreValidationService.greaterThanOrEqualZero(chartOfAccountsView.getParentAcc(), "parent_acc");
-		if (chartOfAccountsView.getAccGroup() != null) 
+		if (chartOfAccountsView.getAccGroup() != null)
 			coreValidationService.greaterThanOrEqualZero(chartOfAccountsView.getAccGroup(), "group");
 		coreValidationService.notNull(chartOfAccountsView.getDr(), "acc_nature");
 		coreValidationService.notNull(chartOfAccountsView.getBs(), "report_type");
@@ -479,7 +496,6 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				obj.setAccNo(chartOfAccountsView.getAccNo());
 				coreValidationService.notNull(obj.getCurCode(), "currency_code");
 				coreValidationService.notBlank(obj.getCurCode(), "currency_code");
-				coreValidationService.notNull(obj.getActive(), "active");
 				coreValidationService.notNull(obj.getUsed(), "used");
 				switch (obj.getAction()) {
 				case "add":
@@ -487,7 +503,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				case "delete":
 					break;
 				default:
-					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "currency_code", obj.getCurCode());
+					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "currency_code",
+							obj.getCurCode());
 				}
 			}
 		}
@@ -505,7 +522,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			throw new ValidationException("already_exist", "name");
 		conditions.clear();
 		conditions.put("acc_f_name", chartOfAccount.getAccFName());
-		if (chartOfAccount.getAccFName() != null && generalDAO.isEntityExist("chart_of_accounts", conditions, exceptionCondition))
+		if (chartOfAccount.getAccFName() != null
+				&& generalDAO.isEntityExist("chart_of_accounts", conditions, exceptionCondition))
 			throw new ValidationException("already_exist", "foreign_name");
 		conditions.clear();
 		conditions.put("group_no", chartOfAccount.getAccGroup());
@@ -520,7 +538,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		} else {
 			if (parentAcc == null)
 				throw new ValidationException("not_exist", "parent_acc");
-			if (!chartOfAccount.getLevel().equals(parentAcc.getLevel()+1))
+			if (!chartOfAccount.getLevel().equals(parentAcc.getLevel() + 1))
 				throw new ValidationException("invalid", "acc_level");
 		}
 		if (chartOfAccountsView.getSub()) {
@@ -530,14 +548,14 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		if (!chartOfAccountsView.getParentAcc().equals(0) && !chartOfAccountsView.getBs().equals(parentAcc.getBs()))
 			throw new ValidationException("invalid", "report_type");
 		switch (accPara.getCcPost()) {
-			case "1":
-				if (!chartOfAccountsView.getCcPost().equals("1"))
-					throw new ValidationException("invalid", "cc_post");	
-				break;
-			case "2":
-				if (!chartOfAccountsView.getBs())
-					throw new ValidationException("invalid", "cc_post");	
-				break;
+		case "1":
+			if (!chartOfAccountsView.getCcPost().equals("1"))
+				throw new ValidationException("invalid", "cc_post");
+			break;
+		case "2":
+			if (!chartOfAccountsView.getBs())
+				throw new ValidationException("invalid", "cc_post");
+			break;
 		}
 		// Database validation for details
 		if (chartOfAccountsView.getAccountCurrencyList() != null) {
@@ -559,8 +577,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 					accountsCurrency.setModifyUser(null);
 					AccountsCurrencyForAddList.add(accountsCurrency);
 					if (valuesSetForAdd.contains(obj.getCurCode())) {
-						throw new DetailValidationException("already_exist_detail", "currency",
-								obj.getCurCode(), "acc_no", chartOfAccountsView.getAccNo());
+						throw new DetailValidationException("already_exist_detail", "currency", obj.getCurCode(),
+								"acc_no", chartOfAccountsView.getAccNo());
 					} else {
 						valuesSetForAdd.add(obj.getCurCode());
 					}
@@ -571,8 +589,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 					accountsCurrency.setModifyUser(loginUsersView.getUserId());
 					AccountsCurrencyForUpdateList.add(accountsCurrency);
 					if (valuesSetForAdd.contains(obj.getCurCode()))
-						throw new DetailValidationException("already_exist_detail", "currency",
-								obj.getCurCode(), "acc_no", chartOfAccountsView.getAccNo());
+						throw new DetailValidationException("already_exist_detail", "currency", obj.getCurCode(),
+								"acc_no", chartOfAccountsView.getAccNo());
 					valuesSetForModifyOrDelete.add(accountsCurrency.getCurCode());
 					break;
 				case "delete":
@@ -582,27 +600,28 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				}
 			}
 			if (!valuesSetForAdd.isEmpty()) {
-				DBValuesSetForAdd = generalDAO.getThemIfExist("accounts_currency",
-						"acc_no = :accNo", parameters, "cur_code", valuesSetForAdd);
+				DBValuesSetForAdd = generalDAO.getThemIfExist("accounts_currency", "acc_no = :accNo", parameters,
+						"cur_code", valuesSetForAdd);
 				if (DBValuesSetForAdd != null && !DBValuesSetForAdd.isEmpty())
 					throw new DetailValidationException("already_exist_detail", "currency",
 							DBValuesSetForAdd.toArray()[0], "acc_no", chartOfAccountsView.getAccNo());
 			}
 			if (!valuesSetForModifyOrDelete.isEmpty()) {
-				DBValuesSetForModifyOrDelete = generalDAO.getThemIfExist("accounts_currency",
-						"acc_no = :accNo", parameters, "cur_code", valuesSetForModifyOrDelete);
+				DBValuesSetForModifyOrDelete = generalDAO.getThemIfExist("accounts_currency", "acc_no = :accNo",
+						parameters, "cur_code", valuesSetForModifyOrDelete);
 				if (DBValuesSetForModifyOrDelete != null) {
 					for (String i : valuesSetForModifyOrDelete) {
 						if (!DBValuesSetForModifyOrDelete.contains(i))
-							throw new DetailValidationException("not_exist_detail", "currency",
-									i, "acc_no", chartOfAccountsView.getAccNo());
+							throw new DetailValidationException("not_exist_detail", "currency", i, "acc_no",
+									chartOfAccountsView.getAccNo());
 					}
 				}
 			}
-			
+
 		}
 		// Update the chartOfAccount
-		ChartOfAccountsView DBChartOfAccountsView = chartofaccountsDAO.getChartOfAccountsView(chartOfAccountsView.getAccNo());
+		ChartOfAccountsView DBChartOfAccountsView = chartofaccountsDAO
+				.getChartOfAccountsView(chartOfAccountsView.getAccNo());
 		if (DBChartOfAccountsView.getInactive() && !chartOfAccountsView.getInactive()) {
 			chartOfAccount.setInactiveDate(null);
 			chartOfAccount.setInactiveUser(null);
@@ -635,9 +654,11 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.DELETE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.DELETE);
 		}
 		// Non-database validation
 		coreValidationService.notNull(accNo, "acc_no");
@@ -656,7 +677,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			throw new ValidationException("used_somewhere", "acc_no");
 		}
 	}
-	
+
 	@Override
 	@Transactional
 	public PreData preAdd(UsersView loginUsersView) {
@@ -667,7 +688,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.ADD);
 		}
@@ -682,7 +704,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		// return the data
 		return preData;
 	}
-	
+
 	@Override
 	@Transactional
 	public PreData preModify(UsersView loginUsersView) {
@@ -693,9 +715,11 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			} else {
 				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
 			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.MODIFY);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.MODIFY);
 		}
 		Set<String> readOnly = new HashSet<>();
 		Map<String, Object> defaultValues = new HashMap<>();
@@ -750,7 +774,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			chartofaccountsDAO.addAccountsPriv(priv);
 		}
 	}
-	
+
 	@Override
 	public boolean hasSubAccounts(Integer accNo) {
 		return chartofaccountsDAO.hasSubAccounts(accNo);
@@ -768,7 +792,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			if (chartOfAccountsView.getAccFName() == null)
 				chartOfAccount.setAccFName(chartOfAccountsView.getAccFName());
 			else
-				chartOfAccount.setAccFName(Utils.escapeLiteral(null, chartOfAccountsView.getAccFName(), true).toString());
+				chartOfAccount
+						.setAccFName(Utils.escapeLiteral(null, chartOfAccountsView.getAccFName(), true).toString());
 			chartOfAccount.setAccGroup(chartOfAccountsView.getAccGroup());
 			chartOfAccount.setAccNo(chartOfAccountsView.getAccNo());
 			if (chartOfAccountsView.getAccType() == null)
@@ -781,14 +806,16 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			if (chartOfAccountsView.getCashFlowType() == null)
 				chartOfAccount.setCashFlowType(chartOfAccountsView.getCashFlowType());
 			else
-				chartOfAccount.setCashFlowType(Utils.escapeLiteral(null, chartOfAccountsView.getCashFlowType(), true).toString());
+				chartOfAccount.setCashFlowType(
+						Utils.escapeLiteral(null, chartOfAccountsView.getCashFlowType(), true).toString());
 			chartOfAccount.setDr(chartOfAccountsView.getDr());
 			chartOfAccount.setInactive(chartOfAccountsView.getInactive());
 			chartOfAccount.setInactiveDate(chartOfAccountsView.getInactiveDate());
 			if (chartOfAccountsView.getInactiveReason() == null)
 				chartOfAccount.setInactiveReason(chartOfAccountsView.getInactiveReason());
 			else
-				chartOfAccount.setInactiveReason(Utils.escapeLiteral(null, chartOfAccountsView.getInactiveReason(), true).toString());
+				chartOfAccount.setInactiveReason(
+						Utils.escapeLiteral(null, chartOfAccountsView.getInactiveReason(), true).toString());
 			chartOfAccount.setInactiveUser(chartOfAccountsView.getInactiveUser());
 			chartOfAccount.setLevel(chartOfAccountsView.getLevel());
 			chartOfAccount.setModifyDate(chartOfAccountsView.getModifyDate());
@@ -800,12 +827,11 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		}
 		return chartOfAccount;
 	}
-	
-	public AccountsCurrency  getAccountsCurrencyViewFromAccountsCurrencyView(AccountsCurrencyView accountsCurrencyView) {
+
+	public AccountsCurrency getAccountsCurrencyViewFromAccountsCurrencyView(AccountsCurrencyView accountsCurrencyView) {
 		AccountsCurrency accountsCurrency = new AccountsCurrency();
 		try {
 			accountsCurrency.setAccNo(accountsCurrencyView.getAccNo());
-			accountsCurrency.setActive(accountsCurrencyView.getActive());
 			accountsCurrency.setAddDate(accountsCurrencyView.getAddDate());
 			accountsCurrency.setAddUser(accountsCurrencyView.getAddUser());
 			accountsCurrency.setCurCode(Utils.escapeLiteral(null, accountsCurrencyView.getCurCode(), true).toString());

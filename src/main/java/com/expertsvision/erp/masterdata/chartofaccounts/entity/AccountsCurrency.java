@@ -4,42 +4,38 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-
 /**
  * The persistent class for the accounts_currency database table.
  * 
  */
 @Entity
-@Table(name="accounts_currency")
+@Table(name = "accounts_currency")
 @IdClass(AccountsCurrencyPK.class)
-@NamedQuery(name="AccountsCurrency.findAll", query="SELECT a FROM AccountsCurrency a")
+@NamedQuery(name = "AccountsCurrency.findAll", query = "SELECT a FROM AccountsCurrency a")
 public class AccountsCurrency implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="acc_no")
+	@Column(name = "acc_no")
 	private Integer accNo;
 
 	@Id
-	@Column(name="cur_code")
+	@Column(name = "cur_code")
 	private String curCode;
 
-	@Column(name="active")
-	private Boolean active;
-
-	@Column(name="add_date")
+	@Column(name = "add_date")
 	private Timestamp addDate;
 
-	@Column(name="add_user")
+	@Column(name = "add_user")
 	private Integer addUser;
 
-	@Column(name="modify_date")
+	@Column(name = "modify_date")
 	private Timestamp modifyDate;
 
-	@Column(name="modify_user")
+	@Column(name = "modify_user")
 	private Integer modifyUser;
 
-	@Column(name="used")
+	@Column(name = "used")
 	private Boolean used;
 
 	public AccountsCurrency() {
@@ -59,14 +55,6 @@ public class AccountsCurrency implements Serializable {
 
 	public void setCurCode(String curCode) {
 		this.curCode = curCode;
-	}
-
-	public Boolean getActive() {
-		return this.active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
 	}
 
 	public Timestamp getAddDate() {
@@ -111,9 +99,8 @@ public class AccountsCurrency implements Serializable {
 
 	@Override
 	public String toString() {
-		return "AccountsCurrency [accNo=" + accNo + ", curCode=" + curCode + ", active=" + active + ", addDate="
-				+ addDate + ", addUser=" + addUser + ", modifyDate=" + modifyDate + ", modifyUser=" + modifyUser
-				+ ", used=" + used + "]";
+		return "AccountsCurrency [accNo=" + accNo + ", curCode=" + curCode + ", addDate=" + addDate + ", addUser="
+				+ addUser + ", modifyDate=" + modifyDate + ", modifyUser=" + modifyUser + ", used=" + used + "]";
 	}
-	
+
 }

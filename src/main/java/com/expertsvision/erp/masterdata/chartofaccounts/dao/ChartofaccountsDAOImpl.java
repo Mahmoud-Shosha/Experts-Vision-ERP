@@ -23,7 +23,6 @@ import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccount;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
 
-
 @Repository
 public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 
@@ -44,7 +43,7 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 		List<ChartOfAccountsView> chartOfAccountsViewList = query.getResultList();
 		return chartOfAccountsViewList;
 	}
-	
+
 	@Override
 	public List<AccountsCurrencyView> getAccountsCurrencyViewList(UsersView loginUsersView, Integer accNo) {
 		Session session = sessionFactory.getCurrentSession();
@@ -72,7 +71,7 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 		Query<ChartOfAccountsView> query = session.createNativeQuery(sql, ChartOfAccountsView.class);
 		query.setParameter("accNo", accNo);
 		List<ChartOfAccountsView> chartOfAccountsViewList = query.getResultList();
-		return chartOfAccountsViewList.isEmpty()? null : chartOfAccountsViewList.get(0);
+		return chartOfAccountsViewList.isEmpty() ? null : chartOfAccountsViewList.get(0);
 	}
 
 	@Override
@@ -88,10 +87,10 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 			chartOfAccountsViewList = query.getResultList();
 		}
 		if (pageNo <= 0 || chartOfAccountsViewList.isEmpty()) {
-				sql = "SELECT COUNT(*) FROM chart_of_accounts_view";
-				@SuppressWarnings("unchecked")
-				Query<BigInteger> query2 = session.createNativeQuery(sql);
-				count = query2.getSingleResult().longValue();
+			sql = "SELECT COUNT(*) FROM chart_of_accounts_view";
+			@SuppressWarnings("unchecked")
+			Query<BigInteger> query2 = session.createNativeQuery(sql);
+			count = query2.getSingleResult().longValue();
 			return new SinglePage<ChartOfAccountsView>(null, pageNo, count);
 		} else {
 			return new SinglePage<ChartOfAccountsView>(chartOfAccountsViewList.get(0), pageNo, null);
@@ -118,11 +117,9 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 	@Override
 	public Long getUserViewSinglePageNo(Integer accNo) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT row_number FROM" +
-					 "			(SELECT acc_no, ROW_NUMBER()" +
-					 "						OVER(ORDER BY (acc_no)) FROM chart_of_accounts_view)" +
-					 "			AS row_number " +
-					 "WHERE acc_no = :accNo";
+		String sql = "SELECT row_number FROM" + "			(SELECT acc_no, ROW_NUMBER()"
+				+ "						OVER(ORDER BY (acc_no)) FROM chart_of_accounts_view)"
+				+ "			AS row_number " + "WHERE acc_no = :accNo";
 		@SuppressWarnings("unchecked")
 		Query<BigInteger> query = session.createNativeQuery(sql);
 		query.setParameter("accNo", accNo);
@@ -146,14 +143,16 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 		Query<BigInteger> query2 = session.createNativeQuery(sql);
 		long count = query2.getSingleResult().longValue();
 		if (pageNo <= 0 || chartOfAccountsViewList.isEmpty()) {
-			return new MultiplePages<ChartOfAccountsView>(null, pageNo, (long)Math.ceil(count/30.0));
+			return new MultiplePages<ChartOfAccountsView>(null, pageNo, (long) Math.ceil(count / 30.0));
 		} else {
-			return new MultiplePages<ChartOfAccountsView>(chartOfAccountsViewList, pageNo, (long)Math.ceil(count/30.0));
+			return new MultiplePages<ChartOfAccountsView>(chartOfAccountsViewList, pageNo,
+					(long) Math.ceil(count / 30.0));
 		}
 	}
 
 	@Override
-	public MultiplePages<ChartOfAccountsView> getChartOfAccountsViewFilteredMultiplePages(long pageNo, ChartOfAccountsViewFilter chartOfAccountsViewFilter) {
+	public MultiplePages<ChartOfAccountsView> getChartOfAccountsViewFilteredMultiplePages(long pageNo,
+			ChartOfAccountsViewFilter chartOfAccountsViewFilter) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = null;
 		List<ChartOfAccountsView> chartOfAccountsViewList = null;
@@ -176,12 +175,13 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 		Query<BigInteger> query2 = session.createNativeQuery(sql);
 		long count = query2.getSingleResult().longValue();
 		if (pageNo <= 0 || chartOfAccountsViewList.isEmpty()) {
-			return new MultiplePages<ChartOfAccountsView>(null, pageNo, (long)Math.ceil(count/30.0));
+			return new MultiplePages<ChartOfAccountsView>(null, pageNo, (long) Math.ceil(count / 30.0));
 		} else {
-			return new MultiplePages<ChartOfAccountsView>(chartOfAccountsViewList, pageNo, (long)Math.ceil(count/30.0));
+			return new MultiplePages<ChartOfAccountsView>(chartOfAccountsViewList, pageNo,
+					(long) Math.ceil(count / 30.0));
 		}
 	}
-	
+
 	@Override
 	public Object getNextPK(Integer parentAcc) {
 		Session session = sessionFactory.getCurrentSession();
@@ -199,7 +199,7 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 		session.save(chartOfAccount);
 		session.flush();
 		if (accountsCurrencyList != null) {
-			for (AccountsCurrency obj: accountsCurrencyList) {
+			for (AccountsCurrency obj : accountsCurrencyList) {
 				session.save(obj);
 			}
 			session.flush();
@@ -213,8 +213,7 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 	}
 
 	@Override
-	public void updateChartOfAccount(ChartOfAccount chartOfAccount,
-			List<AccountsCurrency> accountsCurrencyForAddList,
+	public void updateChartOfAccount(ChartOfAccount chartOfAccount, List<AccountsCurrency> accountsCurrencyForAddList,
 			List<AccountsCurrency> accountsCurrencyForDeleteList,
 			List<AccountsCurrency> accountsCurrencyForUpdateList) {
 		Session session = sessionFactory.getCurrentSession();
@@ -238,7 +237,7 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 		DBChartOfAccount.setSub(chartOfAccount.getSub());
 		session.merge(DBChartOfAccount);
 		session.flush();
-		
+
 		// Add the details
 		if (accountsCurrencyForAddList != null) {
 			for (AccountsCurrency obj : accountsCurrencyForAddList) {
@@ -250,7 +249,6 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 			for (AccountsCurrency obj : accountsCurrencyForUpdateList) {
 				AccountsCurrency DBAccountsCurrency = session.get(AccountsCurrency.class,
 						new AccountsCurrencyPK(obj.getAccNo(), obj.getCurCode()));
-				DBAccountsCurrency.setActive(obj.getActive());
 				DBAccountsCurrency.setModifyDate(obj.getModifyDate());
 				DBAccountsCurrency.setModifyUser(obj.getModifyUser());
 				DBAccountsCurrency.setUsed(obj.getUsed());
@@ -277,7 +275,7 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 		session.delete(chartOfAccount);
 		session.flush();
 	}
-	
+
 	@Override
 	public boolean hasSubAccounts(Integer accNo) {
 		Session session = sessionFactory.getCurrentSession();
