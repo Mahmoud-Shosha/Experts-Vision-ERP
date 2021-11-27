@@ -1,89 +1,137 @@
 package com.expertsvision.erp.masterdata.cash.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the cash_in_hand_view database table.
  * 
  */
 @Entity
-@Table(name="cash_in_hand_view")
-@NamedQuery(name="CashInHandView.findAll", query="SELECT c FROM CashInHandView c")
+@Table(name = "cash_in_hand_view")
+@NamedQuery(name = "CashInHandView.findAll", query = "SELECT c FROM CashInHandView c")
 public class CashInHandView implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="acc_d_name")
+	@JsonProperty("acc_d_name")
+	@Column(name = "acc_d_name")
 	private String accDName;
 
-	@Column(name="acc_f_name")
+	@JsonProperty("acc_f_name")
+	@Column(name = "acc_f_name")
 	private String accFName;
 
 	@Id
-	@Column(name="acc_no")
+	@JsonProperty("acc_no")
+	@Column(name = "acc_no")
 	private Integer accNo;
 
-	@Column(name="add_date")
+	@JsonProperty("add_date")
+	@Column(name = "add_date")
 	private Timestamp addDate;
 
-	@Column(name="add_user")
+	@JsonProperty("add_user")
+	@Column(name = "add_user")
 	private Integer addUser;
 
-	@Column(name="add_user_d_name")
+	@JsonProperty("add_user_d_name")
+	@Column(name = "add_user_d_name")
 	private String addUserDName;
 
-	@Column(name="add_user_f_name")
+	@JsonProperty("add_user_f_name")
+	@Column(name = "add_user_f_name")
 	private String addUserFName;
 
-	@Column(name="branch_d_name")
+	@JsonProperty("branch_d_name")
+	@Column(name = "branch_d_name")
 	private String branchDName;
 
-	@Column(name="branch_f_name")
+	@JsonProperty("branch_f_name")
+	@Column(name = "branch_f_name")
 	private String branchFName;
 
-	@Column(name="branch_no")
+	@JsonProperty("branch_no")
+	@Column(name = "branch_no")
 	private Integer branchNo;
 
-	@Column(name="cash_d_name")
+	@JsonProperty("cash_d_name")
+	@Column(name = "cash_d_name")
 	private String cashDName;
 
-	@Column(name="cash_f_no")
+	@JsonProperty("cash_f_no")
+	@Column(name = "cash_f_no")
 	private String cashFNo;
 
-	@Column(name="cash_no")
+	@JsonProperty("cash_no")
+	@Column(name = "cash_no")
 	private Integer cashNo;
 
+	@JsonProperty("inactive")
+	@Column(name = "inactive")
 	private Boolean inactive;
 
-	@Column(name="inactive_reason")
+	@JsonProperty("inactive_reason")
+	@Column(name = "inactive_reason")
 	private String inactiveReason;
 
-	@Column(name="inactive_user")
+	@JsonProperty("inactive_user")
+	@Column(name = "inactive_user")
 	private Integer inactiveUser;
 
-	@Column(name="inactive_user_d_name")
+	@JsonProperty("inactive_user_d_name")
+	@Column(name = "inactive_user_d_name")
 	private String inactiveUserDName;
 
-	@Column(name="inactive_user_f_name")
+	@JsonProperty("inactive_user_f_name")
+	@Column(name = "inactive_user_f_name")
 	private String inactiveUserFName;
 
-	@Column(name="modify_date")
+	@JsonProperty("modify_date")
+	@Column(name = "modify_date")
 	private Timestamp modifyDate;
 
-	@Column(name="modify_user")
+	@JsonProperty("modify_user")
+	@Column(name = "modify_user")
 	private Integer modifyUser;
 
-	@Column(name="modify_user_d_name")
+	@JsonProperty("modify_user_d_name")
+	@Column(name = "modify_user_d_name")
 	private String modifyUserDName;
 
-	@Column(name="modify_user_f_name")
+	@JsonProperty("modify_user_f_name")
+	@Column(name = "modify_user_f_name")
 	private String modifyUserFName;
 
+	@JsonProperty("pos")
+	@Column(name = "pos")
 	private Boolean pos;
 
+	@JsonProperty("cash_dtl_list")
+	@Transient
+	@JsonInclude(Include.NON_NULL)
+	private List<CashInHandDtlView> cashDtlList;
+
 	public CashInHandView() {
+	}
+
+	public List<CashInHandDtlView> getCashDtlList() {
+		return cashDtlList;
+	}
+
+	public void setCashDtlList(List<CashInHandDtlView> cashDtlList) {
+		this.cashDtlList = cashDtlList;
 	}
 
 	public String getAccDName() {
@@ -268,6 +316,18 @@ public class CashInHandView implements Serializable {
 
 	public void setPos(Boolean pos) {
 		this.pos = pos;
+	}
+
+	@Override
+	public String toString() {
+		return "CashInHandView [accDName=" + accDName + ", accFName=" + accFName + ", accNo=" + accNo + ", addDate="
+				+ addDate + ", addUser=" + addUser + ", addUserDName=" + addUserDName + ", addUserFName=" + addUserFName
+				+ ", branchDName=" + branchDName + ", branchFName=" + branchFName + ", branchNo=" + branchNo
+				+ ", cashDName=" + cashDName + ", cashFNo=" + cashFNo + ", cashNo=" + cashNo + ", inactive=" + inactive
+				+ ", inactiveReason=" + inactiveReason + ", inactiveUser=" + inactiveUser + ", inactiveUserDName="
+				+ inactiveUserDName + ", inactiveUserFName=" + inactiveUserFName + ", modifyDate=" + modifyDate
+				+ ", modifyUser=" + modifyUser + ", modifyUserDName=" + modifyUserDName + ", modifyUserFName="
+				+ modifyUserFName + ", pos=" + pos + "]";
 	}
 
 }

@@ -286,4 +286,21 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 		return query.getResultList().size() > 0;
 	}
 
+	@Override
+	public void updateReportTypeForChildren(ChartOfAccountsView chartOfAccountsView) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "WITH RECURSIVE recursive_result AS ("
+				+ "				 select * from chart_of_accounts where acc_no = :accNO"
+				+ "							   UNION"
+				+ "							   SELECT u.* FROM chart_of_accounts u"
+				+ "							   INNER JOIN recursive_result s ON s.acc_no = u.parent_acc)"
+				+ "							   UPDATE chart_of_accounts n SET bs = :bs WHERE"
+				+ "							   n.acc_no IN (SELECT acc_no FROM recursive_result)";
+		@SuppressWarnings("unchecked")
+		Query<Object> query = session.createNativeQuery(sql);
+		query.setParameter("accNO", chartOfAccountsView.getAccNo());
+		query.setParameter("bs", chartOfAccountsView.getBs());
+		query.executeUpdate();
+	}
+
 }

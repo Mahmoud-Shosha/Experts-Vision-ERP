@@ -1,75 +1,111 @@
 package com.expertsvision.erp.masterdata.banks.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the banks_view database table.
  * 
  */
 @Entity
-@Table(name="banks_view")
-@NamedQuery(name="BanksView.findAll", query="SELECT b FROM BanksView b")
+@Table(name = "banks_view")
+@NamedQuery(name = "BanksView.findAll", query = "SELECT b FROM BanksView b")
 public class BanksView implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="acc_d_name")
+	@JsonProperty("acc_d_name")
+	@Column(name = "acc_d_name")
 	private String accDName;
 
-	@Column(name="acc_f_name")
+	@JsonProperty("acc_f_name")
+	@Column(name = "acc_f_name")
 	private String accFName;
 
-	@Column(name="account_no")
+	@JsonProperty("account_no")
+	@Column(name = "account_no")
 	private Integer accountNo;
 
-	@Column(name="add_date")
+	@JsonProperty("add_date")
+	@Column(name = "add_date")
 	private Timestamp addDate;
 
-	@Column(name="add_user")
+	@JsonProperty("add_user")
+	@Column(name = "add_user")
 	private Integer addUser;
 
-	@Column(name="add_user_d_name")
+	@JsonProperty("add_user_d_name")
+	@Column(name = "add_user_d_name")
 	private String addUserDName;
 
-	@Column(name="add_user_f_name")
+	@JsonProperty("add_user_f_name")
+	@Column(name = "add_user_f_name")
 	private String addUserFName;
 
-	@Column(name="bank_d_name")
+	@JsonProperty("bank_d_name")
+	@Column(name = "bank_d_name")
 	private String bankDName;
 
-	@Column(name="bank_f_name")
+	@JsonProperty("bank_f_name")
+	@Column(name = "bank_f_name")
 	private String bankFName;
+
 	@Id
-	@Column(name="bank_no")
+	@JsonProperty("bank_no")
+	@Column(name = "bank_no")
 	private Integer bankNo;
 
+	@JsonProperty("inactive")
+	@Column(name = "inactive")
 	private Boolean inactive;
 
-	@Column(name="inactive_reason")
+	@JsonProperty("inactive_reason")
+	@Column(name = "inactive_reason")
 	private String inactiveReason;
 
-	@Column(name="inactive_user")
+	@JsonProperty("inactive_user")
+	@Column(name = "inactive_user")
 	private Integer inactiveUser;
 
-	@Column(name="inactive_user_d_name")
+	@JsonProperty("inactive_user_d_name")
+	@Column(name = "inactive_user_d_name")
 	private String inactiveUserDName;
 
-	@Column(name="inactive_user_f_name")
+	@JsonProperty("inactive_user_f_name")
+	@Column(name = "inactive_user_f_name")
 	private String inactiveUserFName;
 
-	@Column(name="modify_date")
+	@JsonProperty("modify_date")
+	@Column(name = "modify_date")
 	private Timestamp modifyDate;
 
-	@Column(name="modify_user")
+	@JsonProperty("modify_user")
+	@Column(name = "modify_user")
 	private Integer modifyUser;
 
-	@Column(name="modify_user_d_name")
+	@JsonProperty("modify_user_d_name")
+	@Column(name = "modify_user_d_name")
 	private String modifyUserDName;
 
-	@Column(name="modify_user_f_name")
+	@JsonProperty("modify_user_f_name")
+	@Column(name = "modify_user_f_name")
 	private String modifyUserFName;
+
+	@JsonProperty("bnk_dtl_list")
+	@Transient
+	@JsonInclude(Include.NON_NULL)
+	private List<BanksDtlView> bankDtlList;
 
 	public BanksView() {
 	}
@@ -224,6 +260,25 @@ public class BanksView implements Serializable {
 
 	public void setModifyUserFName(String modifyUserFName) {
 		this.modifyUserFName = modifyUserFName;
+	}
+
+	public List<BanksDtlView> getBankDtlList() {
+		return bankDtlList;
+	}
+
+	public void setBankDtlList(List<BanksDtlView> bankDtlList) {
+		this.bankDtlList = bankDtlList;
+	}
+
+	@Override
+	public String toString() {
+		return "BanksView [accDName=" + accDName + ", accFName=" + accFName + ", accountNo=" + accountNo + ", addDate="
+				+ addDate + ", addUser=" + addUser + ", addUserDName=" + addUserDName + ", addUserFName=" + addUserFName
+				+ ", bankDName=" + bankDName + ", bankFName=" + bankFName + ", bankNo=" + bankNo + ", inactive="
+				+ inactive + ", inactiveReason=" + inactiveReason + ", inactiveUser=" + inactiveUser
+				+ ", inactiveUserDName=" + inactiveUserDName + ", inactiveUserFName=" + inactiveUserFName
+				+ ", modifyDate=" + modifyDate + ", modifyUser=" + modifyUser + ", modifyUserDName=" + modifyUserDName
+				+ ", modifyUserFName=" + modifyUserFName + "]";
 	}
 
 }

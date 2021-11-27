@@ -1,56 +1,62 @@
 package com.expertsvision.erp.masterdata.cash.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the cash_in_hand database table.
  * 
  */
 @Entity
-@Table(name="cash_in_hand")
-@NamedQuery(name="CashInHand.findAll", query="SELECT c FROM CashInHand c")
+@Table(name = "cash_in_hand")
+@NamedQuery(name = "CashInHand.findAll", query = "SELECT c FROM CashInHand c")
 public class CashInHand implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="cash_no")
+	@Column(name = "cash_no")
 	private Integer cashNo;
 
-	@Column(name="acc_no")
+	@Column(name = "acc_no")
 	private Integer accNo;
 
-	@Column(name="add_date")
+	@Column(name = "add_date")
 	private Timestamp addDate;
 
-	@Column(name="add_user")
+	@Column(name = "add_user")
 	private Integer addUser;
 
-	@Column(name="branch_no")
+	@Column(name = "branch_no")
 	private Integer branchNo;
 
-	@Column(name="cash_d_name")
+	@Column(name = "cash_d_name")
 	private String cashDName;
 
-	@Column(name="cash_f_no")
+	@Column(name = "cash_f_no")
 	private String cashFNo;
 
+	@Column(name = "inactive")
 	private Boolean inactive;
 
-	@Column(name="inactive_reason")
+	@Column(name = "inactive_reason")
 	private String inactiveReason;
 
-	@Column(name="inactive_user")
+	@Column(name = "inactive_user")
 	private Integer inactiveUser;
 
-	@Column(name="modify_date")
+	@Column(name = "modify_date")
 	private Timestamp modifyDate;
 
-	@Column(name="modify_user")
+	@Column(name = "modify_user")
 	private Integer modifyUser;
 
+	@Column(name = "pos")
 	private Boolean pos;
 
 	public CashInHand() {
@@ -158,6 +164,14 @@ public class CashInHand implements Serializable {
 
 	public void setPos(Boolean pos) {
 		this.pos = pos;
+	}
+
+	@Override
+	public String toString() {
+		return "CashInHand [cashNo=" + cashNo + ", accNo=" + accNo + ", addDate=" + addDate + ", addUser=" + addUser
+				+ ", branchNo=" + branchNo + ", cashDName=" + cashDName + ", cashFNo=" + cashFNo + ", inactive="
+				+ inactive + ", inactiveReason=" + inactiveReason + ", inactiveUser=" + inactiveUser + ", modifyDate="
+				+ modifyDate + ", modifyUser=" + modifyUser + ", pos=" + pos + "]";
 	}
 
 }

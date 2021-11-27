@@ -14,10 +14,13 @@ import java.util.Set;
 import org.postgresql.core.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.expertsvision.erp.core.advice.ValidationExceptionAdvice;
 import com.expertsvision.erp.core.exception.DetailValidationException;
+import com.expertsvision.erp.core.exception.ExcelValidationException;
 import com.expertsvision.erp.core.exception.UnauthorizedException;
 import com.expertsvision.erp.core.exception.ValidationException;
 import com.expertsvision.erp.core.user.entity.UsersView;
@@ -39,15 +42,22 @@ import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyV
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccount;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
+import com.expertsvision.erp.masterdata.currency.service.CurrencyService;
 
 @Service
 public class ChartofaccountsServiceImpl implements ChartofaccountsService {
+
+	@Autowired
+	private ValidationExceptionAdvice validationExceptionAdvice;
 
 	@Autowired
 	private ChartofaccountsDAO chartofaccountsDAO;
 
 	@Autowired
 	private AccParaService accParaService;
+
+	@Autowired
+	private CurrencyService currencyService;
 
 	@Autowired
 	private GeneralDAO generalDAO;
@@ -63,17 +73,38 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 	@Lazy
 	private InMemoryUsersGroupsService inMemoryUsersGroupsService;
 
+	// 1 -> Cash and equivalent
+	// 2 -> Inventory
+	// 3 -> Receivable
+	// 4 -> Fixed assets
+	// 5 -> Intangible assets
 	private final List<String> CASH_FLOW_ANALYSIS = Arrays.asList("1", "2", "3", "4", "5");
 
+	// 1 -> Operation
+	// 2 -> Investment
+	// 3 -> Financing
 	private final List<String> LIST_CASH_FLOW = Arrays.asList("1", "2", "3");
 
+	// 1 -> General
+	// 2 -> Cash in hand
+	// 3 -> bank
+	// 4 -> Customer
+	// 5 -> Supplier
+	// 6 -> Other Debt
+	// 7 -> Other Credit
+	// 8 -> Employees
 	private final List<String> LIST_CHART_OF_ACC = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8");
 
+	// 1 -> Mandatory
+	// 2 -> Not used
+	// 3 -> Optional
+	// 4 -> Inventory, Used accParam
 	private final List<String> CC_POST = Arrays.asList("1", "2", "3");
 
 	@Override
 	@Transactional
 	public List<ChartOfAccountsView> getChartOfAccountsViewList(UsersView loginUsersView) {
+		System.out.println(validationExceptionAdvice);
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
@@ -297,7 +328,11 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		if (!chartOfAccountsView.getSub()) {
 			chartOfAccountsView.setAccType(null);
 			chartOfAccountsView.setCashFlowType(null);
-			chartOfAccountsView.setAccountCurrencyList(null);
+			AccountsCurrencyView accountsCurrencyView = new AccountsCurrencyView();
+			accountsCurrencyView.setAction("add");
+			accountsCurrencyView.setUsed(true);
+			accountsCurrencyView.setCurCode(currencyService.getLocalCurrency().getCurrencyCode());
+			chartOfAccountsView.setAccountCurrencyList(Arrays.asList(accountsCurrencyView));
 		}
 		if (!CC_POST.contains(chartOfAccountsView.getCcPost()))
 			throw new ValidationException("invalid", "cc_post");
@@ -365,6 +400,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			if (!chartOfAccount.getLevel().equals(parentAcc.getLevel() + 1))
 				throw new ValidationException("invalid", "acc_level");
 		}
+		if (parentAcc != null && parentAcc.getLevel().equals(accPara.getSubAccLvl()))
+			throw new ValidationException("invalid", "parent_acc");
 		if (chartOfAccountsView.getSub()) {
 			if (!chartOfAccount.getLevel().equals(accPara.getSubAccLvl()))
 				throw new ValidationException("invalid", "acc_level");
@@ -425,6 +462,65 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		for (AccountsCurrency obj : AccountsCurrencyForAddList) {
 			generateChartOfAccountesPrivsForAllUsers(obj.getAccNo(), obj.getCurCode(), add_date);
 		}
+	}
+
+	@Override
+	@Transactional
+	public void validateExcel(UsersView loginUsersView,
+			List<ChartOfAccountsView> chartOfAccountsViewList) {
+		// Check module, form, privileges
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.ADD);
+		}
+		Map<Integer, Object> errorsMap = new HashMap<>();
+		ResponseEntity<Object> responseEntity;
+		for (ChartOfAccountsView chartOfAccountsView : chartOfAccountsViewList) {
+			try {
+				addChartOfAccount(loginUsersView, chartOfAccountsView);
+			} catch (ValidationException e) {
+				responseEntity = validationExceptionAdvice.GeneralHandler(e);
+				errorsMap.put(chartOfAccountsView.getAccNo(), responseEntity.getBody());
+			}
+		}
+		throw new ExcelValidationException(errorsMap);
+	}
+	
+	@Override
+	@Transactional
+	public void addExcel(UsersView loginUsersView,
+			List<ChartOfAccountsView> chartOfAccountsViewList) {
+		// Check module, form, privileges
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.CHART_OF_ACCOUNTS);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.CHART_OF_ACCOUNTS);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS,
+					FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CHART_OF_ACCOUNTS, FormsActions.ADD);
+		}
+		Map<Integer, Object> errorsMap = new HashMap<>();
+		ResponseEntity<Object> responseEntity;
+		for (ChartOfAccountsView chartOfAccountsView : chartOfAccountsViewList) {
+			try {
+				addChartOfAccount(loginUsersView, chartOfAccountsView);
+			} catch (ValidationException e) {
+				responseEntity = validationExceptionAdvice.GeneralHandler(e);
+				errorsMap.put(chartOfAccountsView.getAccNo(), responseEntity.getBody());
+			}
+		}
+		if (!errorsMap.isEmpty())
+			throw new ExcelValidationException(errorsMap);
 	}
 
 	@Override
@@ -541,6 +637,8 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 			if (!chartOfAccount.getLevel().equals(parentAcc.getLevel() + 1))
 				throw new ValidationException("invalid", "acc_level");
 		}
+		if (parentAcc != null && parentAcc.getLevel().equals(accPara.getSubAccLvl()))
+			throw new ValidationException("invalid", "parent_acc");
 		if (chartOfAccountsView.getSub()) {
 			if (!chartOfAccount.getLevel().equals(accPara.getSubAccLvl()))
 				throw new ValidationException("invalid", "acc_level");
@@ -641,6 +739,10 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 				AccountsCurrencyForDeleteList, AccountsCurrencyForUpdateList);
 		for (AccountsCurrency obj : AccountsCurrencyForAddList) {
 			generateChartOfAccountesPrivsForAllUsers(obj.getAccNo(), obj.getCurCode(), update_date);
+		}
+		if (chartOfAccountsView.getParentAcc().equals(0)
+				&& !chartOfAccountsView.getBs().equals(DBChartOfAccountsView.getBs())) {
+			chartofaccountsDAO.updateReportTypeForChildren(chartOfAccountsView);
 		}
 	}
 

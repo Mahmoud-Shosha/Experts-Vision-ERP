@@ -135,4 +135,18 @@ public class ChartofaccountsController {
 		return response.response(preData, HttpStatus.OK);
 	}
 
+	@PostMapping("/validateExcel")
+	public ResponseEntity<Object> validateExcel(@RequestBody List<ChartOfAccountsView> chartOfAccountsViewList) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		chartofaccountsService.validateExcel(loginUser, chartOfAccountsViewList);
+		return response.response(null, HttpStatus.OK);
+	}
+
+	@PostMapping("/addExcel")
+	public ResponseEntity<Object> addExcel(@RequestBody List<ChartOfAccountsView> chartOfAccountsViewList) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		chartofaccountsService.addExcel(loginUser, chartOfAccountsViewList);
+		return response.response(new HashMap<>(), HttpStatus.OK);
+	}
+
 }

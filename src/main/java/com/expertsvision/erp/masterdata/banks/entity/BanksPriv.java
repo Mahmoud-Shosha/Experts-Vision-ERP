@@ -1,53 +1,73 @@
 package com.expertsvision.erp.masterdata.banks.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the banks_priv database table.
  * 
  */
 @Entity
-@Table(name="banks_priv")
-@NamedQuery(name="BanksPriv.findAll", query="SELECT b FROM BanksPriv b")
+@Table(name = "banks_priv")
+@IdClass(BanksPrivPK.class)
+@NamedQuery(name = "BanksPriv.findAll", query = "SELECT b FROM BanksPriv b")
 public class BanksPriv implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private BanksPrivPK id;
+	@Id
+	@Column(name = "user_id")
+	private Integer userId;
 
-	@Column(name="add_date")
+	@Id
+	@Column(name = "acc_curr")
+	private String accCurr;
+
+	@Column(name = "add_date")
 	private Timestamp addDate;
 
-	@Column(name="add_priv")
+	@Column(name = "add_priv")
 	private Boolean addPriv;
 
-	@Column(name="add_user")
+	@Column(name = "add_user")
 	private Integer addUser;
 
-	@Column(name="bank_no")
+	@Id	
+	@Column(name = "bank_no")
 	private Integer bankNo;
 
-	@Column(name="modify_date")
+	@Column(name = "modify_date")
 	private Timestamp modifyDate;
 
-	@Column(name="modify_user")
+	@Column(name = "modify_user")
 	private Integer modifyUser;
 
-	@Column(name="view_priv")
+	@Column(name = "view_priv")
 	private Boolean viewPriv;
 
 	public BanksPriv() {
 	}
 
-	public BanksPrivPK getId() {
-		return this.id;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setId(BanksPrivPK id) {
-		this.id = id;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public String getAccCurr() {
+		return accCurr;
+	}
+
+	public void setAccCurr(String accCurr) {
+		this.accCurr = accCurr;
 	}
 
 	public Timestamp getAddDate() {
@@ -104,6 +124,13 @@ public class BanksPriv implements Serializable {
 
 	public void setViewPriv(Boolean viewPriv) {
 		this.viewPriv = viewPriv;
+	}
+
+	@Override
+	public String toString() {
+		return "BanksPriv [userId=" + userId + ", accCurr=" + accCurr + ", addDate=" + addDate + ", addPriv=" + addPriv
+				+ ", addUser=" + addUser + ", bankNo=" + bankNo + ", modifyDate=" + modifyDate + ", modifyUser="
+				+ modifyUser + ", viewPriv=" + viewPriv + "]";
 	}
 
 }

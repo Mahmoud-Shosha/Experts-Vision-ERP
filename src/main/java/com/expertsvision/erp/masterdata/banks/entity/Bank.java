@@ -1,51 +1,56 @@
 package com.expertsvision.erp.masterdata.banks.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the banks database table.
  * 
  */
 @Entity
-@Table(name="banks")
-@NamedQuery(name="Bank.findAll", query="SELECT b FROM Bank b")
+@Table(name = "banks")
+@NamedQuery(name = "Bank.findAll", query = "SELECT b FROM Bank b")
 public class Bank implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="bank_no")
+	@Column(name = "bank_no")
 	private Integer bankNo;
 
-	@Column(name="account_no")
+	@Column(name = "account_no")
 	private Integer accountNo;
 
-	@Column(name="add_date")
+	@Column(name = "add_date")
 	private Timestamp addDate;
 
-	@Column(name="add_user")
+	@Column(name = "add_user")
 	private Integer addUser;
 
-	@Column(name="bank_d_name")
+	@Column(name = "bank_d_name")
 	private String bankDName;
 
-	@Column(name="bank_f_name")
+	@Column(name = "bank_f_name")
 	private String bankFName;
 
+	@Column(name = "inactive")
 	private Boolean inactive;
 
-	@Column(name="inactive_reason")
+	@Column(name = "inactive_reason")
 	private String inactiveReason;
 
-	@Column(name="inactive_user")
+	@Column(name = "inactive_user")
 	private Integer inactiveUser;
 
-	@Column(name="modify_date")
+	@Column(name = "modify_date")
 	private Timestamp modifyDate;
 
-	@Column(name="modify_user")
+	@Column(name = "modify_user")
 	private Integer modifyUser;
 
 	public Bank() {
@@ -137,6 +142,14 @@ public class Bank implements Serializable {
 
 	public void setModifyUser(Integer modifyUser) {
 		this.modifyUser = modifyUser;
+	}
+
+	@Override
+	public String toString() {
+		return "Bank [bankNo=" + bankNo + ", accountNo=" + accountNo + ", addDate=" + addDate + ", addUser=" + addUser
+				+ ", bankDName=" + bankDName + ", bankFName=" + bankFName + ", inactive=" + inactive
+				+ ", inactiveReason=" + inactiveReason + ", inactiveUser=" + inactiveUser + ", modifyDate=" + modifyDate
+				+ ", modifyUser=" + modifyUser + "]";
 	}
 
 }

@@ -12,38 +12,38 @@ import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccount;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
 
-
 public interface ChartofaccountsDAO {
-	
+
 	List<ChartOfAccountsView> getAllChartOfAccountsViewList();
-	
+
 	List<AccountsCurrencyView> getAccountsCurrencyViewList(UsersView loginUsersView, Integer accNo);
-			
+
 	ChartOfAccountsView getChartOfAccountsView(Integer accNo);
-	
+
 	SinglePage<ChartOfAccountsView> getChartOfAccountsViewSinglePage(long pageNo);
-	
+
 	SinglePage<ChartOfAccountsView> getChartOfAccountsViewLastPage();
-	
+
 	Long getUserViewSinglePageNo(Integer accNo);
-	
+
 	MultiplePages<ChartOfAccountsView> getChartOfAccountsViewMultiplePages(long pageNo);
-	
-	MultiplePages<ChartOfAccountsView> getChartOfAccountsViewFilteredMultiplePages(long pageNo, ChartOfAccountsViewFilter chartOfAccountsViewFilter);
-	
+
+	MultiplePages<ChartOfAccountsView> getChartOfAccountsViewFilteredMultiplePages(long pageNo,
+			ChartOfAccountsViewFilter chartOfAccountsViewFilter);
+
 	Object getNextPK(Integer parentAcc);
-	
+
 	void addChartOfAccount(ChartOfAccount chartOfAccount, List<AccountsCurrency> accountsCurrencyList);
-	
+
 	void addAccountsPriv(AccountsPriv accountsPriv);
-	
-	void updateChartOfAccount(ChartOfAccount chartOfAccount,
-			List<AccountsCurrency> accountsCurrencyForAddList,
-			List<AccountsCurrency> accountsCurrencyForDeleteList,
-			List<AccountsCurrency> accountsCurrencyForUpdateList);
-	
+
+	void updateChartOfAccount(ChartOfAccount chartOfAccount, List<AccountsCurrency> accountsCurrencyForAddList,
+			List<AccountsCurrency> accountsCurrencyForDeleteList, List<AccountsCurrency> accountsCurrencyForUpdateList);
+
 	void deleteChartOfAccount(Integer accNo);
-	
+
 	boolean hasSubAccounts(Integer accNo);
-		
+
+	void updateReportTypeForChildren(ChartOfAccountsView chartOfAccountsView);
+
 }

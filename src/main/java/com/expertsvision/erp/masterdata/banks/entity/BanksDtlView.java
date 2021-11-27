@@ -1,78 +1,109 @@
 package com.expertsvision.erp.masterdata.banks.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the banks_dtl_view database table.
  * 
  */
 @Entity
-@Table(name="banks_dtl_view")
-@NamedQuery(name="BanksDtlView.findAll", query="SELECT b FROM BanksDtlView b")
+@Table(name = "banks_dtl_view")
+@IdClass(BanksDtlPK.class)
+@NamedQuery(name = "BanksDtlView.findAll", query = "SELECT b FROM BanksDtlView b")
 public class BanksDtlView implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="acc_curr")
+	@Id
+	@JsonProperty("acc_curr")
+	@Column(name = "acc_curr")
 	private String accCurr;
 
-	@Column(name="acc_d_name")
+	@JsonProperty("acc_d_name")
+	@Column(name = "acc_d_name")
 	private String accDName;
 
-	@Column(name="acc_f_name")
+	@JsonProperty("acc_f_name")
+	@Column(name = "acc_f_name")
 	private String accFName;
 
 	@Id
-	@Column(name="acc_no")
+	@JsonProperty("acc_no")
+	@Column(name = "acc_no")
 	private Integer accNo;
 
-	@Column(name="add_date")
+	@JsonProperty("add_date")
+	@Column(name = "add_date")
 	private Timestamp addDate;
 
-	@Column(name="add_user")
+	@JsonProperty("add_user")
+	@Column(name = "add_user")
 	private Integer addUser;
 
-	@Column(name="add_user_d_name")
+	@JsonProperty("add_user_d_name")
+	@Column(name = "add_user_d_name")
 	private String addUserDName;
 
-	@Column(name="add_user_f_name")
+	@JsonProperty("add_user_f_name")
+	@Column(name = "add_user_f_name")
 	private String addUserFName;
 
-	@Column(name="bank_no")
+	@Id
+	@JsonProperty("bank_no")
+	@Column(name = "bank_no")
 	private Integer bankNo;
 
-	@Column(name="currency_d_name")
+	@JsonProperty("currency_d_name")
+	@Column(name = "currency_d_name")
 	private String currencyDName;
 
-	@Column(name="currency_f_name")
+	@JsonProperty("currency_f_name")
+	@Column(name = "currency_f_name")
 	private String currencyFName;
 
+	@JsonProperty("inactive")
+	@Column(name = "inactive")
 	private Boolean inactive;
 
-	@Column(name="inactive_reason")
+	@JsonProperty("inactive_reason")
+	@Column(name = "inactive_reason")
 	private String inactiveReason;
 
-	@Column(name="inactive_user")
+	@JsonProperty("inactive_user")
+	@Column(name = "inactive_user")
 	private Integer inactiveUser;
 
-	@Column(name="inactive_user_d_name")
+	@JsonProperty("inactive_user_d_name")
+	@Column(name = "inactive_user_d_name")
 	private String inactiveUserDName;
 
-	@Column(name="inactive_user_f_name")
+	@JsonProperty("inactive_user_f_name")
+	@Column(name = "inactive_user_f_name")
 	private String inactiveUserFName;
 
-	@Column(name="modify_date")
+	@JsonProperty("modify_date")
+	@Column(name = "modify_date")
 	private Timestamp modifyDate;
 
-	@Column(name="modify_user")
+	@JsonProperty("modify_user")
+	@Column(name = "modify_user")
 	private Integer modifyUser;
 
-	@Column(name="modify_user_d_name")
+	@JsonProperty("modify_user_d_name")
+	@Column(name = "modify_user_d_name")
 	private String modifyUserDName;
 
-	@Column(name="modify_user_f_name")
+	@JsonProperty("modify_user_f_name")
+	@Column(name = "modify_user_f_name")
 	private String modifyUserFName;
 
 	public BanksDtlView() {
@@ -236,6 +267,17 @@ public class BanksDtlView implements Serializable {
 
 	public void setModifyUserFName(String modifyUserFName) {
 		this.modifyUserFName = modifyUserFName;
+	}
+
+	@Override
+	public String toString() {
+		return "BanksDtlView [accCurr=" + accCurr + ", accDName=" + accDName + ", accFName=" + accFName + ", accNo="
+				+ accNo + ", addDate=" + addDate + ", addUser=" + addUser + ", addUserDName=" + addUserDName
+				+ ", addUserFName=" + addUserFName + ", bankNo=" + bankNo + ", currencyDName=" + currencyDName
+				+ ", currencyFName=" + currencyFName + ", inactive=" + inactive + ", inactiveReason=" + inactiveReason
+				+ ", inactiveUser=" + inactiveUser + ", inactiveUserDName=" + inactiveUserDName + ", inactiveUserFName="
+				+ inactiveUserFName + ", modifyDate=" + modifyDate + ", modifyUser=" + modifyUser + ", modifyUserDName="
+				+ modifyUserDName + ", modifyUserFName=" + modifyUserFName + "]";
 	}
 
 }

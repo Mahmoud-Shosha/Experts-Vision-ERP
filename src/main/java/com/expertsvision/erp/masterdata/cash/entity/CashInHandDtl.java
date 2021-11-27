@@ -1,57 +1,63 @@
 package com.expertsvision.erp.masterdata.cash.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the cash_in_hand_dtl database table.
  * 
  */
 @Entity
-@Table(name="cash_in_hand_dtl")
-@NamedQuery(name="CashInHandDtl.findAll", query="SELECT c FROM CashInHandDtl c")
+@Table(name = "cash_in_hand_dtl")
+@IdClass(CashInHandDtlPK.class)
+@NamedQuery(name = "CashInHandDtl.findAll", query = "SELECT c FROM CashInHandDtl c")
 public class CashInHandDtl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private CashInHandDtlPK id;
+	@Id
+	@Column(name = "cash_no")
+	private Integer cashNo;
 
-	@Column(name="acc_no")
+	@Id
+	@Column(name = "acc_curr")
+	private String accCurr;
+
+	@Id
+	@Column(name = "acc_no")
 	private Integer accNo;
 
+	@Column(name = "active")
 	private Boolean active;
 
-	@Column(name="add_date")
+	@Column(name = "add_date")
 	private Timestamp addDate;
 
-	@Column(name="add_user")
+	@Column(name = "add_user")
 	private Integer addUser;
 
+	@Column(name = "inactive")
 	private Boolean inactive;
 
-	@Column(name="inactive_reason")
+	@Column(name = "inactive_reason")
 	private String inactiveReason;
 
-	@Column(name="inactive_user")
+	@Column(name = "inactive_user")
 	private Integer inactiveUser;
 
-	@Column(name="modify_date")
+	@Column(name = "modify_date")
 	private Timestamp modifyDate;
 
-	@Column(name="modify_user")
+	@Column(name = "modify_user")
 	private Integer modifyUser;
 
 	public CashInHandDtl() {
-	}
-
-	public CashInHandDtlPK getId() {
-		return this.id;
-	}
-
-	public void setId(CashInHandDtlPK id) {
-		this.id = id;
 	}
 
 	public Integer getAccNo() {
@@ -122,8 +128,32 @@ public class CashInHandDtl implements Serializable {
 		return this.modifyUser;
 	}
 
+	public Integer getCashNo() {
+		return cashNo;
+	}
+
+	public void setCashNo(Integer cashNo) {
+		this.cashNo = cashNo;
+	}
+
+	public String getAccCurr() {
+		return accCurr;
+	}
+
+	public void setAccCurr(String accCurr) {
+		this.accCurr = accCurr;
+	}
+
 	public void setModifyUser(Integer modifyUser) {
 		this.modifyUser = modifyUser;
+	}
+
+	@Override
+	public String toString() {
+		return "CashInHandDtl [cashNo=" + cashNo + ", accCurr=" + accCurr + ", accNo=" + accNo + ", active=" + active
+				+ ", addDate=" + addDate + ", addUser=" + addUser + ", inactive=" + inactive + ", inactiveReason="
+				+ inactiveReason + ", inactiveUser=" + inactiveUser + ", modifyDate=" + modifyDate + ", modifyUser="
+				+ modifyUser + "]";
 	}
 
 }

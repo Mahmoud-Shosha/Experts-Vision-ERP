@@ -1,55 +1,76 @@
 package com.expertsvision.erp.masterdata.banks.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the banks_dtl database table.
  * 
  */
 @Entity
-@Table(name="banks_dtl")
-@NamedQuery(name="BanksDtl.findAll", query="SELECT b FROM BanksDtl b")
+@Table(name = "banks_dtl")
+@IdClass(BanksDtlPK.class)
+@NamedQuery(name = "BanksDtl.findAll", query = "SELECT b FROM BanksDtl b")
 public class BanksDtl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private BanksDtlPK id;
+	@Id
+	@Column(name = "bank_no")
+	private Integer bankNo;
 
-	@Column(name="acc_curr")
+	@Id
+	@Column(name = "acc_no")
+	private Integer accNo;
+
+	@Id
+	@Column(name = "acc_curr")
 	private String accCurr;
 
-	@Column(name="add_date")
+	@Column(name = "add_date")
 	private Timestamp addDate;
 
-	@Column(name="add_user")
+	@Column(name = "add_user")
 	private Integer addUser;
 
+	@Column(name = "inactive")
 	private Boolean inactive;
 
-	@Column(name="inactive_reason")
+	@Column(name = "inactive_reason")
 	private String inactiveReason;
 
-	@Column(name="inactive_user")
+	@Column(name = "inactive_user")
 	private Integer inactiveUser;
 
-	@Column(name="modify_date")
+	@Column(name = "modify_date")
 	private Timestamp modifyDate;
 
-	@Column(name="modify_user")
+	@Column(name = "modify_user")
 	private Integer modifyUser;
 
 	public BanksDtl() {
 	}
 
-	public BanksDtlPK getId() {
-		return this.id;
+	public Integer getBankNo() {
+		return bankNo;
 	}
 
-	public void setId(BanksDtlPK id) {
-		this.id = id;
+	public void setBankNo(Integer bankNo) {
+		this.bankNo = bankNo;
+	}
+
+	public Integer getAccNo() {
+		return accNo;
+	}
+
+	public void setAccNo(Integer accNo) {
+		this.accNo = accNo;
 	}
 
 	public String getAccCurr() {
@@ -114,6 +135,13 @@ public class BanksDtl implements Serializable {
 
 	public void setModifyUser(Integer modifyUser) {
 		this.modifyUser = modifyUser;
+	}
+
+	@Override
+	public String toString() {
+		return "BanksDtl [bankNo=" + bankNo + ", accNo=" + accNo + ", accCurr=" + accCurr + ", addDate=" + addDate
+				+ ", addUser=" + addUser + ", inactive=" + inactive + ", inactiveReason=" + inactiveReason
+				+ ", inactiveUser=" + inactiveUser + ", modifyDate=" + modifyDate + ", modifyUser=" + modifyUser + "]";
 	}
 
 }
