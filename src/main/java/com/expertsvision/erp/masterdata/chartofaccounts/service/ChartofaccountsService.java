@@ -16,6 +16,8 @@ public interface ChartofaccountsService {
 
 	ChartOfAccountsView getChartOfAccountsView(UsersView loginUsersView, Integer accNo);
 
+	ChartOfAccountsView getChartOfAccountsViewWithoutScrPriv(UsersView loginUsersView, Integer accNo);
+
 	SinglePage<ChartOfAccountsView> getChartOfAccountsViewSinglePage(UsersView loginUsersView, long pageNo);
 
 	SinglePage<ChartOfAccountsView> getChartOfAccountsViewLastPage(UsersView loginUsersView);

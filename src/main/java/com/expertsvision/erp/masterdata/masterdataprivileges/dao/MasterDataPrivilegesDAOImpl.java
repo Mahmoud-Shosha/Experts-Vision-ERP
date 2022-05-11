@@ -14,9 +14,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.masterdata.banks.dto.BankVirtualPK;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyPK;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivFilter;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BanksPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BanksPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivDTO;
@@ -526,5 +529,152 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 		}
 		return costCenterPrivDTOList;
 	}
+	
+	// $$$$$$$$$$$$$$$ For BanksPriv $$$$$$$$$$$$$$$
+
+	@Override
+	public List<BankVirtualPK> getBanksVirtualPK() {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "SELECT bankNo, accCurr FROM BanksDtl";
+		Query query = session.createQuery(hql, BankVirtualPK.class);
+		@SuppressWarnings("unchecked")
+		List<BankVirtualPK> result = query.getResultList();
+		return result;
+	}
+
+	@Override
+	public List<BankVirtualPK> getBanksVirtualPKFromPrivsTable(Integer userId) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "SELECT bankNo, accCurr FROM BanksPriv WHERE userId = :userId";
+		Query query = session.createQuery(hql, BankVirtualPK.class);
+		query.setParameter("userId", userId);
+		@SuppressWarnings("unchecked")
+		List<BankVirtualPK> result = query.getResultList();
+		return result;
+	}
+
+	@Override
+	public List<Object[]> getBanksPrivs(Integer userId) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "SELECT bankNo, accCurr, addPriv, viewPriv FROM BanksPriv WHERE userId = :userId";
+		Query query = session.createQuery(hql);
+		query.setParameter("userId", userId);
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = query.getResultList();
+		return result;
+	}
+
+	@Override
+	public List<Object[]> getBanksPrivs(Set<Integer> userIdList, Set<Integer> bankNoList) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "SELECT user_id, bank_no, add_priv, view_priv FROM banks_priv "
+				+ "WHERE user_id IN :userIdList AND bank_no IN :bankNoList";
+		Query query = session.createNativeQuery(hql);
+		query.setParameter("userIdList", userIdList);
+		query.setParameter("bankNoList", bankNoList);
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = query.getResultList();
+		return result;
+	}
+
+	@Override
+	@Transactional
+	public List<BanksPrivDTO> getBanksPrivs(UsersView loginUser, BanksPrivFilter filter) {
+		// prepare the queryString
+		String queryString;
+		List<BanksPrivDTO> banksPrivDTOList = new ArrayList<>();
+		Object[] objArr;
+		BanksPrivDTO banksPrivDTO;
+		StringBuilder sb = new StringBuilder();
+		if (loginUser.getAdminUser() || loginUser.getSuperAdmin())
+			sb.append("SELECT m.*, true AS can_change_add_priv, true AS can_change_view_priv, ");
+		else
+			sb.append("SELECT m.*, n.add_priv AS can_change_add_priv, n.view_priv AS can_change_view_priv, ");
+		sb.append("_user.user_d_name AS user_d_name, _user.user_f_name AS user_f_name, ")
+				.append("_group.admin_group AS admin_group, ")
+				.append("add_user.user_d_name AS add_user_d_name, add_user.user_f_name AS add_user_f_name, ")
+				.append("modify_user.user_d_name As modify_user_d_name, modify_user.user_f_name As modify_user_f_name, ")
+				.append("banks.bank_d_name AS bank_d_name, banks.bank_f_name AS bank_f_name ")
+				.append("FROM banks_priv AS m ");
+		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
+			sb.append("LEFT JOIN banks_priv n ON n.user_id = :managerUserId AND n.bank_no = m.bank_no ");
+		sb.append("LEFT JOIN banks AS banks ON m.bank_no = banks.bank_no ")
+				.append("LEFT JOIN users AS _user ON m.user_id = _user.user_id ")
+				.append("LEFT JOIN users_groups AS _group ON _user.group_no = _group.group_no ")
+				.append("LEFT JOIN users AS add_user ON m.add_user = add_user.user_id ")
+				.append("LEFT JOIN users AS modify_user ON m.modify_user = modify_user.user_id WHERE 1 = 1");
+		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
+			sb.append(" AND n.view_priv = true ");
+		if (filter.getToBankNo() != null) {
+			sb.append(" AND m.bank_no BETWEEN :fromBankNo AND :toBankhNo ");
+		} else if (filter.getFromBankNo() != null) {
+			sb.append(" AND m.bank_no = :fromBankNo ");
+		}
+		if (filter.getToUserId() != null) {
+			sb.append(" AND m.user_id BETWEEN :fromUserId AND :toUserId ");
+		} else if (filter.getFromUserId() != null) {
+			sb.append(" AND m.user_id = :fromUserId ");
+		}
+		if (filter.getGroupNo() != null) {
+			sb.append(" AND m.user_id IN (SELECT user_id FROM users WHERE group_no = :groupNo) ");
+		}
+		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin())) {
+			sb.append(" AND m.user_id IN ");
+			sb.append(filterBySubordinatesQueryWhere);
+		}
+		sb.append(" ORDER BY bank_no, user_id ");
+		queryString = sb.toString();
+		// prepare the query
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createNativeQuery(queryString);
+		if (filter.getToBankNo() != null) {
+			query.setParameter("fromBankNo", filter.getFromBankNo());
+			query.setParameter("toBankhNo", filter.getToBankNo());
+		} else if (filter.getFromBankNo() != null) {
+			query.setParameter("fromBankNo", filter.getFromBankNo());
+		}
+		if (filter.getToUserId() != null) {
+			query.setParameter("fromUserId", filter.getFromUserId());
+			query.setParameter("toUserId", filter.getToUserId());
+		} else if (filter.getFromUserId() != null) {
+			query.setParameter("fromUserId", filter.getFromUserId());
+		}
+		if (filter.getGroupNo() != null) {
+			query.setParameter("groupNo", filter.getGroupNo());
+		}
+		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
+			query.setParameter("managerUserId", loginUser.getUserId());
+		// get the result list
+		@SuppressWarnings("unchecked")
+		List<Object> result = query.getResultList();
+		for (Object obj : result) {
+			objArr = (Object[]) obj;
+			banksPrivDTO = new BanksPrivDTO();
+			banksPrivDTO.setUserId((Integer) objArr[0]);
+			banksPrivDTO.setBankNo((Integer) objArr[1]);
+			banksPrivDTO.setAccCurr((String) objArr[2]);
+			banksPrivDTO.setAddPriv((Boolean) objArr[3]);
+			banksPrivDTO.setViewPriv((Boolean) objArr[4]);
+			banksPrivDTO.setAddUser((Integer) objArr[5]);
+			banksPrivDTO.setAddDate((Timestamp) objArr[6]);
+			banksPrivDTO.setModifyUser((Integer) objArr[7]);
+			banksPrivDTO.setModifyDate((Timestamp) objArr[8]);
+			banksPrivDTO.setCanChangeAddPriv((Boolean) objArr[9]);
+			banksPrivDTO.setCanChangeViewPriv((Boolean) objArr[10]);
+			banksPrivDTO.setUserDName((String) objArr[11]);
+			banksPrivDTO.setUserFName((String) objArr[12]);
+			banksPrivDTO.setAdminGroup((Boolean) (objArr[13] == null ? false : objArr[13]));
+			banksPrivDTO.setAddUserDName((String) objArr[14]);
+			banksPrivDTO.setAddUserFName((String) objArr[15]);
+			banksPrivDTO.setModifyUserDName((String) objArr[16]);
+			banksPrivDTO.setModifyUserFName((String) objArr[17]);
+			banksPrivDTO.setBankDName((String) objArr[18]);
+			banksPrivDTO.setBankFName((String) objArr[19]);
+			// set branchesPrivDTO data
+			banksPrivDTOList.add(banksPrivDTO);
+		}
+		return banksPrivDTOList;
+	}
+
 
 }

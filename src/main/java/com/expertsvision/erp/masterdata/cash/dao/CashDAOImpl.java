@@ -15,10 +15,11 @@ import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.GenerateSql;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
-import com.expertsvision.erp.masterdata.branches.dto.BranchesViewFilter;
-import com.expertsvision.erp.masterdata.branches.entity.Branch;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesView;
+import com.expertsvision.erp.masterdata.cash.dto.CashInHandViewFilter;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHand;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandDtlView;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandPriv;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandView;
 
 @Repository
 public class CashDAOImpl implements CashDAO {
@@ -26,138 +27,151 @@ public class CashDAOImpl implements CashDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	private final String BRANCHES_QUERY_FOR_VIEW = "SELECT branches_view.* FROM branches_priv AS priv "
-			+ "LEFT JOIN branches_view AS branches_view ON branches_view.branch_no = priv.branch_no "
-			+ "WHERE priv.user_id = :userId AND priv.view_priv = true "
-			+ "ORDER BY (branches_view.company_no, branches_view.branch_no) ";
+	private final String CASHS_QUERY_FOR_VIEW = "SELECT cash_in_hand_view.* FROM cash_in_hand_priv AS priv "
+			+ "					LEFT JOIN cash_in_hand_view AS cash_in_hand_view ON cash_in_hand_view.cash_no = priv.cash_no "
+			+ "					LEFT JOIN cash_in_hand_dtl AS cash_in_hand_dtl ON cash_in_hand_dtl.cash_no = priv.cash_no "
+			+ "					LEFT JOIN accounts_priv AS accounts_priv ON accounts_priv.user_id = :userId AND accounts_priv.acc_no = cash_in_hand_view.acc_no AND accounts_priv.acc_curr = cash_in_hand_dtl.acc_curr "
+			+ "					LEFT JOIN branches_priv AS branches_priv ON branches_priv.user_id = :userId "
+			+ "					WHERE priv.user_id = :userId AND priv.view_priv = true AND accounts_priv.view_priv = true AND branches_priv.view_priv = true "
+			+ "					ORDER BY (cash_in_hand_view.cash_no) ";
 
 	@Override
-	public List<BranchesView> getAllBranchViewList(UsersView loginUsersView) {
+	public List<CashInHandView> getAllCashInHandViewList(UsersView loginUsersView) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql;
-		Query<BranchesView> query;
+		Query<CashInHandView> query;
 		if (loginUsersView == null) {
-			sql = "SELECT * FROM branches_view";
-			query = session.createNativeQuery(sql, BranchesView.class);
+			sql = "SELECT * FROM cash_in_hand_view";
+			query = session.createNativeQuery(sql, CashInHandView.class);
 		} else {
-			sql = BRANCHES_QUERY_FOR_VIEW;
-			query = session.createNativeQuery(sql, BranchesView.class);
+			sql = CASHS_QUERY_FOR_VIEW;
+			query = session.createNativeQuery(sql, CashInHandView.class);
 			query.setParameter("userId", loginUsersView.getUserId());
 		}
-		List<BranchesView> branchViewList = query.getResultList();
-		return branchViewList;
+		List<CashInHandView> cashInHandViewList = query.getResultList();
+		return cashInHandViewList;
 	}
 
 	@Override
-	public BranchesView getBranchView(UsersView loginUsersView,Integer branchNo) {
+	public List<CashInHandDtlView> getCashInHandDtlViewList(Integer cashNo) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql;
-		Query<BranchesView> query;
-		if (loginUsersView == null) {
-			sql = "SELECT * FROM branches_view WHERE branch_no = :branchNo";
-			query = session.createNativeQuery(sql, BranchesView.class);
-		} else {
-			sql = "SELECT * FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r WHERE branch_no = :branchNo";
-			query = session.createNativeQuery(sql, BranchesView.class);
-			query.setParameter("userId", loginUsersView.getUserId());
-		}
-		query.setParameter("branchNo", branchNo);
-		List<BranchesView> branchViewList = query.getResultList();
-		return branchViewList.isEmpty() ? null : branchViewList.get(0);
+		String sql = "SELECT * FROM  cash_in_hand_dtl_view WHERE cash_no = :cashNo";
+		Query<CashInHandDtlView> query = session.createNativeQuery(sql, CashInHandDtlView.class);
+		query.setParameter("cashNo", cashNo);
+		List<CashInHandDtlView> cashInHandsDtlViewList = query.getResultList();
+		return cashInHandsDtlViewList;
 	}
 
 	@Override
-	public SinglePage<BranchesView> getBranchViewSinglePage(UsersView loginUsersView, long pageNo) {
+	public CashInHandView getCashInHandView(UsersView loginUsersView, Integer cashNo) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql;
+		Query<CashInHandView> query;
+		if (loginUsersView == null) {
+			sql = "SELECT * FROM cash_in_hand_view WHERE cash_no = :cashNo";
+			query = session.createNativeQuery(sql, CashInHandView.class);
+		} else {
+			sql = "SELECT * FROM (" + CASHS_QUERY_FOR_VIEW + ") AS r WHERE cash_no = :cashNo";
+			query = session.createNativeQuery(sql, CashInHandView.class);
+			query.setParameter("userId", loginUsersView.getUserId());
+		}
+		query.setParameter("cashNo", cashNo);
+		List<CashInHandView> cashInHandViewList = query.getResultList();
+		return cashInHandViewList.isEmpty() ? null : cashInHandViewList.get(0);
+	}
+
+	@Override
+	public SinglePage<CashInHandView> getCashInHandViewSinglePage(UsersView loginUsersView, long pageNo) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = null;
-		Query<BranchesView> query;
-		List<BranchesView> branchViewList = null;
+		Query<CashInHandView> query;
+		List<CashInHandView> cashInHandViewList = null;
 		long count;
 		if (pageNo > 0) {
 			if (loginUsersView == null) {
-				sql = "SELECT * FROM branches_view LIMIT 1 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
+				sql = "SELECT * FROM cash_in_hand_view LIMIT 1 OFFSET :Offset";
+				query = session.createNativeQuery(sql, CashInHandView.class);
 			} else {
-				sql = "SELECT * FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r LIMIT 1 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
+				sql = "SELECT * FROM (" + CASHS_QUERY_FOR_VIEW + ") AS r LIMIT 1 OFFSET :Offset";
+				query = session.createNativeQuery(sql, CashInHandView.class);
 				query.setParameter("userId", loginUsersView.getUserId());
-			}	
+			}
 			query.setParameter("Offset", pageNo - 1);
-			branchViewList = query.getResultList();
+			cashInHandViewList = query.getResultList();
 		}
-		if (pageNo <= 0 || branchViewList.isEmpty()) {
+		if (pageNo <= 0 || cashInHandViewList.isEmpty()) {
 			if (loginUsersView == null) {
-				sql = "SELECT COUNT(*) FROM branches_view";
+				sql = "SELECT COUNT(*) FROM cash_in_hand_view";
 				@SuppressWarnings("unchecked")
 				Query<BigInteger> query2 = session.createNativeQuery(sql);
 				count = query2.getSingleResult().longValue();
 			} else {
-				sql = "SELECT COUNT(*) FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r";
+				sql = "SELECT COUNT(*) FROM (" + CASHS_QUERY_FOR_VIEW + ") AS r";
 				@SuppressWarnings("unchecked")
 				Query<BigInteger> query2 = session.createNativeQuery(sql);
 				query2.setParameter("userId", loginUsersView.getUserId());
 				count = query2.getSingleResult().longValue();
 			}
-			return new SinglePage<BranchesView>(null, pageNo, count);
+			return new SinglePage<CashInHandView>(null, pageNo, count);
 		} else {
-			return new SinglePage<BranchesView>(branchViewList.get(0), pageNo, null);
+			return new SinglePage<CashInHandView>(cashInHandViewList.get(0), pageNo, null);
 		}
 	}
 
 	@Override
-	public SinglePage<BranchesView> getBranchViewLastPage(UsersView loginUsersView) {
+	public SinglePage<CashInHandView> getCashInHandViewLastPage(UsersView loginUsersView) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql;
-		Query<BranchesView> query;
+		Query<CashInHandView> query;
 		long count;
 		if (loginUsersView == null) {
-			sql = "SELECT * FROM branches_view ORDER BY(company_no, branch_no) DESC LIMIT 1";
-			query = session.createNativeQuery(sql, BranchesView.class);
+			sql = "SELECT * FROM cash_in_hand_view ORDER BY(cash_no) DESC LIMIT 1";
+			query = session.createNativeQuery(sql, CashInHandView.class);
 		} else {
-			sql = "SELECT * FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r ORDER BY(company_no, branch_no) DESC LIMIT 1";
-			query = session.createNativeQuery(sql, BranchesView.class);
+			sql = "SELECT * FROM (" + CASHS_QUERY_FOR_VIEW + ") AS r ORDER BY(cash_no) DESC LIMIT 1";
+			query = session.createNativeQuery(sql, CashInHandView.class);
 			query.setParameter("userId", loginUsersView.getUserId());
 		}
 		if (loginUsersView == null) {
-			sql = "SELECT COUNT(*) FROM branches_view";
+			sql = "SELECT COUNT(*) FROM cash_in_hand_view";
 			@SuppressWarnings("unchecked")
 			Query<BigInteger> query2 = session.createNativeQuery(sql);
 			count = query2.getSingleResult().longValue();
 		} else {
-			sql = "SELECT COUNT(*) FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r";
+			sql = "SELECT COUNT(*) FROM (" + CASHS_QUERY_FOR_VIEW + ") AS r";
 			@SuppressWarnings("unchecked")
 			Query<BigInteger> query2 = session.createNativeQuery(sql);
 			query2.setParameter("userId", loginUsersView.getUserId());
 			count = query2.getSingleResult().longValue();
 		}
-		List<BranchesView> branchViewList = query.getResultList();
-		if (branchViewList.isEmpty()) {
-			return new SinglePage<BranchesView>(null, count, count);
+		List<CashInHandView> cashInHandViewList = query.getResultList();
+		if (cashInHandViewList.isEmpty()) {
+			return new SinglePage<CashInHandView>(null, count, count);
 		} else {
-			return new SinglePage<BranchesView>(branchViewList.get(0), count, count);
+			return new SinglePage<CashInHandView>(cashInHandViewList.get(0), count, count);
 		}
 	}
 
 	@Override
-	public Long getUserViewSinglePageNo(UsersView loginUsersView, Integer branchNo) {
+	public Long getUserViewSinglePageNo(UsersView loginUsersView, Integer cashNo) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql;
 		List<BigInteger> singlePageNoList;
 		if (loginUsersView == null) {
-			sql = "SELECT row_number FROM" + "			(SELECT company_no, branch_no, ROW_NUMBER()"
-					+ "						OVER(ORDER BY (company_no, branch_no)) FROM branches_view)"
-					+ "			AS row_number " + "WHERE branch_no = :branchNo";
+			sql = "SELECT row_number FROM" + "			(SELECT cash_no, ROW_NUMBER()"
+					+ "						OVER(ORDER BY (cash_no)) FROM cash_in_hand_view)"
+					+ "			AS row_number " + "WHERE cash_no = :cashNo";
 			@SuppressWarnings("unchecked")
 			Query<BigInteger> query = session.createNativeQuery(sql);
-			query.setParameter("branchNo", branchNo);
+			query.setParameter("cashNo", cashNo);
 			singlePageNoList = query.getResultList();
 		} else {
-			sql = "SELECT row_number FROM" + "			(SELECT company_no, branch_no, ROW_NUMBER()"
-					+ "						OVER(ORDER BY (company_no, branch_no)) FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r)"
-					+ "			AS row_number " + "WHERE branch_no = :branchNo";
+			sql = "SELECT row_number FROM" + "			(SELECT cash_no, ROW_NUMBER()"
+					+ "						OVER(ORDER BY (cash_no)) FROM (" + CASHS_QUERY_FOR_VIEW + ") AS r)"
+					+ "			AS row_number " + "WHERE cash_no = :cashNo";
 			@SuppressWarnings("unchecked")
 			Query<BigInteger> query = session.createNativeQuery(sql);
-			query.setParameter("branchNo", branchNo);
+			query.setParameter("cashNo", cashNo);
 			query.setParameter("userId", loginUsersView.getUserId());
 			singlePageNoList = query.getResultList();
 		}
@@ -165,152 +179,144 @@ public class CashDAOImpl implements CashDAO {
 	}
 
 	@Override
-	public MultiplePages<BranchesView> getBranchViewMultiplePages(UsersView loginUsersView, long pageNo) {
+	public MultiplePages<CashInHandView> getCashInHandViewMultiplePages(UsersView loginUsersView, long pageNo) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = null;
-		Query<BranchesView> query;
-		List<BranchesView> branchViewList = null;
+		Query<CashInHandView> query;
+		List<CashInHandView> cashInHandViewList = null;
 		long count;
 		if (pageNo > 0) {
 			if (loginUsersView == null) {
-				sql = "SELECT * FROM  branches_view LIMIT 30 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
+				sql = "SELECT * FROM  cash_in_hand_view LIMIT 30 OFFSET :Offset";
+				query = session.createNativeQuery(sql, CashInHandView.class);
 			} else {
-				sql = "SELECT * FROM  (" + BRANCHES_QUERY_FOR_VIEW + ") AS r LIMIT 30 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
+				sql = "SELECT * FROM  (" + CASHS_QUERY_FOR_VIEW + ") AS r LIMIT 30 OFFSET :Offset";
+				query = session.createNativeQuery(sql, CashInHandView.class);
 				query.setParameter("userId", loginUsersView.getUserId());
 			}
 			query.setParameter("Offset", (pageNo - 1) * 30);
-			branchViewList = query.getResultList();
+			cashInHandViewList = query.getResultList();
 		}
 		if (loginUsersView == null) {
-			sql = "SELECT COUNT(*) FROM branches_view AS foo";
+			sql = "SELECT COUNT(*) FROM cash_in_hand_view AS foo";
 			@SuppressWarnings("unchecked")
 			Query<BigInteger> query2 = session.createNativeQuery(sql);
 			count = query2.getSingleResult().longValue();
 		} else {
-			sql = "SELECT COUNT(*) FROM (" + BRANCHES_QUERY_FOR_VIEW + ") AS r";
+			sql = "SELECT COUNT(*) FROM (" + CASHS_QUERY_FOR_VIEW + ") AS r";
 			@SuppressWarnings("unchecked")
 			Query<BigInteger> query2 = session.createNativeQuery(sql);
 			query2.setParameter("userId", loginUsersView.getUserId());
 			count = query2.getSingleResult().longValue();
 		}
-		if (pageNo <= 0 || branchViewList.isEmpty()) {
-			return new MultiplePages<BranchesView>(null, pageNo, (long) Math.ceil(count / 30.0));
+		if (pageNo <= 0 || cashInHandViewList.isEmpty()) {
+			return new MultiplePages<CashInHandView>(null, pageNo, (long) Math.ceil(count / 30.0));
 		} else {
-			return new MultiplePages<BranchesView>(branchViewList, pageNo, (long) Math.ceil(count / 30.0));
+			return new MultiplePages<CashInHandView>(cashInHandViewList, pageNo, (long) Math.ceil(count / 30.0));
 		}
 	}
 
 	@Override
-	public MultiplePages<BranchesView> getBranchViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
-			BranchesViewFilter branchesViewFilter) {
+	public MultiplePages<CashInHandView> getCashInHandViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
+			CashInHandViewFilter cashInHandViewFilter) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = null;
-		Query<BranchesView> query;
-		List<BranchesView> branchViewList = null;
+		Query<CashInHandView> query;
+		List<CashInHandView> cashInHandViewList = null;
 		long count;
 		String filterQuery;
 		Map<String, Object> filters = new HashMap<String, Object>();
-		filters.put("branch_no", branchesViewFilter.getBranchNo());
-		filters.put("company_no", branchesViewFilter.getCompanyNo());
-		filters.put("branch_d_name", branchesViewFilter.getBranchDName());
-		filters.put("branch_f_name", branchesViewFilter.getBranchFName());
+		filters.put("acc_no", cashInHandViewFilter.getAccNo());
+		filters.put("branch_no", cashInHandViewFilter.getBranchNo());
+		filters.put("cash_d_name", cashInHandViewFilter.getCashDName());
+		filters.put("cash_f_name", cashInHandViewFilter.getCashFNo());
+		filters.put("cash_no", cashInHandViewFilter.getCashNo());
+		filters.put("pos", cashInHandViewFilter.getPos());
+
 		if (pageNo > 0) {
 			if (loginUsersView == null) {
-				filterQuery = GenerateSql.generateFilterQuery("branches_view", filters);
+				filterQuery = GenerateSql.generateFilterQuery("cash_in_hand_view", filters);
 				sql = filterQuery + " LIMIT 30 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
+				query = session.createNativeQuery(sql, CashInHandView.class);
 			} else {
-				filterQuery = GenerateSql.generateFilterQuery(" (" + BRANCHES_QUERY_FOR_VIEW + ") AS r ", filters);
+				filterQuery = GenerateSql.generateFilterQuery(" (" + CASHS_QUERY_FOR_VIEW + ") AS r ", filters);
 				sql = filterQuery + " LIMIT 30 OFFSET :Offset";
-				query = session.createNativeQuery(sql, BranchesView.class);
+				query = session.createNativeQuery(sql, CashInHandView.class);
 				query.setParameter("userId", loginUsersView.getUserId());
 			}
 			query.setParameter("Offset", (pageNo - 1) * 30);
-			branchViewList = query.getResultList();
+			cashInHandViewList = query.getResultList();
 		}
 		if (loginUsersView == null) {
-			filterQuery = GenerateSql.generateFilterQuery("branches_view", filters);
+			filterQuery = GenerateSql.generateFilterQuery("cash_in_hand_view", filters);
 			sql = "SELECT COUNT(*) FROM (" + filterQuery + ") As filteredRowsCount";
 			@SuppressWarnings("unchecked")
 			Query<BigInteger> query2 = session.createNativeQuery(sql);
 			count = query2.getSingleResult().longValue();
 		} else {
-			filterQuery = GenerateSql.generateFilterQuery(" (" + BRANCHES_QUERY_FOR_VIEW + ") AS r ", filters);
+			filterQuery = GenerateSql.generateFilterQuery(" (" + CASHS_QUERY_FOR_VIEW + ") AS r ", filters);
 			sql = "SELECT COUNT(*) FROM (" + filterQuery + ") As filteredRowsCount";
 			@SuppressWarnings("unchecked")
 			Query<BigInteger> query2 = session.createNativeQuery(sql);
 			query2.setParameter("userId", loginUsersView.getUserId());
 			count = query2.getSingleResult().longValue();
 		}
-		if (pageNo <= 0 || branchViewList.isEmpty()) {
-			return new MultiplePages<BranchesView>(null, pageNo, (long) Math.ceil(count / 30.0));
+		if (pageNo <= 0 || cashInHandViewList.isEmpty()) {
+			return new MultiplePages<CashInHandView>(null, pageNo, (long) Math.ceil(count / 30.0));
 		} else {
-			return new MultiplePages<BranchesView>(branchViewList, pageNo, (long) Math.ceil(count / 30.0));
+			return new MultiplePages<CashInHandView>(cashInHandViewList, pageNo, (long) Math.ceil(count / 30.0));
 		}
 	}
-	
+
 	@Override
 	public Object getNextPK() {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT max(branch_no) + 1 FROM branches";
+		String sql = "SELECT max(cash_no) + 1 FROM cashInHands";
 		@SuppressWarnings("unchecked")
 		Query<Object> query = session.createNativeQuery(sql);
 		Object nextPK = query.getSingleResult();
-		if (nextPK == null) nextPK = 1;
+		if (nextPK == null)
+			nextPK = 1;
 		return nextPK;
 	}
 
 	@Override
-	public void addBranch(Branch branch) {
+	public void addCashInHand(CashInHand cashInHand) {
 		Session session = sessionFactory.getCurrentSession();
-		session.save(branch);
+		session.save(cashInHand);
 		session.flush();
 	}
 
 	@Override
-	public void addBranchesPriv(BranchesPriv branchesPriv) {
+	public void addCashInHandsPriv(CashInHandPriv cashInHandPriv) {
 		Session session = sessionFactory.getCurrentSession();
-		session.save(branchesPriv);
+		session.save(cashInHandPriv);
 	}
 
 	@Override
-	public void updateBranch(Branch branch) {
+	public void updateCashInHand(CashInHand cashInHand) {
 		Session session = sessionFactory.getCurrentSession();
-		Branch DBBranch = session.get(Branch.class, branch.getBranchNo());
-		DBBranch.setModifyDate(branch.getModifyDate());
-		DBBranch.setModifyUser(branch.getModifyUser());
-		DBBranch.setBranchDName(branch.getBranchDName());
-		DBBranch.setBranchFName(branch.getBranchFName());
-		DBBranch.setCountryNo(branch.getCountryNo());
-		DBBranch.setBranchDAddress(branch.getBranchDAddress());
-		DBBranch.setBranchFAddress(branch.getBranchFAddress());
-		DBBranch.setCapital(branch.getCapital());
-		DBBranch.setCityNo(branch.getCityNo());
-		DBBranch.setCompanyNo(branch.getCompanyNo());
-		DBBranch.setCrNo(branch.getCrNo());
-		DBBranch.setLogo(branch.getLogo());
-		DBBranch.setProvinceNo(branch.getProvinceNo());
-		DBBranch.setReportDHeader1(branch.getReportDHeader1());
-		DBBranch.setReportDHeader2(branch.getReportDHeader2());
-		DBBranch.setReportDHeader3(branch.getReportDHeader3());
-		DBBranch.setReportFHeader1(branch.getReportFHeader1());
-		DBBranch.setReportFHeader2(branch.getReportFHeader2());
-		DBBranch.setReportFHeader3(branch.getReportFHeader3());
-		DBBranch.setShortcutD(branch.getShortcutD());
-		DBBranch.setShortcutF(branch.getShortcutF());
-		DBBranch.setTaxNo(branch.getTaxNo());
-		DBBranch.setTelephoneNo(branch.getTelephoneNo());
-		session.merge(DBBranch);
+		CashInHand DBCashInHand = session.get(CashInHand.class, cashInHand.getCashNo());
+		DBCashInHand.setAccNo(cashInHand.getAccNo());
+		DBCashInHand.setBranchNo(cashInHand.getBranchNo());
+		DBCashInHand.setCashDName(cashInHand.getCashDName());
+		DBCashInHand.setCashFNo(cashInHand.getCashFNo());
+		DBCashInHand.setCashNo(cashInHand.getCashNo());
+		DBCashInHand.setInactive(cashInHand.getInactive());
+		DBCashInHand.setInactiveReason(cashInHand.getInactiveReason());
+		DBCashInHand.setInactiveUser(cashInHand.getInactiveUser());
+		DBCashInHand.setModifyDate(cashInHand.getModifyDate());
+		DBCashInHand.setModifyUser(cashInHand.getModifyUser());
+		DBCashInHand.setPos(cashInHand.getPos());
+		session.merge(DBCashInHand);
 		session.flush();
 	}
 
 	@Override
-	public void deleteBranch(Integer branchNo) {
+	public void deleteCashInHand(Integer cashInHandNo) {
 		Session session = sessionFactory.getCurrentSession();
-		Branch DBBranch = session.get(Branch.class, branchNo);
-		session.delete(DBBranch);
+		CashInHand DBCashInHand = session.get(CashInHand.class, cashInHandNo);
+		session.delete(DBCashInHand);
 		session.flush();
 	}
 

@@ -74,6 +74,48 @@ public class GeneralDAOImpl implements GeneralDAO {
 	}
 	
 	@Override
+	public Long getCount(String tableName, Map<String, Object> conditions, String exceptCondition) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "SELECT COUNT(*) FROM " + tableName +" WHERE ";
+		Set<String> conditionsList =  conditions.keySet();
+		Object value = null;
+		if (conditionsList.isEmpty()) throw new RuntimeException("You should have at least one condition in the conditions");
+		for (String condition : conditionsList) {
+			value = conditions.get(condition);
+			try {
+				Long.parseLong(value.toString());
+				try {
+					sql += condition + " = " + Utils.escapeLiteral(null, value==null?"":value.toString().strip(), true) + " and ";
+				} catch (SQLException e) {
+					throw new UnauthorizedException("resource");
+				}
+			} catch (NumberFormatException e1) {
+				try {
+					Double.parseDouble(value.toString());
+					try {
+						sql += condition + " = " + Utils.escapeLiteral(null, value==null?"":value.toString().strip(), true) + " and ";
+					} catch (SQLException e2) {
+						throw new UnauthorizedException("resource");
+					}
+				} catch (NumberFormatException e3) {
+					try {
+						sql += condition + " = '" + Utils.escapeLiteral(null, value==null?"":value.toString().strip(), true) + "' and ";
+					} catch (SQLException e2) {
+						throw new UnauthorizedException("resource");
+					}
+				}
+				
+			}
+			
+		}
+		sql = sql.substring(0, sql.length() - 4);
+		sql += " " + ((exceptCondition == null) ? "" : exceptCondition);
+		Query query = session.createNativeQuery(sql);
+		Long count = (Long) query.getSingleResult();
+		return count;
+	}
+	
+	@Override
 	public void runEntityQuery(String tableName, Map<String, Object> setters, Map<String, Object> conditions) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql = "UPDATE " + tableName +" ";

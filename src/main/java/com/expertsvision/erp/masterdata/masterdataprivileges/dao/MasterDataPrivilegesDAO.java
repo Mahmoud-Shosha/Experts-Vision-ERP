@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.masterdata.banks.dto.BankVirtualPK;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyPK;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivFilter;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BanksPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BanksPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivDTO;
@@ -50,5 +53,16 @@ public interface MasterDataPrivilegesDAO {
 	List<Object[]> getCostCentersPrivs(Set<Integer> userIdList, Set<Integer> ccNoList);
 	
 	List<CostCenterPrivDTO> getCostCentersPrivs(UsersView loginUser, CostCenterPrivFilter filter);
+	
+	
+	List<BankVirtualPK> getBanksVirtualPK();
+
+	List<BankVirtualPK> getBanksVirtualPKFromPrivsTable(Integer userId);
+
+	List<Object[]> getBanksPrivs(Integer userId);
+
+	List<Object[]> getBanksPrivs(Set<Integer> userIdList, Set<Integer> bankNoList);
+
+	List<BanksPrivDTO> getBanksPrivs(UsersView loginUser, BanksPrivFilter filter);
 		
 }

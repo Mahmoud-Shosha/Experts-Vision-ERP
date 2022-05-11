@@ -149,6 +149,21 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 	}
 
 	@Override
+	public ChartOfAccountsView getChartOfAccountsViewWithoutScrPriv(UsersView loginUsersView, Integer accNo) {
+		// Return requested data
+		ChartOfAccountsView chartOfAccountsView = chartofaccountsDAO.getChartOfAccountsView(accNo);
+		if (chartOfAccountsView == null)
+			throw new ValidationException("not_exist", "acc_no");
+		if (chartOfAccountsView.getSub()) {
+			if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
+				loginUsersView = null;
+			chartOfAccountsView
+					.setAccountCurrencyList(chartofaccountsDAO.getAccountsCurrencyViewList(loginUsersView, accNo));
+		}
+		return chartOfAccountsView;
+	}
+
+	@Override
 	@Transactional
 	public SinglePage<ChartOfAccountsView> getChartOfAccountsViewSinglePage(UsersView loginUsersView, long pageNo) {
 		// Check module, form, privileges
@@ -466,8 +481,7 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 
 	@Override
 	@Transactional
-	public void validateExcel(UsersView loginUsersView,
-			List<ChartOfAccountsView> chartOfAccountsViewList) {
+	public void validateExcel(UsersView loginUsersView, List<ChartOfAccountsView> chartOfAccountsViewList) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
@@ -492,11 +506,10 @@ public class ChartofaccountsServiceImpl implements ChartofaccountsService {
 		}
 		throw new ExcelValidationException(errorsMap);
 	}
-	
+
 	@Override
-	@Transactional
-	public void addExcel(UsersView loginUsersView,
-			List<ChartOfAccountsView> chartOfAccountsViewList) {
+	@Transactional(noRollbackFor = ExcelValidationException.class)
+	public void addExcel(UsersView loginUsersView, List<ChartOfAccountsView> chartOfAccountsViewList) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {

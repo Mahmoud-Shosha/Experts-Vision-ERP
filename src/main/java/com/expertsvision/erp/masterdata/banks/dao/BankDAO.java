@@ -5,36 +5,41 @@ import java.util.List;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
-import com.expertsvision.erp.masterdata.branches.dto.BranchesViewFilter;
-import com.expertsvision.erp.masterdata.branches.entity.Branch;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesView;
-
+import com.expertsvision.erp.masterdata.banks.dto.BanksViewFilter;
+import com.expertsvision.erp.masterdata.banks.entity.Bank;
+import com.expertsvision.erp.masterdata.banks.entity.BanksDtl;
+import com.expertsvision.erp.masterdata.banks.entity.BanksDtlView;
+import com.expertsvision.erp.masterdata.banks.entity.BanksPriv;
+import com.expertsvision.erp.masterdata.banks.entity.BanksView;
 
 public interface BankDAO {
-	
-	List<BranchesView> getAllBranchViewList(UsersView loginUsersView);
-			
-	BranchesView getBranchView(UsersView loginUsersView, Integer branchNo);
-	
-	SinglePage<BranchesView> getBranchViewSinglePage(UsersView loginUsersView, long pageNo);
-	
-	SinglePage<BranchesView> getBranchViewLastPage(UsersView loginUsersView);
-	
-	Long getUserViewSinglePageNo(UsersView loginUsersView, Integer branchNo);
-	
-	MultiplePages<BranchesView> getBranchViewMultiplePages(UsersView loginUsersView, long pageNo);
-	
-	MultiplePages<BranchesView> getBranchViewFilteredMultiplePages(UsersView loginUsersView ,long pageNo, BranchesViewFilter branchesViewFilter);
-	
+
+	List<BanksView> getAllBankViewList(UsersView loginUsersView);
+
+	List<BanksDtlView> getBanksDtlViewList(Integer bankNo);
+
+	BanksView getBankView(UsersView loginUsersView, Integer bankNo);
+
+	SinglePage<BanksView> getBankViewSinglePage(UsersView loginUsersView, long pageNo);
+
+	SinglePage<BanksView> getBankViewLastPage(UsersView loginUsersView);
+
+	Long getUserViewSinglePageNo(UsersView loginUsersView, Integer bankNo);
+
+	MultiplePages<BanksView> getBankViewMultiplePages(UsersView loginUsersView, long pageNo);
+
+	MultiplePages<BanksView> getBankViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
+			BanksViewFilter branchesViewFilter);
+
 	Object getNextPK();
-	
-	void addBranch(Branch branch);
-	
-	void addBranchesPriv(BranchesPriv branchesPriv);
-	
-	void updateBranch(Branch branch);
-	
-	void deleteBranch(Integer branchNo);
-		
+
+	void addBank(Bank bank, List<BanksDtl> banksDtlList);
+
+	void addBanksPriv(BanksPriv banksPriv);
+
+	void updateBank(Bank bank, List<BanksDtl> banksDtlForAddList, List<BanksDtl> banksDtlForDeleteList,
+			List<BanksDtl> banksDtlForUpdateList);
+
+	void deleteBank(Integer bankNo);
+
 }

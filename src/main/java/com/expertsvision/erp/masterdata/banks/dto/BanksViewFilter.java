@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BanksViewFilter {
 
-	@JsonProperty("branch_no")
-	private Integer branchNo;
-
 	@JsonProperty("bank_no")
 	private Integer bankNo;
 
@@ -18,14 +15,6 @@ public class BanksViewFilter {
 
 	@JsonProperty("bank_f_name")
 	private String bankFName;
-
-	public Integer getBranchNo() {
-		return branchNo;
-	}
-
-	public void setBranchNo(Integer branchNo) {
-		this.branchNo = branchNo;
-	}
 
 	public Integer getBankNo() {
 		return bankNo;
@@ -61,8 +50,8 @@ public class BanksViewFilter {
 
 	@Override
 	public String toString() {
-		return "BanksViewFilter [branchNo=" + branchNo + ", bankNo=" + bankNo + ", accountNo=" + accountNo
-				+ ", bankDName=" + bankDName + ", bankFName=" + bankFName + "]";
+		return "BanksViewFilter [bankNo=" + bankNo + ", accountNo=" + accountNo + ", bankDName=" + bankDName
+				+ ", bankFName=" + bankFName + "]";
 	}
 
 }

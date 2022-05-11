@@ -9,7 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -106,7 +109,20 @@ public class BanksDtlView implements Serializable {
 	@Column(name = "modify_user_f_name")
 	private String modifyUserFName;
 
+	@Transient
+	@JsonProperty("action")
+	@JsonInclude(Include.NON_NULL)
+	private String action;
+
 	public BanksDtlView() {
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 
 	public String getAccCurr() {

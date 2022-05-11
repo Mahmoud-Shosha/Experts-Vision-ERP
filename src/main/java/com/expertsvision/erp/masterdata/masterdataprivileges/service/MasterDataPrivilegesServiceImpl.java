@@ -27,6 +27,8 @@ import com.expertsvision.erp.core.utils.Forms;
 import com.expertsvision.erp.core.utils.FormsActions;
 import com.expertsvision.erp.core.utils.GeneralDAO;
 import com.expertsvision.erp.core.validation.CoreValidationService;
+import com.expertsvision.erp.masterdata.banks.dto.BankVirtualPK;
+import com.expertsvision.erp.masterdata.banks.entity.BanksPriv;
 import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
 import com.expertsvision.erp.masterdata.branches.entity.BranchesPrivPK;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyPK;
@@ -108,6 +110,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 		}
 		// "ChartOfAccounts" is in module no 2
 		// "CostCenter" is in module no 2
+		// "Banks" is in module no 2
 		if (inMemoryModulesService.getModulesView(2).getActive()) {
 			// LOOP OVER ALL AccountsPriv
 			AccountsPriv accountPriv = null;
@@ -137,6 +140,21 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 				costCenterPriv.setUserId(usersView.getUserId());
 				costCenterPriv.setViewPriv(viewPriv);
 				entityPrvsList.add(costCenterPriv);
+			}
+			// LOOP OVER ALL Banks
+			BanksPriv banksPriv = null;
+			for (BankVirtualPK PK : masterDataPrivilegesDAO.getBanksVirtualPK()) {
+				banksPriv = new BanksPriv();
+				banksPriv.setBankNo(PK.getBankNo());
+				banksPriv.setAccCurr(PK.getAccCurr());
+				banksPriv.setAddDate(currentDate);
+				banksPriv.setAddUser(loginUser.getUserId());
+				banksPriv.setModifyDate(null);
+				banksPriv.setModifyUser(null);
+				banksPriv.setAddPriv(addPriv);
+				banksPriv.setViewPriv(viewPriv);
+				banksPriv.setUserId(usersView.getUserId());
+				entityPrvsList.add(banksPriv);
 			}
 		}
 		// LOOP OVER PRIVS TO SAVE THEM
@@ -254,6 +272,7 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 			}
 			// "ChartOfAccounts" is in module no 2
 			// "CostCenter" is in module no 2
+			// "Banks" is in module no 2
 			if (inMemoryModulesService.getModulesView(2).getActive()) {
 				// LOOP OVER ALL AccountsPriv
 				AccountsPriv accountPriv = null;
@@ -283,6 +302,21 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 					CostCenterPriv.setUserId(usersView.getUserId());
 					CostCenterPriv.setViewPriv((Boolean) obj[2]);
 					entityPrvsList.add(CostCenterPriv);
+				}
+				// LOOP OVER ALL Banks
+				BanksPriv banksPriv = null;
+				for (Object[] obj : masterDataPrivilegesDAO.getBanksPrivs(fromUserId)) {
+					banksPriv = new BanksPriv();
+					banksPriv.setBankNo((Integer) obj[0]);
+					banksPriv.setAccCurr((String) obj[1]);
+					banksPriv.setAddDate(currentDate);
+					banksPriv.setAddUser(loginUser.getUserId());
+					banksPriv.setModifyDate(null);
+					banksPriv.setModifyUser(null);
+					banksPriv.setAddPriv((Boolean) obj[2]);
+					banksPriv.setViewPriv((Boolean) obj[3]);
+					banksPriv.setUserId(usersView.getUserId());
+					entityPrvsList.add(banksPriv);
 				}
 			}
 			// LOOP OVER PRIVS TO SAVE THEM
@@ -420,8 +454,11 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 		List<AccountsCurrencyPK> existPKList2 = masterDataPrivilegesDAO
 				.getAccountsCurrencyPKFromPrivsTable(usersView.getUserId());
 		List<Integer> existPKList3 = masterDataPrivilegesDAO.getCostCenterPKFromPrivsTable(usersView.getUserId());
+		List<BankVirtualPK> existPKListForBanks = masterDataPrivilegesDAO
+				.getBanksVirtualPKFromPrivsTable(usersView.getUserId());
 		// "ChartOfAccounts" is in module no 2
 		// "CostCenter" is in module no 2
+		// "Banks" is in module no 2
 		if (inMemoryModulesService.getModulesView(2).getActive()) {
 			// LOOP OVER ALL AccountsPriv
 			AccountsPriv accountPriv = null;
@@ -456,11 +493,26 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 					entityPrvsList.add(costCenterPriv);
 				}
 			}
+			// LOOP OVER ALL Banks
+			BanksPriv banksPriv = null;
+			for (BankVirtualPK PK : masterDataPrivilegesDAO.getBanksVirtualPK()) {
+				if (!existPKListForBanks.contains(PK)) {
+					banksPriv = new BanksPriv();
+					banksPriv.setBankNo(PK.getBankNo());
+					banksPriv.setAccCurr(PK.getAccCurr());
+					banksPriv.setAddDate(currentDate);
+					banksPriv.setAddUser(loginUser.getUserId());
+					banksPriv.setModifyDate(null);
+					banksPriv.setModifyUser(null);
+					banksPriv.setAddPriv(addPriv);
+					banksPriv.setViewPriv(viewPriv);
+					banksPriv.setUserId(usersView.getUserId());
+					entityPrvsList.add(banksPriv);
+				}
+			}
 		}
 		// LOOP OVER PRIVS TO SAVE THEM
-		for (
-
-		Object object : entityPrvsList) {
+		for (Object object : entityPrvsList) {
 			masterDataPrivilegesDAO.addMasterDataPrivileges(object);
 		}
 	}
@@ -560,10 +612,20 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 		}
 		// LOOP OVER ALL PRVS
 		for (BranchesPriv prv : branchesPrivList) {
-			sql.append("UPDATE branches_priv SET ").append("add_priv=").append(prv.getAddPriv()).append(", view_priv=")
-					.append(prv.getViewPriv()).append(", modify_user=").append(loginUser.getUserId())
-					.append(", modify_date='").append(currentDate).append("' WHERE user_id=").append(prv.getUserId())
-					.append(" AND branch_no=").append(prv.getBranchNo()).append(";");
+			sql.append("UPDATE branches_priv SET ")
+					.append("add_priv=")
+					.append(prv.getAddPriv())
+					.append(", view_priv=")
+					.append(prv.getViewPriv())
+					.append(", modify_user=")
+					.append(loginUser.getUserId())
+					.append(", modify_date='")
+					.append(currentDate)
+					.append("' WHERE user_id=")
+					.append(prv.getUserId())
+					.append(" AND branch_no=")
+					.append(prv.getBranchNo())
+					.append(";");
 		}
 		masterDataPrivilegesDAO.updateBulkMasterDataPrivileges(sql.toString());
 	}
@@ -673,10 +735,21 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 		}
 		// LOOP OVER ALL PRVS
 		for (AccountsPriv prv : accountsPrivList) {
-			sql.append("UPDATE accounts_priv SET ").append("add_priv=").append(prv.getAddPriv()).append(", view_priv=")
-					.append(prv.getViewPriv()).append(", modify_user=").append(loginUser.getUserId())
-					.append(", modify_date='").append(currentDate).append("' WHERE user_id=").append(prv.getUserId())
-					.append(" AND acc_no=").append(prv.getAccNo()).append(" AND acc_curr='").append(prv.getAccCurr())
+			sql.append("UPDATE accounts_priv SET ")
+					.append("add_priv=")
+					.append(prv.getAddPriv())
+					.append(", view_priv=")
+					.append(prv.getViewPriv())
+					.append(", modify_user=")
+					.append(loginUser.getUserId())
+					.append(", modify_date='")
+					.append(currentDate)
+					.append("' WHERE user_id=")
+					.append(prv.getUserId())
+					.append(" AND acc_no=")
+					.append(prv.getAccNo())
+					.append(" AND acc_curr='")
+					.append(prv.getAccCurr())
 					.append("';");
 		}
 		masterDataPrivilegesDAO.updateBulkMasterDataPrivileges(sql.toString());
@@ -781,11 +854,20 @@ public class MasterDataPrivilegesServiceImpl implements MasterDataPrivilegesServ
 		}
 		// LOOP OVER ALL PRVS
 		for (CostCenterPriv prv : costCenterPrivList) {
-			sql.append("UPDATE cost_center_priv SET ").append("add_priv=").append(prv.getAddPriv())
-					.append(", view_priv=").append(prv.getViewPriv()).append(", modify_user=")
-					.append(loginUser.getUserId()).append(", modify_date='").append(currentDate)
-					.append("' WHERE user_id=").append(prv.getUserId()).append(" AND cost_center=")
-					.append(prv.getCostCenter()).append(";");
+			sql.append("UPDATE cost_center_priv SET ")
+					.append("add_priv=")
+					.append(prv.getAddPriv())
+					.append(", view_priv=")
+					.append(prv.getViewPriv())
+					.append(", modify_user=")
+					.append(loginUser.getUserId())
+					.append(", modify_date='")
+					.append(currentDate)
+					.append("' WHERE user_id=")
+					.append(prv.getUserId())
+					.append(" AND cost_center=")
+					.append(prv.getCostCenter())
+					.append(";");
 		}
 		masterDataPrivilegesDAO.updateBulkMasterDataPrivileges(sql.toString());
 	}

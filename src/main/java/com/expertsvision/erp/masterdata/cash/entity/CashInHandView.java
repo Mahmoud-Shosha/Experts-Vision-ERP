@@ -70,7 +70,7 @@ public class CashInHandView implements Serializable {
 	@Column(name = "cash_d_name")
 	private String cashDName;
 
-	@JsonProperty("cash_f_no")
+	@JsonProperty("cash_f_name")
 	@Column(name = "cash_f_no")
 	private String cashFNo;
 

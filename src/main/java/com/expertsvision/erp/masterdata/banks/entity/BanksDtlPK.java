@@ -1,6 +1,7 @@
 package com.expertsvision.erp.masterdata.banks.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * The primary key class for the banks_dtl database table.
@@ -17,6 +18,13 @@ public class BanksDtlPK implements Serializable {
 	private String accCurr;
 
 	public BanksDtlPK() {
+	}
+
+	public BanksDtlPK(Integer bankNo, Integer accNo, String accCurr) {
+		super();
+		this.bankNo = bankNo;
+		this.accNo = accNo;
+		this.accCurr = accCurr;
 	}
 
 	public Integer getBankNo() {
@@ -43,23 +51,22 @@ public class BanksDtlPK implements Serializable {
 		this.accCurr = accCurr;
 	}
 
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof BanksDtlPK)) {
-			return false;
-		}
-		BanksDtlPK castOther = (BanksDtlPK) other;
-		return this.bankNo.equals(castOther.bankNo) && this.accNo.equals(castOther.accNo);
-	}
-
+	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int hash = 17;
-		hash = hash * prime + this.bankNo.hashCode();
-		hash = hash * prime + this.accNo.hashCode();
-
-		return hash;
+		return Objects.hash(accCurr, accNo, bankNo);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BanksDtlPK other = (BanksDtlPK) obj;
+		return Objects.equals(accCurr, other.accCurr) && Objects.equals(accNo, other.accNo)
+				&& Objects.equals(bankNo, other.bankNo);
+	}
+
 }
