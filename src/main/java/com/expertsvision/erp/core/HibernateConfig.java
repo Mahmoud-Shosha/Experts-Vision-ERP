@@ -22,9 +22,9 @@ public class HibernateConfig {
     public HikariDataSource HikariDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setJdbcUrl("jdbc:postgresql://ec2-52-206-15-227.compute-1.amazonaws.com/d4hn83pcg1g1fg");
-        dataSource.setUsername("brgtvoqvdpzbpz");
-        dataSource.setPassword("75ac8c0b45d670c745ff5ba1a32aa76405f7c2df14a78c2f06c613d18aaeb643");
+        dataSource.setJdbcUrl("jdbc:postgresql://ec2-54-159-175-113.compute-1.amazonaws.com/d2khvtcfer4l0l");
+        dataSource.setUsername("kzfjtseurjgqwa");
+        dataSource.setPassword("87764eb0736b39924f886c3a12c2923d294ef884bc39f2f9f46a346044e1150f");
         dataSource.setMaximumPoolSize(3);
         return dataSource;
     }
