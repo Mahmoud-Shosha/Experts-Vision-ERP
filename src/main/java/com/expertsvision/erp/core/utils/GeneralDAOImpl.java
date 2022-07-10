@@ -111,7 +111,7 @@ public class GeneralDAOImpl implements GeneralDAO {
 		sql = sql.substring(0, sql.length() - 4);
 		sql += " " + ((exceptCondition == null) ? "" : exceptCondition);
 		Query query = session.createNativeQuery(sql);
-		Long count = (Long) query.getSingleResult();
+		Long count = Long.parseLong(query.getSingleResult().toString());
 		return count;
 	}
 	

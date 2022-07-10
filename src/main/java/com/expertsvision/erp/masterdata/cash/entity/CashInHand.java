@@ -38,8 +38,8 @@ public class CashInHand implements Serializable {
 	@Column(name = "cash_d_name")
 	private String cashDName;
 
-	@Column(name = "cash_f_no")
-	private String cashFNo;
+	@Column(name = "cash_f_name")
+	private String cashFName;
 
 	@Column(name = "inactive")
 	private Boolean inactive;
@@ -110,12 +110,12 @@ public class CashInHand implements Serializable {
 		this.cashDName = cashDName;
 	}
 
-	public String getCashFNo() {
-		return this.cashFNo;
+	public String getCashFName() {
+		return this.cashFName;
 	}
 
-	public void setCashFNo(String cashFNo) {
-		this.cashFNo = cashFNo;
+	public void setCashFName(String cashFName) {
+		this.cashFName = cashFName;
 	}
 
 	public Boolean getInactive() {
@@ -169,7 +169,7 @@ public class CashInHand implements Serializable {
 	@Override
 	public String toString() {
 		return "CashInHand [cashNo=" + cashNo + ", accNo=" + accNo + ", addDate=" + addDate + ", addUser=" + addUser
-				+ ", branchNo=" + branchNo + ", cashDName=" + cashDName + ", cashFNo=" + cashFNo + ", inactive="
+				+ ", branchNo=" + branchNo + ", cashDName=" + cashDName + ", cashFName=" + cashFName + ", inactive="
 				+ inactive + ", inactiveReason=" + inactiveReason + ", inactiveUser=" + inactiveUser + ", modifyDate="
 				+ modifyDate + ", modifyUser=" + modifyUser + ", pos=" + pos + "]";
 	}

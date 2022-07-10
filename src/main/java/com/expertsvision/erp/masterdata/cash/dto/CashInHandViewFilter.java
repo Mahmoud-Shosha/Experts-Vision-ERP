@@ -16,8 +16,8 @@ public class CashInHandViewFilter {
 	@JsonProperty("cash_d_name")
 	private String cashDName;
 
-	@JsonProperty("cash_f_no")
-	private String cashFNo;
+	@JsonProperty("cash_f_Name")
+	private String cashFName;
 
 	@JsonProperty("pos")
 	private Boolean pos;
@@ -54,12 +54,12 @@ public class CashInHandViewFilter {
 		this.cashDName = cashDName;
 	}
 
-	public String getCashFNo() {
-		return cashFNo;
+	public String getCashFName() {
+		return cashFName;
 	}
 
-	public void setCashFNo(String cashFNo) {
-		this.cashFNo = cashFNo;
+	public void setCashFName(String cashFNo) {
+		this.cashFName = cashFNo;
 	}
 
 	public Boolean getPos() {
@@ -73,7 +73,7 @@ public class CashInHandViewFilter {
 	@Override
 	public String toString() {
 		return "CashInHandViewFilter [cashNo=" + cashNo + ", accNo=" + accNo + ", branchNo=" + branchNo + ", cashDName="
-				+ cashDName + ", cashFNo=" + cashFNo + ", pos=" + pos + "]";
+				+ cashDName + ", cashFName=" + cashFName + ", pos=" + pos + "]";
 	}
 
 }

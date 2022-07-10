@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -17,7 +16,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "banks_dtl")
 @IdClass(BanksDtlPK.class)
-@NamedQuery(name = "BanksDtl.findAll", query = "SELECT b FROM BanksDtl b")
 public class BanksDtl implements Serializable {
 	private static final long serialVersionUID = 1L;
 

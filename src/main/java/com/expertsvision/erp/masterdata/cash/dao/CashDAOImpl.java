@@ -18,7 +18,6 @@ import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.masterdata.cash.dto.CashInHandViewFilter;
 import com.expertsvision.erp.masterdata.cash.entity.CashInHand;
 import com.expertsvision.erp.masterdata.cash.entity.CashInHandDtlView;
-import com.expertsvision.erp.masterdata.cash.entity.CashInHandPriv;
 import com.expertsvision.erp.masterdata.cash.entity.CashInHandView;
 
 @Repository
@@ -153,7 +152,7 @@ public class CashDAOImpl implements CashDAO {
 	}
 
 	@Override
-	public Long getUserViewSinglePageNo(UsersView loginUsersView, Integer cashNo) {
+	public Long getCashInHandViewSinglePageNo(UsersView loginUsersView, Integer cashNo) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql;
 		List<BigInteger> singlePageNoList;
@@ -229,7 +228,7 @@ public class CashDAOImpl implements CashDAO {
 		filters.put("acc_no", cashInHandViewFilter.getAccNo());
 		filters.put("branch_no", cashInHandViewFilter.getBranchNo());
 		filters.put("cash_d_name", cashInHandViewFilter.getCashDName());
-		filters.put("cash_f_name", cashInHandViewFilter.getCashFNo());
+		filters.put("cash_f_name", cashInHandViewFilter.getCashFName());
 		filters.put("cash_no", cashInHandViewFilter.getCashNo());
 		filters.put("pos", cashInHandViewFilter.getPos());
 
@@ -287,11 +286,11 @@ public class CashDAOImpl implements CashDAO {
 		session.flush();
 	}
 
-	@Override
-	public void addCashInHandsPriv(CashInHandPriv cashInHandPriv) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(cashInHandPriv);
-	}
+//	@Override
+//	public void addCashInHandsPriv(CashInHandPriv cashInHandPriv) {
+//		Session session = sessionFactory.getCurrentSession();
+//		session.save(cashInHandPriv);
+//	}
 
 	@Override
 	public void updateCashInHand(CashInHand cashInHand) {
@@ -300,7 +299,7 @@ public class CashDAOImpl implements CashDAO {
 		DBCashInHand.setAccNo(cashInHand.getAccNo());
 		DBCashInHand.setBranchNo(cashInHand.getBranchNo());
 		DBCashInHand.setCashDName(cashInHand.getCashDName());
-		DBCashInHand.setCashFNo(cashInHand.getCashFNo());
+		DBCashInHand.setCashFName(cashInHand.getCashFName());
 		DBCashInHand.setCashNo(cashInHand.getCashNo());
 		DBCashInHand.setInactive(cashInHand.getInactive());
 		DBCashInHand.setInactiveReason(cashInHand.getInactiveReason());

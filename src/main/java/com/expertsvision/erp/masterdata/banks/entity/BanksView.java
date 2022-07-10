@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -21,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "banks_view")
-@NamedQuery(name = "BanksView.findAll", query = "SELECT b FROM BanksView b")
 public class BanksView implements Serializable {
 	private static final long serialVersionUID = 1L;
 

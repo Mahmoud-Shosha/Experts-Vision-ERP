@@ -35,6 +35,6 @@ public interface BankService {
 
 	PreData preAdd(UsersView loginUsersView);
 
-	void generateBankPrivsForAllUsers(Integer bankNo, String AccCurr, Timestamp currentDate);
+	void generateBankPrivsForAllUsers(UsersView loginUsersView, Integer bankNo, String AccCurr, Timestamp currentDate);
 
 }

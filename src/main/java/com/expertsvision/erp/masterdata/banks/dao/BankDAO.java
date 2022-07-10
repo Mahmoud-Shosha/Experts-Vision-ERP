@@ -24,7 +24,7 @@ public interface BankDAO {
 
 	SinglePage<BanksView> getBankViewLastPage(UsersView loginUsersView);
 
-	Long getUserViewSinglePageNo(UsersView loginUsersView, Integer bankNo);
+	Long getBankViewSinglePageNo(UsersView loginUsersView, Integer bankNo);
 
 	MultiplePages<BanksView> getBankViewMultiplePages(UsersView loginUsersView, long pageNo);
 

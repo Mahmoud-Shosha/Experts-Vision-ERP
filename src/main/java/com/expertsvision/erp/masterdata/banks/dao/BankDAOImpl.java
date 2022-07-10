@@ -56,7 +56,7 @@ public class BankDAOImpl implements BankDAO {
 	@Override
 	public List<BanksDtlView> getBanksDtlViewList(Integer bankNo) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT * FROM  banks_dtl_view WHERE bank_code = :bankNo";
+		String sql = "SELECT * FROM  banks_dtl_view WHERE bank_no = :bankNo";
 		Query<BanksDtlView> query = session.createNativeQuery(sql, BanksDtlView.class);
 		query.setParameter("bankNo", bankNo);
 		List<BanksDtlView> banksDtlViewList = query.getResultList();
@@ -154,7 +154,7 @@ public class BankDAOImpl implements BankDAO {
 	}
 
 	@Override
-	public Long getUserViewSinglePageNo(UsersView loginUsersView, Integer bankNo) {
+	public Long getBankViewSinglePageNo(UsersView loginUsersView, Integer bankNo) {
 		Session session = sessionFactory.getCurrentSession();
 		String sql;
 		List<BigInteger> singlePageNoList;
@@ -335,7 +335,7 @@ public class BankDAOImpl implements BankDAO {
 		}
 		// Delete the details
 		if (banksDtlForDeleteList != null) {
-			String sql = "DELETE FROM banks_dtl WHERE bank_no = :bankNo AND acc_no = accNo AND acc_curr = :accCurr";
+			String sql = "DELETE FROM banks_dtl WHERE bank_no = :bankNo AND acc_no = :accNo AND acc_curr = :accCurr";
 			Query<?> query = session.createNativeQuery(sql);
 			query.setParameter("bankNo", bank.getBankNo());
 			for (BanksDtl obj : banksDtlForDeleteList) {

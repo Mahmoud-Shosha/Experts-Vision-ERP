@@ -20,40 +20,40 @@ import org.springframework.web.bind.annotation.RestController;
 import com.expertsvision.erp.core.response.Response;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
-import com.expertsvision.erp.core.utils.NextPK;
+import com.expertsvision.erp.core.utils.PreData;
 import com.expertsvision.erp.core.utils.SinglePage;
-import com.expertsvision.erp.masterdata.branches.dto.BranchesViewFilter;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesView;
-import com.expertsvision.erp.masterdata.branches.service.BranchesService;
+import com.expertsvision.erp.masterdata.banks.service.BankService;
+import com.expertsvision.erp.masterdata.banks.dto.BanksViewFilter;
+import com.expertsvision.erp.masterdata.banks.entity.BanksView;
 
 @RestController
-@RequestMapping(value = "/branchesyyy")
+@RequestMapping(value = "/banks")
 public class BanksController {
 
 	@Autowired
 	private Response response;
 
 	@Autowired
-	private BranchesService branchesService;
+	private BankService bankService;
 
 	@GetMapping("")
-	public ResponseEntity<Object> getBranchesViewList() {
+	public ResponseEntity<Object> getBanksViewList() {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		List<BranchesView> branchesViewList = branchesService.getBranchesViewList(loginUser);
-		return response.response(branchesViewList, HttpStatus.OK);
+		List<BanksView> banksViewList = bankService.getBanksViewList(loginUser);
+		return response.response(banksViewList, HttpStatus.OK);
 	}
 
-	@GetMapping("/{branchesNo}")
-	public ResponseEntity<Object> getBranchesView(@PathVariable("branchesNo") Integer branchesNo) {
+	@GetMapping("/{bankNo}")
+	public ResponseEntity<Object> getBanksView(@PathVariable("bankNo") Integer bankNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		BranchesView branchesView = branchesService.getBranchesView(loginUser, branchesNo);
-		return response.response(branchesView, HttpStatus.OK);
+		BanksView banksView = bankService.getBanksView(loginUser, bankNo);
+		return response.response(banksView, HttpStatus.OK);
 	}
 
-	@GetMapping("pageNo/{branchesNo}")
-	public ResponseEntity<Object> getBranchesViewSinglePageNo(@PathVariable("branchesNo") Integer branchesNo) {
+	@GetMapping("pageNo/{bankNo}")
+	public ResponseEntity<Object> getBanksViewSinglePageNo(@PathVariable("bankNo") Integer bankNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		long singlePageNo = branchesService.getBranchesViewSinglePageNo(loginUser, branchesNo);
+		long singlePageNo = bankService.getBanksViewSinglePageNo(loginUser, bankNo);
 		Map<String, Long> singlePageNoMap = new HashMap<>();
 		singlePageNoMap.put("page_no", singlePageNo);
 		return response.response(singlePageNoMap, HttpStatus.OK);
@@ -62,60 +62,60 @@ public class BanksController {
 	@GetMapping("/page/{pageNo}")
 	public ResponseEntity<Object> getMessagesViewSinglePage(@PathVariable("pageNo") Long pageNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		SinglePage<BranchesView> singlePage = branchesService.getBranchesViewSinglePage(loginUser, pageNo);
+		SinglePage<BanksView> singlePage = bankService.getBanksViewSinglePage(loginUser, pageNo);
 		return response.response(singlePage, HttpStatus.OK);
 	}
 
 	@GetMapping("/lastPage")
-	public ResponseEntity<Object> getBranchesViewLastPage() {
+	public ResponseEntity<Object> getBanksViewLastPage() {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		SinglePage<BranchesView> singlePage = branchesService.getBranchesViewLastPage(loginUser);
+		SinglePage<BanksView> singlePage = bankService.getBanksViewLastPage(loginUser);
 		return response.response(singlePage, HttpStatus.OK);
 	}
 
 	@GetMapping("/pages/{pageNo}")
-	public ResponseEntity<Object> getBranchesViewMultiplePages(@PathVariable("pageNo") Long pageNo) {
+	public ResponseEntity<Object> getBanksViewMultiplePages(@PathVariable("pageNo") Long pageNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		MultiplePages<BranchesView> multiplePages = branchesService.getBranchesViewMultiplePages(loginUser,
+		MultiplePages<BanksView> multiplePages = bankService.getBanksViewMultiplePages(loginUser,
 				pageNo);
 		return response.response(multiplePages, HttpStatus.OK);
 	}
 
 	@PostMapping("/filteredPages/{pageNo}")
-	public ResponseEntity<Object> getBranchesViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
-			@RequestBody BranchesViewFilter branchesViewFilter) {
+	public ResponseEntity<Object> getBanksViewFilteredMultiplePages(@PathVariable("pageNo") Long pageNo,
+			@RequestBody BanksViewFilter banksViewFilter) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		MultiplePages<BranchesView> multiplePages = branchesService
-				.getBranchesViewFilteredMultiplePages(loginUser, pageNo, branchesViewFilter);
+		MultiplePages<BanksView> multiplePages = bankService
+				.getBanksViewFilteredMultiplePages(loginUser, pageNo, banksViewFilter);
 		return response.response(multiplePages, HttpStatus.OK);
 	}
-
-	@GetMapping("/nextPK")
-	public ResponseEntity<Object> getNextPK() {
+	
+	@GetMapping("/preAdd")
+	public ResponseEntity<Object> preAdd() {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Object PK = branchesService.getNextPK(loginUser);
-		return response.response(NextPK.build(PK), HttpStatus.OK);
+		PreData preData = bankService.preAdd(loginUser);
+		return response.response(preData, HttpStatus.OK);
 	}
 	
 	@PostMapping(path = "")
-	public ResponseEntity<Object> addUsersGroup(@RequestBody BranchesView branchesView) {
+	public ResponseEntity<Object> addBanksView(@RequestBody BanksView banksView) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		branchesService.addBranches(loginUser, branchesView);
-		return response.response("added", "branch", HttpStatus.OK);
+		bankService.addBank(loginUser, banksView);
+		return response.response("added", "bank", HttpStatus.OK);
 	}
 
 	@PutMapping("")
-	public ResponseEntity<Object> updateUsersGroup(@RequestBody BranchesView branchesView) {
+	public ResponseEntity<Object> updateBanksView(@RequestBody BanksView banksView) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		branchesService.updateBranches(loginUser, branchesView);
-		return response.response("updated", "branch", HttpStatus.OK);
+		bankService.updateBank(loginUser, banksView);
+		return response.response("updated", "bank", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/{branchesNo}")
-	public ResponseEntity<Object> deleteUsersGroup(@PathVariable("branchesNo") Integer branchesNo) {
+	@DeleteMapping("/{bankNo}")
+	public ResponseEntity<Object> deleteBanksView(@PathVariable("bankNo") Integer bankNo) {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		branchesService.deleteBranches(loginUser, branchesNo);
-		return response.response("deleted", "branch", HttpStatus.OK);
+		bankService.deleteBank(loginUser, bankNo);
+		return response.response("deleted", "bank", HttpStatus.OK);
 	}
 
 }

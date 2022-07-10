@@ -33,11 +33,9 @@ import com.expertsvision.erp.masterdata.banks.dao.BankDAO;
 import com.expertsvision.erp.masterdata.banks.dto.BanksViewFilter;
 import com.expertsvision.erp.masterdata.banks.entity.Bank;
 import com.expertsvision.erp.masterdata.banks.entity.BanksDtl;
-import com.expertsvision.erp.masterdata.banks.entity.BanksDtlPK;
 import com.expertsvision.erp.masterdata.banks.entity.BanksDtlView;
 import com.expertsvision.erp.masterdata.banks.entity.BanksPriv;
 import com.expertsvision.erp.masterdata.banks.entity.BanksView;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyView;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
 import com.expertsvision.erp.masterdata.chartofaccounts.service.ChartofaccountsService;
@@ -126,7 +124,9 @@ public class BankServiceImpl implements BankService {
 		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 			loginUsersView = null;
 		SinglePage<BanksView> singlePage = bankDAO.getBankViewSinglePage(loginUsersView, pageNo);
-		singlePage.getPage().setBankDtlList(bankDAO.getBanksDtlViewList(singlePage.getPage().getBankNo()));
+		if (singlePage.getPage() != null) {
+			singlePage.getPage().setBankDtlList(bankDAO.getBanksDtlViewList(singlePage.getPage().getBankNo()));
+		}
 		return singlePage;
 	}
 
@@ -147,7 +147,9 @@ public class BankServiceImpl implements BankService {
 		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 			loginUsersView = null;
 		SinglePage<BanksView> singlePage = bankDAO.getBankViewLastPage(loginUsersView);
-		singlePage.getPage().setBankDtlList(bankDAO.getBanksDtlViewList(singlePage.getPage().getBankNo()));
+		if (singlePage.getPage() != null) {
+			singlePage.getPage().setBankDtlList(bankDAO.getBanksDtlViewList(singlePage.getPage().getBankNo()));
+		}
 		return singlePage;
 	}
 
@@ -167,7 +169,7 @@ public class BankServiceImpl implements BankService {
 		// Return requested data
 		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 			loginUsersView = null;
-		Long singlePageNo = bankDAO.getUserViewSinglePageNo(loginUsersView, bankNo);
+		Long singlePageNo = bankDAO.getBankViewSinglePageNo(loginUsersView, bankNo);
 		if (singlePageNo == null) {
 			throw new ValidationException("not_exist", "bank_no");
 		}
@@ -312,9 +314,9 @@ public class BankServiceImpl implements BankService {
 				.getChartOfAccountsViewWithoutScrPriv(loginUsersView, bank.getAccountNo());
 		if (chartOfAccountsView == null)
 			throw new ValidationException("not_exist", "acc_no");
-		if (!chartOfAccountsView.getSub() || !chartOfAccountsView.getAccType().equals("3"))
+		if (chartOfAccountsView.getSub() == null || !chartOfAccountsView.getSub() || chartOfAccountsView.getAccType() == null || !chartOfAccountsView.getAccType().equals("3"))
 			throw new ValidationException("bnk_acc");
-		if (!chartOfAccountsView.getInactive())
+		if (chartOfAccountsView.getInactive())
 			throw new ValidationException("is_inactive", "acc_no", chartOfAccountsView.getAccNo());
 		// Database validation for details
 		Set<String> accountCurrencySet = new HashSet<>();
@@ -326,29 +328,35 @@ public class BankServiceImpl implements BankService {
 				}
 			}
 		}
-		Set<BanksDtlPK> valuesSetForAdd = new HashSet<>();
-		Set<BanksDtlPK> DBValuesSetForAdd;
+		Set<String> valuesSetForAdd = new HashSet<>();
+		Set<String> DBValuesSetForAdd;
 		Map<String, Object> parameters = new HashMap<>();
 		BanksDtl banksDtl;
-		parameters.put("bank_no", banksView.getBankNo());
+		parameters.put("bankNo", banksView.getBankNo());
 		for (BanksDtlView obj : banksView.getBankDtlList()) {
 			banksDtl = getBanksDtlFromBanksDtlView(obj);
 			banksDtl.setAddDate(add_date);
 			banksDtl.setAddUser(loginUsersView.getUserId());
 			banksDtl.setModifyDate(null);
 			banksDtl.setModifyUser(null);
+			if (banksDtl.getInactive()) {
+				banksDtl.setInactiveUser(loginUsersView.getUserId());
+			} else {
+				banksDtl.setInactiveUser(null);
+				banksDtl.setInactiveReason(null);
+			}
 			bankDtlForAddList.add(banksDtl);
-			if (valuesSetForAdd.contains(new BanksDtlPK(banksDtl.getBankNo(), banksDtl.getAccNo(), banksDtl.getAccCurr()))) {
+			if (valuesSetForAdd.contains(banksDtl.getAccCurr())) {
 				throw new DetailValidationException("already_exist_detail", "currency", obj.getAccCurr(), "bank_no",
 						banksDtl.getBankNo());
 			} else {
-				valuesSetForAdd.add(new BanksDtlPK(banksDtl.getBankNo(), banksDtl.getAccNo(), banksDtl.getAccCurr()));
+				valuesSetForAdd.add(banksDtl.getAccCurr());
 			}
 			if (!accountCurrencySet.contains(banksDtl.getAccCurr()))
 				throw new ValidationException("invalid", "currency");
 		}
-		DBValuesSetForAdd = generalDAO.getThemIfExist("banks_dtl", "bank_no = :bankNo", parameters,
-				"bank_no, acc_no, acc_curr", valuesSetForAdd);
+
+		DBValuesSetForAdd = generalDAO.getThemIfExist("banks_dtl", "bank_no = :bankNo", parameters, "acc_curr", valuesSetForAdd);
 		if (DBValuesSetForAdd != null && !DBValuesSetForAdd.isEmpty())
 			throw new DetailValidationException("already_exist_detail", "currency", DBValuesSetForAdd.toArray()[0],
 					"bank_no", banksView.getBankNo());
@@ -357,8 +365,14 @@ public class BankServiceImpl implements BankService {
 		bank.setAddUser(loginUsersView.getUserId());
 		bank.setModifyDate(null);
 		bank.setModifyUser(null);
+		if (bank.getInactive()) {
+			bank.setInactiveUser(loginUsersView.getUserId());
+		} else {
+			bank.setInactiveUser(null);
+			bank.setInactiveReason(null);
+		}
 		bankDAO.addBank(bank, bankDtlForAddList);
-		generateBankPrivsForAllUsers(bank.getBankNo(), bankDtlForAddList.get(0).getAccCurr(), add_date);
+		generateBankPrivsForAllUsers(loginUsersView, bank.getBankNo(), bankDtlForAddList.get(0).getAccCurr(), add_date);
 	}
 
 	@Override
@@ -398,7 +412,7 @@ public class BankServiceImpl implements BankService {
 				coreValidationService.notNull(obj.getAccNo(), "acc_no");
 				coreValidationService.greaterThanOrEqualZero(obj.getAccNo(), "acc_no");
 				coreValidationService.notNull(obj.getInactive(), "inactive");
-				if (!obj.getAccNo().equals(banksView.getAccountNo()))
+				if (!obj.getAction().equals("delete") && !obj.getAccNo().equals(banksView.getAccountNo()))
 					throw new ValidationException("invalid", "acc_no");
 				switch (obj.getAction()) {
 				case "add":
@@ -432,41 +446,35 @@ public class BankServiceImpl implements BankService {
 				.getChartOfAccountsViewWithoutScrPriv(loginUsersView, bank.getAccountNo());
 		if (chartOfAccountsView == null)
 			throw new ValidationException("not_exist", "acc_no");
-		if (!chartOfAccountsView.getSub() || !chartOfAccountsView.getAccType().equals("3"))
+		if (chartOfAccountsView.getSub() == null || !chartOfAccountsView.getSub() ||
+				chartOfAccountsView.getAccType() == null|| !chartOfAccountsView.getAccType().equals("3"))
 			throw new ValidationException("bnk_acc");
-		
-		
-		
-		
-		
-		if (!chartOfAccountsView.getInactive())
+		if (chartOfAccountsView.getInactive())
 			throw new ValidationException("is_inactive", "acc_no", chartOfAccountsView.getAccNo());
 		// Database validation for details
 		Set<String> accountCurrencySet = new HashSet<>();
 		for (AccountsCurrencyView accountsCurrencyView : chartOfAccountsView.getAccountCurrencyList()) {
 			accountCurrencySet.add(accountsCurrencyView.getCurCode());
-			if (banksView.getBankDtlList().get(0).getAccCurr().equals(accountsCurrencyView.getCurCode())) {
-				if (!accountsCurrencyView.getUsed()) {
-					throw new ValidationException("is_inactive", "currency_code", accountsCurrencyView.getUsed());
+			if (banksView.getBankDtlList() != null && !banksView.getBankDtlList().isEmpty()) {
+				for (BanksDtlView bankDtlView : banksView.getBankDtlList()) {
+					if (!bankDtlView.getAction().equals("delete") && bankDtlView.getAccCurr().equals(accountsCurrencyView.getCurCode()) && !accountsCurrencyView.getUsed()) {
+						throw new ValidationException("is_inactive", "currency_code", accountsCurrencyView.getUsed());
+					}
 				}
 			}
 		}
-		
-		
-		
-		// Database validation for details
-		Set<String> accountCurrencySet2222 = new HashSet<>();
-		for (AccountsCurrencyView accountsCurrencyView : chartOfAccountsView.getAccountCurrencyList()) {
-			accountCurrencySet.add(accountsCurrencyView.getCurCode());
+		if (chartOfAccountsView.getInactive() && !bank.getInactive()) {
+			throw new ValidationException("bank_account_inactive");
 		}
 		if (banksView.getBankDtlList() != null) {
-			Set<BanksDtlPK> valuesSetForAdd = new HashSet<>();
-			Set<BanksDtlPK> DBValuesSetForAdd;
-			Set<BanksDtlPK> valuesSetForModifyOrDelete = new HashSet<>();
-			Set<BanksDtlPK> DBValuesSetForModifyOrDelete;
+			Set<String> valuesSetForAdd = new HashSet<>();
+			Set<String> DBValuesSetForAdd;
+			Set<String> valuesSetForModifyOrDelete = new HashSet<>();
+			Set<String> DBValuesSetForModifyOrDelete;
 			Map<String, Object> parameters = new HashMap<>();
 			BanksDtl banksDtl;
-			parameters.put("bank_no", banksView.getBankNo());
+			parameters.put("bankNo", banksView.getBankNo());
+			parameters.put("accNo", banksView.getAccountNo());
 			for (BanksDtlView obj : banksView.getBankDtlList()) {
 				banksDtl = getBanksDtlFromBanksDtlView(obj);
 				switch (obj.getAction()) {
@@ -475,13 +483,19 @@ public class BankServiceImpl implements BankService {
 					banksDtl.setAddUser(loginUsersView.getUserId());
 					banksDtl.setModifyDate(null);
 					banksDtl.setModifyUser(null);
+					if (banksDtl.getInactive()) {
+						banksDtl.setInactiveUser(loginUsersView.getUserId());
+					} else {
+						banksDtl.setInactiveUser(null);
+						banksDtl.setInactiveReason(null);
+					}
 					bankDtlForAddList.add(banksDtl);
-					if (valuesSetForAdd.contains(new BanksDtlPK(obj.getBankNo(), obj.getAccNo(), obj.getAccCurr()))) {
+					if (valuesSetForAdd.contains(obj.getAccCurr())) {
 						throw new DetailValidationException("already_exist_detail", "currency", obj.getAccCurr(),
 								"bank_no", banksDtl.getBankNo());
 					} else {
 						valuesSetForAdd
-								.add(new BanksDtlPK(banksDtl.getBankNo(), banksDtl.getAccNo(), banksDtl.getAccCurr()));
+								.add(banksDtl.getAccCurr());
 					}
 					if (!accountCurrencySet.contains(banksDtl.getAccCurr()))
 						throw new ValidationException("invalid", "currency");
@@ -489,36 +503,46 @@ public class BankServiceImpl implements BankService {
 				case "update":
 					banksDtl.setModifyDate(add_date);
 					banksDtl.setModifyUser(loginUsersView.getUserId());
+					BanksDtlView DBBanksDtlView = bankDAO.getBanksDtlViewList(bank.getBankNo()).get(0);
+					if (DBBanksDtlView.getInactive() && !banksDtl.getInactive()) {
+						banksDtl.setInactiveUser(null);
+						banksDtl.setInactiveReason(null);
+
+					} else if (!DBBanksDtlView.getInactive() && banksDtl.getInactive()) {
+						banksDtl.setInactiveUser(loginUsersView.getUserId());
+					} else {
+						banksDtl.setInactiveUser(DBBanksDtlView.getInactiveUser());
+						banksDtl.setInactiveReason(DBBanksDtlView.getInactiveReason());
+					}
 					bankDtlForUpdateList.add(banksDtl);
-					if (valuesSetForAdd.contains(new BanksDtlPK(obj.getBankNo(), obj.getAccNo(), obj.getAccCurr())))
+					if (valuesSetForAdd.contains(obj.getAccCurr()))
 						throw new DetailValidationException("already_exist_detail", "currency", obj.getAccCurr(),
 								"bank_no", banksDtl.getBankNo());
-					valuesSetForModifyOrDelete
-							.add(new BanksDtlPK(banksDtl.getBankNo(), banksDtl.getAccNo(), banksDtl.getAccCurr()));
+					valuesSetForModifyOrDelete.add(banksDtl.getAccCurr());
 					if (!accountCurrencySet.contains(banksDtl.getAccCurr()))
 						throw new ValidationException("invalid", "currency");
 					break;
 				case "delete":
 					bankDtlForDeleteList.add(banksDtl);
-					valuesSetForModifyOrDelete
-							.add(new BanksDtlPK(banksDtl.getBankNo(), banksDtl.getAccNo(), banksDtl.getAccCurr()));
+					valuesSetForModifyOrDelete.add(banksDtl.getAccCurr());
 					break;
 				}
 			}
 			if (!valuesSetForAdd.isEmpty()) {
-				DBValuesSetForAdd = generalDAO.getThemIfExist("banks_dtl", "bank_no = :bankNo", parameters,
-						"bank_no, acc_no, acc_curr", valuesSetForAdd);
+				DBValuesSetForAdd = generalDAO.getThemIfExist("banks_dtl", "bank_no = :bankNo and acc_no = :accNo", parameters,
+						"acc_curr", valuesSetForAdd);
 				if (DBValuesSetForAdd != null && !DBValuesSetForAdd.isEmpty())
 					throw new DetailValidationException("already_exist_detail", "currency",
 							DBValuesSetForAdd.toArray()[0], "bank_no", banksView.getBankNo());
 			}
+			parameters.remove("accNo");
 			if (!valuesSetForModifyOrDelete.isEmpty()) {
 				DBValuesSetForModifyOrDelete = generalDAO.getThemIfExist("banks_dtl", "bank_no = :bankNo", parameters,
-						"bank_no, acc_no, acc_curr", valuesSetForModifyOrDelete);
+						"acc_curr", valuesSetForModifyOrDelete);
 				if (DBValuesSetForModifyOrDelete != null) {
-					for (BanksDtlPK i : valuesSetForModifyOrDelete) {
-						if (!DBValuesSetForModifyOrDelete.contains(i))
-							throw new DetailValidationException("not_exist_detail", "currency", i.getAccCurr(),
+					for (String curCode : valuesSetForModifyOrDelete) {
+						if (!DBValuesSetForModifyOrDelete.contains(curCode))
+							throw new DetailValidationException("not_exist_detail", "currency", curCode,
 									"bank_no", banksView.getBankNo());
 					}
 				}
@@ -526,6 +550,17 @@ public class BankServiceImpl implements BankService {
 
 		}
 		// Update the bank
+		BanksView DBBanksView = bankDAO.getBankView(loginUsersView, bank.getBankNo());
+		if (DBBanksView.getInactive() && !bank.getInactive()) {
+			bank.setInactiveUser(null);
+			bank.setInactiveReason(null);
+
+		} else if (!DBBanksView.getInactive() && bank.getInactive()) {
+			bank.setInactiveUser(loginUsersView.getUserId());
+		} else {
+			bank.setInactiveUser(DBBanksView.getInactiveUser());
+			bank.setInactiveReason(DBBanksView.getInactiveReason());
+		}
 		bank.setModifyDate(add_date);
 		bank.setModifyUser(loginUsersView.getUserId());
 		bankDAO.updateBank(bank, bankDtlForAddList, bankDtlForDeleteList, bankDtlForUpdateList);
@@ -558,7 +593,7 @@ public class BankServiceImpl implements BankService {
 		conditions.put("bank_no", bankNo);
 		if (!generalDAO.isEntityExist("banks", conditions))
 			throw new ValidationException("not_exist", "bank_no");
-		// delete the usersbankes
+		// delete the bank
 		try {
 			bankDAO.deleteBank(bankNo);
 		} catch (Exception e) {
@@ -567,7 +602,7 @@ public class BankServiceImpl implements BankService {
 	}
 
 	@Override
-	public void generateBankPrivsForAllUsers(Integer bankNo, String AccCurr, Timestamp currentDate) {
+	public void generateBankPrivsForAllUsers(UsersView loginUsersView, Integer bankNo, String AccCurr, Timestamp currentDate) {
 		/*
 		 * $$$$$$$$$$$$___Do not forget to add in
 		 * MasterDataPrivilegesService___$$$$$$$$$$$$
@@ -588,6 +623,10 @@ public class BankServiceImpl implements BankService {
 				} else {
 					viewPriv = false;
 					addPriv = false;
+				}
+				if (loginUsersView != null && loginUsersView.getUserId().equals(usersView.getUserId())) {
+					viewPriv = true;
+					addPriv = true;
 				}
 				banksPriv = new BanksPriv();
 				banksPriv.setAccCurr(AccCurr);
