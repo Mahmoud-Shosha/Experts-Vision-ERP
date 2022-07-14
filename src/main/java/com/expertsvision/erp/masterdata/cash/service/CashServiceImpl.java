@@ -5,8 +5,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.postgresql.core.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,30 +16,43 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.expertsvision.erp.core.exception.DetailValidationException;
 import com.expertsvision.erp.core.exception.UnauthorizedException;
 import com.expertsvision.erp.core.exception.ValidationException;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.user.service.InMemoryUsersService;
 import com.expertsvision.erp.core.usersgroups.service.InMemoryUsersGroupsService;
-import com.expertsvision.erp.core.utils.FlagDetails;
-import com.expertsvision.erp.core.utils.FlagsActions;
 import com.expertsvision.erp.core.utils.Forms;
 import com.expertsvision.erp.core.utils.FormsActions;
 import com.expertsvision.erp.core.utils.GeneralDAO;
 import com.expertsvision.erp.core.utils.MultiplePages;
+import com.expertsvision.erp.core.utils.PreData;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.core.validation.CoreValidationService;
-import com.expertsvision.erp.masterdata.branches.dao.BranchDAO;
-import com.expertsvision.erp.masterdata.branches.dto.BranchesViewFilter;
-import com.expertsvision.erp.masterdata.branches.entity.Branch;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
 import com.expertsvision.erp.masterdata.branches.entity.BranchesView;
+import com.expertsvision.erp.masterdata.branches.service.BranchesService;
+import com.expertsvision.erp.masterdata.cash.dao.CashDAO;
+import com.expertsvision.erp.masterdata.cash.dto.CashInHandViewFilter;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHand;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandDtl;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandDtlView;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandPriv;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandView;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyView;
+import com.expertsvision.erp.masterdata.chartofaccounts.entity.ChartOfAccountsView;
+import com.expertsvision.erp.masterdata.chartofaccounts.service.ChartofaccountsService;
 
 @Service
 public class CashServiceImpl implements CashService {
 
 	@Autowired
-	private BranchDAO branchDAO;
+	private ChartofaccountsService chartofaccountsService;
+	
+	@Autowired
+	private BranchesService branchesService;
+	
+	@Autowired
+	private CashDAO cashDAO;
 
 	@Autowired
 	private GeneralDAO generalDAO;
@@ -55,528 +70,565 @@ public class CashServiceImpl implements CashService {
 
 	@Override
 	@Transactional
-	public List<BranchesView> getBranchesViewList(UsersView loginUsersView) {
+	public List<CashInHandView> getCashInHandViewList(UsersView loginUsersView) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
 		}
 		// Return requested data
 		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 			loginUsersView = null;
-		List<BranchesView> branchesView = branchDAO.getAllBranchViewList(loginUsersView);
-		return branchesView;
+		List<CashInHandView> cashInHandView = cashDAO.getAllCashInHandViewList(loginUsersView);
+		return cashInHandView;
 	}
 
 	@Override
 	@Transactional
-	public BranchesView getBranchesView(UsersView loginUsersView, Integer branchesNo) {
+	public CashInHandView getCashInHandView(UsersView loginUsersView, Integer cashInHandNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
 		}
 		// Return requested data
 		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 			loginUsersView = null;
-		BranchesView branchesView = branchDAO.getBranchView(loginUsersView, branchesNo);
-		if (branchesView == null) {
-			throw new ValidationException("not_exist", "branch_no");
+		CashInHandView cashInHandView = cashDAO.getCashInHandView(loginUsersView, cashInHandNo);
+		if (cashInHandView == null) {
+			throw new ValidationException("not_exist", "cash_no");
 		}
-		return branchesView;
+		cashInHandView.setCashDtlList(cashDAO.getCashInHandDtlViewList(cashInHandNo));
+		return cashInHandView;
 	}
 
 	@Override
 	@Transactional
-	public SinglePage<BranchesView> getBranchesViewSinglePage(UsersView loginUsersView, long pageNo) {
+	public SinglePage<CashInHandView> getCashInHandViewSinglePage(UsersView loginUsersView, long pageNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
 		}
 		// Return requested data
 		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 			loginUsersView = null;
-		SinglePage<BranchesView> singlePage = branchDAO.getBranchViewSinglePage(loginUsersView, pageNo);
+		SinglePage<CashInHandView> singlePage = cashDAO.getCashInHandViewSinglePage(loginUsersView, pageNo);
+		if (singlePage.getPage() != null) {
+			singlePage.getPage().setCashDtlList(cashDAO.getCashInHandDtlViewList(singlePage.getPage().getCashNo()));
+		}
 		return singlePage;
 	}
 
 	@Override
 	@Transactional
-	public SinglePage<BranchesView> getBranchesViewLastPage(UsersView loginUsersView) {
+	public SinglePage<CashInHandView> getCashInHandViewLastPage(UsersView loginUsersView) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
 		}
 		// Return requested data
 		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 			loginUsersView = null;
-		SinglePage<BranchesView> singlePage = branchDAO.getBranchViewLastPage(loginUsersView);
+		SinglePage<CashInHandView> singlePage = cashDAO.getCashInHandViewLastPage(loginUsersView);
+		if (singlePage.getPage() != null) {
+			singlePage.getPage().setCashDtlList(cashDAO.getCashInHandDtlViewList(singlePage.getPage().getCashNo()));
+		}
 		return singlePage;
 	}
 
 	@Override
 	@Transactional
-	public Long getBranchesViewSinglePageNo(UsersView loginUsersView, Integer branchesNo) {
+	public Long getCashInHandViewSinglePageNo(UsersView loginUsersView, Integer cashInHandNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
 		}
 		// Return requested data
 		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 			loginUsersView = null;
-		Long singlePageNo = branchDAO.getUserViewSinglePageNo(loginUsersView, branchesNo);
+		Long singlePageNo = cashDAO.getCashInHandViewSinglePageNo(loginUsersView, cashInHandNo);
 		if (singlePageNo == null) {
-			throw new ValidationException("not_exist", "branch_no");
+			throw new ValidationException("not_exist", "cash_no");
 		}
 		return singlePageNo;
 	}
 
 	@Override
 	@Transactional
-	public MultiplePages<BranchesView> getBranchesViewMultiplePages(UsersView loginUsersView, long pageNo) {
+	public MultiplePages<CashInHandView> getCashInHandViewMultiplePages(UsersView loginUsersView, long pageNo) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
 		}
 		// Return requested data
 		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 			loginUsersView = null;
-		MultiplePages<BranchesView> multiplePages = branchDAO.getBranchViewMultiplePages(loginUsersView, pageNo);
+		MultiplePages<CashInHandView> multiplePages = cashDAO.getCashInHandViewMultiplePages(loginUsersView, pageNo);
 		return multiplePages;
 	}
 
 	@Override
 	@Transactional
-	public MultiplePages<BranchesView> getBranchesViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
-			BranchesViewFilter branchesViewFilter) {
+	public MultiplePages<CashInHandView> getCashInHandViewFilteredMultiplePages(UsersView loginUsersView, long pageNo,
+			CashInHandViewFilter cashInHandViewFilter) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
 		}
 		// Return requested data
 		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
 			loginUsersView = null;
-		MultiplePages<BranchesView> multiplePages = branchDAO.getBranchViewFilteredMultiplePages(loginUsersView, pageNo,
-				branchesViewFilter);
+		MultiplePages<CashInHandView> multiplePages = cashDAO.getCashInHandViewFilteredMultiplePages(loginUsersView, pageNo, cashInHandViewFilter);
 		return multiplePages;
-	}
-	
-	@Override
-	@Transactional
-	public Object getNextPK(UsersView loginUsersView) {
-		// Check module, form, privileges
-		if (!loginUsersView.getSuperAdmin()) {
-			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
-			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
-			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES, FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES, FlagsActions.VIEW);
-		}
-		// Return requested data
-		Object PK = branchDAO.getNextPK();
-		return PK;
 	}
 
 	@Override
 	@Transactional
-	public void addBranches(UsersView loginUsersView, BranchesView branchView) {
+	public PreData preAdd(UsersView loginUsersView) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.ADD);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.ADD);
 		}
-		// Non-database validation
-		coreValidationService.notNull(branchView.getBranchNo(), "branch_no");
-		coreValidationService.greaterThanOrEqualZero(branchView.getBranchNo(), "branch_no");
-		coreValidationService.notNull(branchView.getBranchDName(), "name");
-		coreValidationService.notBlank(branchView.getBranchDName(), "name");
-		if ((branchView.getBranchFName() != null) && branchView.getBranchFName().isBlank())
-			branchView.setBranchFName(null);
-		coreValidationService.notNull(branchView.getShortcutD(), "shortcut_name");
-		coreValidationService.notBlank(branchView.getShortcutD(), "shortcut_name");
-		if ((branchView.getShortcutF() != null) && branchView.getShortcutF().isBlank())
-			branchView.setShortcutF(null);
-		coreValidationService.notNull(branchView.getCompanyNo(), "company_no");
-		coreValidationService.greaterThanOrEqualZero(branchView.getCompanyNo(), "company_no");
-		if ((branchView.getBranchDAddress() != null) && branchView.getBranchDAddress().isBlank())
-			branchView.setBranchDAddress(null);
-		if ((branchView.getBranchFAddress() != null) && branchView.getBranchFAddress().isBlank())
-			branchView.setBranchFAddress(null);
-		if ((branchView.getReportDHeader1() != null) && branchView.getReportDHeader1().isBlank())
-			branchView.setReportDHeader1(null);
-		if ((branchView.getReportFHeader1() != null) && branchView.getReportFHeader1().isBlank())
-			branchView.setReportFHeader1(null);
-		if ((branchView.getReportDHeader2() != null) && branchView.getReportDHeader2().isBlank())
-			branchView.setReportDHeader2(null);
-		if ((branchView.getReportFHeader2() != null) && branchView.getReportFHeader2().isBlank())
-			branchView.setReportFHeader2(null);
-		if ((branchView.getReportDHeader3() != null) && branchView.getReportDHeader3().isBlank())
-			branchView.setReportDHeader3(null);
-		if ((branchView.getReportFHeader3() != null) && branchView.getReportFHeader3().isBlank())
-			branchView.setReportFHeader3(null);
-		if ((branchView.getTelephoneNo() != null) && branchView.getTelephoneNo().isBlank())
-			branchView.setTelephoneNo(null);
-		if ((branchView.getLogo() != null) && branchView.getLogo().isBlank())
-			branchView.setLogo(null);
-		if (branchView.getCityNo() != null) {
-			coreValidationService.notNull(branchView.getProvinceNo(), "province_no");
-			coreValidationService.greaterThanOrEqualZero(branchView.getProvinceNo(), "province_no");
-			coreValidationService.notNull(branchView.getCountryNo(), "country_no");
-			coreValidationService.greaterThanOrEqualZero(branchView.getCountryNo(), "country_no");
-		} else if (branchView.getProvinceNo() != null) {
-			coreValidationService.notNull(branchView.getCountryNo(), "country_no");
-			coreValidationService.greaterThanOrEqualZero(branchView.getCountryNo(), "country_no");
+		Set<String> readOnly = new HashSet<>();
+		Map<String, Object> defaultValues = new HashMap<>();
+		Map<String, Object> info = new HashMap<>();
+		PreData preData = new PreData(readOnly, defaultValues, info);
+		// Fill preData object
+		defaultValues.put("cash_no", cashDAO.getNextPK());
+		// return the data
+		return preData;
+	}
+
+	@Override
+	@Transactional
+	public void addCashInHand(UsersView loginUsersView, CashInHandView cashInHandView) {
+		// Check module, form, privileges
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.ADD);
 		}
-		// Database validation
-		Branch branch = getBranchFromBranchesView(branchView);
-		Map<String, Object> conditions = new HashMap<>();
-		conditions.put("branch_no", branch.getBranchNo());
-		if (generalDAO.isEntityExist("branches", conditions))
-			throw new ValidationException("already_exist", "branch_no");
-		conditions.clear();
-		conditions.put("branch_d_name", branch.getBranchDName());
-		if (generalDAO.isEntityExist("branches", conditions))
-			throw new ValidationException("already_exist", "name");
-		conditions.clear();
-		conditions.put("branch_f_name", branch.getBranchFName());
-		if (branch.getBranchFName() != null && generalDAO.isEntityExist("branches", conditions))
-			throw new ValidationException("already_exist", "foreign_name");
-		conditions.clear();
-		conditions.put("shortcut_d", branch.getShortcutD());
-		if (generalDAO.isEntityExist("branches", conditions))
-			throw new ValidationException("already_exist", "shortcut_name");
-		conditions.clear();
-		conditions.put("shortcut_f", branch.getShortcutF());
-		if (branch.getShortcutF() != null && generalDAO.isEntityExist("branches", conditions))
-			throw new ValidationException("already_exist", "shortcut_F_name");
-		conditions.clear();
-		conditions.put("branch_d_address", branch.getBranchDAddress());
-		if (branch.getBranchDAddress() != null && generalDAO.isEntityExist("branches", conditions))
-			throw new ValidationException("already_exist", "address");
-		conditions.clear();
-		conditions.put("branch_f_address", branch.getBranchFAddress());
-		if (branch.getBranchFAddress() != null && generalDAO.isEntityExist("branches", conditions))
-			throw new ValidationException("already_exist", "address_f");
-		conditions.clear();
-		conditions.put("city_no", branch.getCityNo());
-		if (branch.getCityNo() != null && !generalDAO.isEntityExist("city", conditions))
-			throw new ValidationException("not_exist", "city_no");
-		conditions.clear();
-		conditions.put("province_no", branch.getProvinceNo());
-		if (branch.getProvinceNo() != null && !generalDAO.isEntityExist("province", conditions))
-			throw new ValidationException("not_exist", "province_no");
-		conditions.clear();
-		conditions.put("country_no", branch.getCountryNo());
-		if (branch.getCountryNo() != null && !generalDAO.isEntityExist("country", conditions))
-			throw new ValidationException("not_exist", "country_no");
-		conditions.clear();
-		conditions.put("company_no", branch.getCompanyNo());
-		if (!generalDAO.isEntityExist("company", conditions))
-			throw new ValidationException("not_exist", "company_no");
-		conditions.clear();
-		if (branchView.getCityNo() != null) {
-			conditions.put("city_no", branch.getCityNo());
-			if (!generalDAO.isEntityExist("city", conditions))
-				throw new ValidationException("not_exist", "city_no");
-			conditions.clear();
-			conditions.put("city_no", branch.getCityNo());
-			conditions.put("province_no", branch.getProvinceNo());
-			if (!generalDAO.isEntityExist("city", conditions))
-				throw new ValidationException("not_belong_to", "city_no", "province_no");
-			conditions.clear();
-			conditions.put("province_no", branch.getProvinceNo());
-			conditions.put("country_no", branch.getCountryNo());
-			if (!generalDAO.isEntityExist("province", conditions))
-				throw new ValidationException("not_belong_to", "province_no", "country_no");
-			conditions.clear();
-		} else if (branchView.getProvinceNo() != null) {
-			conditions.put("province_no", branch.getProvinceNo());
-			if (!generalDAO.isEntityExist("province", conditions))
-				throw new ValidationException("not_exist", "province_no");
-			conditions.clear();
-			conditions.put("province_no", branch.getProvinceNo());
-			conditions.put("country_no", branch.getCountryNo());
-			if (!generalDAO.isEntityExist("province", conditions))
-				throw new ValidationException("not_belong_to", "province_no", "country_no");
-			conditions.clear();
-		} else if (branchView.getCountryNo() != null) {
-			conditions.put("country_no", branch.getCountryNo());
-			if (!generalDAO.isEntityExist("country", conditions))
-				throw new ValidationException("not_exist", "country_no");
-		}
-		// Add the branches
 		Timestamp add_date = new Timestamp(new Date().getTime());
-		branch.setAddDate(add_date);
-		branch.setAddUser(loginUsersView.getUserId());
-		branch.setModifyDate(null);
-		branch.setModifyUser(null);
-		branchDAO.addBranch(branch);
-		generateBranchesPrivsForAllUsers(branch.getBranchNo(), add_date);
-	}
-
-	@Override
-	@Transactional
-	public void updateBranches(UsersView loginUsersView, BranchesView branchView) {
-		// Check module, form, privileges
-		if (!loginUsersView.getSuperAdmin()) {
-			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
-			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
-			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.MODIFY);
-		}
+		List<CashInHandDtl> cashInHandDtlForAddList = new ArrayList<>();
 		// Non-database validation
-		coreValidationService.notNull(branchView.getBranchNo(), "branch_no");
-		coreValidationService.greaterThanOrEqualZero(branchView.getBranchNo(), "branch_no");
-		coreValidationService.notNull(branchView.getBranchDName(), "name");
-		coreValidationService.notBlank(branchView.getBranchDName(), "name");
-		if ((branchView.getBranchFName() != null) && branchView.getBranchFName().isBlank())
-			branchView.setBranchFName(null);
-		coreValidationService.notNull(branchView.getShortcutD(), "shortcut_name");
-		coreValidationService.notBlank(branchView.getShortcutD(), "shortcut_name");
-		if ((branchView.getShortcutF() != null) && branchView.getShortcutF().isBlank())
-			branchView.setShortcutF(null);
-		coreValidationService.notNull(branchView.getCompanyNo(), "company_no");
-		coreValidationService.greaterThanOrEqualZero(branchView.getCompanyNo(), "company_no");
-		if ((branchView.getBranchDAddress() != null) && branchView.getBranchDAddress().isBlank())
-			branchView.setBranchDAddress(null);
-		if ((branchView.getBranchFAddress() != null) && branchView.getBranchFAddress().isBlank())
-			branchView.setBranchFAddress(null);
-		if ((branchView.getReportDHeader1() != null) && branchView.getReportDHeader1().isBlank())
-			branchView.setReportDHeader1(null);
-		if ((branchView.getReportFHeader1() != null) && branchView.getReportFHeader1().isBlank())
-			branchView.setReportFHeader1(null);
-		if ((branchView.getReportDHeader2() != null) && branchView.getReportDHeader2().isBlank())
-			branchView.setReportDHeader2(null);
-		if ((branchView.getReportFHeader2() != null) && branchView.getReportFHeader2().isBlank())
-			branchView.setReportFHeader2(null);
-		if ((branchView.getReportDHeader3() != null) && branchView.getReportDHeader3().isBlank())
-			branchView.setReportDHeader3(null);
-		if ((branchView.getReportFHeader3() != null) && branchView.getReportFHeader3().isBlank())
-			branchView.setReportFHeader3(null);
-		if ((branchView.getTelephoneNo() != null) && branchView.getTelephoneNo().isBlank())
-			branchView.setTelephoneNo(null);
-		if ((branchView.getLogo() != null) && branchView.getLogo().isBlank())
-			branchView.setLogo(null);
-		if (branchView.getCityNo() != null) {
-			coreValidationService.notNull(branchView.getProvinceNo(), "province_no");
-			coreValidationService.greaterThanOrEqualZero(branchView.getProvinceNo(), "province_no");
-			coreValidationService.notNull(branchView.getCountryNo(), "country_no");
-			coreValidationService.greaterThanOrEqualZero(branchView.getCountryNo(), "country_no");
-		} else if (branchView.getProvinceNo() != null) {
-			coreValidationService.notNull(branchView.getCountryNo(), "country_no");
-			coreValidationService.greaterThanOrEqualZero(branchView.getCountryNo(), "country_no");
+		coreValidationService.notNull(cashInHandView.getCashNo(), "cash_no");
+		coreValidationService.greaterThanOrEqualZero(cashInHandView.getCashNo(), "cash_no");
+		coreValidationService.notNull(cashInHandView.getBranchNo(), "branch_no");
+		coreValidationService.greaterThanOrEqualZero(cashInHandView.getBranchNo(), "branch_no");
+		coreValidationService.notNull(cashInHandView.getCashDName(), "name");
+		coreValidationService.notBlank(cashInHandView.getCashDName(), "name");
+		if ((cashInHandView.getCashFName() != null) && cashInHandView.getCashFName().isBlank())
+			cashInHandView.setCashFName(null);
+		coreValidationService.notNull(cashInHandView.getAccNo(), "acc_no");
+		coreValidationService.greaterThanOrEqualZero(cashInHandView.getAccNo(), "acc_no");
+		coreValidationService.notNull(cashInHandView.getInactive(), "inactive");
+		coreValidationService.notNull(cashInHandView.getPos(), "pos");
+		// Non-database validation for details
+		if (cashInHandView.getCashDtlList() == null || cashInHandView.getCashDtlList().isEmpty()) {
+			throw new ValidationException("exactly_one_record", "cash_on_hand");
+		}
+		int count = 0;
+		for (CashInHandDtlView obj : cashInHandView.getCashDtlList()) {
+			obj.setCashNo(cashInHandView.getCashNo());
+			coreValidationService.notNull(obj.getAccCurr(), "currency_code");
+			coreValidationService.notBlank(obj.getAccCurr(), "currency_code");
+			coreValidationService.notNull(obj.getAccNo(), "acc_no");
+			coreValidationService.greaterThanOrEqualZero(obj.getAccNo(), "acc_no");
+			coreValidationService.notNull(obj.getInactive(), "inactive");
+			if (!obj.getAccNo().equals(cashInHandView.getAccNo()))
+				throw new ValidationException("invalid", "acc_no");
+			switch (obj.getAction()) {
+			case "add":
+				count++;
+				break;
+			default:
+				throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "currency_code",
+						obj.getAccCurr());
+			}
+		}
+		if (count != 1) {
+			throw new ValidationException("exactly_one_record", "cash_on_hand");
 		}
 		// Database validation
-		Branch branch = getBranchFromBranchesView(branchView);
+		CashInHand cash = getCashInHandFromCashInHandView(cashInHandView);
 		Map<String, Object> conditions = new HashMap<>();
-		conditions.put("branch_no", branch.getBranchNo());
-		if (!generalDAO.isEntityExist("branches", conditions))
-			throw new ValidationException("not_exist", "branch_no");
+		conditions.put("cash_no", cash.getCashNo());
+		if (generalDAO.isEntityExist("cash_in_hand", conditions))
+			throw new ValidationException("already_exist", "cash_no");
 		conditions.clear();
-		conditions.put("branch_d_name", branch.getBranchDName());
-		String exceptionCondition = null;
-		exceptionCondition = " and branch_no != " + branch.getBranchNo();
-		if (generalDAO.isEntityExist("branches", conditions, exceptionCondition))
+		conditions.put("cash_d_name", cash.getCashDName());
+		if (generalDAO.isEntityExist("cash_in_hand", conditions))
 			throw new ValidationException("already_exist", "name");
 		conditions.clear();
-		conditions.put("branch_f_name", branch.getBranchFName());
-		if (branch.getBranchFName() != null && generalDAO.isEntityExist("branches", conditions, exceptionCondition))
+		conditions.put("cash_f_name", cash.getCashFName());
+		if (cash.getCashFName() != null && generalDAO.isEntityExist("cash_in_hand", conditions))
 			throw new ValidationException("already_exist", "foreign_name");
 		conditions.clear();
-		conditions.put("shortcut_d", branch.getShortcutD());
-		if (generalDAO.isEntityExist("branches", conditions, exceptionCondition))
-			throw new ValidationException("already_exist", "shortcut_name");
-		conditions.clear();
-		conditions.put("shortcut_f", branch.getShortcutF());
-		if (branch.getShortcutF() != null && generalDAO.isEntityExist("branches", conditions, exceptionCondition))
-			throw new ValidationException("already_exist", "shortcut_F_name");
-		conditions.clear();
-		conditions.put("branch_d_address", branch.getBranchDAddress());
-		if (branch.getBranchDAddress() != null && generalDAO.isEntityExist("branches", conditions, exceptionCondition))
-			throw new ValidationException("already_exist", "address");
-		conditions.clear();
-		conditions.put("branch_f_address", branch.getBranchFAddress());
-		if (branch.getBranchFAddress() != null && generalDAO.isEntityExist("branches", conditions, exceptionCondition))
-			throw new ValidationException("already_exist", "address_f");
-		conditions.clear();
-		conditions.put("city_no", branch.getCityNo());
-		if (branch.getCityNo() != null && !generalDAO.isEntityExist("city", conditions))
-			throw new ValidationException("not_exist", "city_no");
-		conditions.clear();
-		conditions.put("province_no", branch.getProvinceNo());
-		if (branch.getProvinceNo() != null && !generalDAO.isEntityExist("province", conditions))
-			throw new ValidationException("not_exist", "province_no");
-		conditions.clear();
-		conditions.put("country_no", branch.getCountryNo());
-		if (branch.getCountryNo() != null && !generalDAO.isEntityExist("country", conditions))
-			throw new ValidationException("not_exist", "country_no");
-		conditions.clear();
-		conditions.put("company_no", branch.getCompanyNo());
-		if (!generalDAO.isEntityExist("company", conditions))
-			throw new ValidationException("not_exist", "company_no");
-		conditions.clear();
-		if (branchView.getCityNo() != null) {
-			conditions.put("city_no", branch.getCityNo());
-			if (!generalDAO.isEntityExist("city", conditions))
-				throw new ValidationException("not_exist", "city_no");
-			conditions.clear();
-			conditions.put("city_no", branch.getCityNo());
-			conditions.put("province_no", branch.getProvinceNo());
-			if (!generalDAO.isEntityExist("city", conditions))
-				throw new ValidationException("not_belong_to", "city_no", "province_no");
-			conditions.clear();
-			conditions.put("province_no", branch.getProvinceNo());
-			conditions.put("country_no", branch.getCountryNo());
-			if (!generalDAO.isEntityExist("province", conditions))
-				throw new ValidationException("not_belong_to", "province_no", "country_no");
-			conditions.clear();
-		} else if (branchView.getProvinceNo() != null) {
-			conditions.put("province_no", branch.getProvinceNo());
-			if (!generalDAO.isEntityExist("province", conditions))
-				throw new ValidationException("not_exist", "province_no");
-			conditions.clear();
-			conditions.put("province_no", branch.getProvinceNo());
-			conditions.put("country_no", branch.getCountryNo());
-			if (!generalDAO.isEntityExist("province", conditions))
-				throw new ValidationException("not_belong_to", "province_no", "country_no");
-			conditions.clear();
-		} else if (branchView.getCountryNo() != null) {
-			conditions.put("country_no", branch.getCountryNo());
-			if (!generalDAO.isEntityExist("country", conditions))
-				throw new ValidationException("not_exist", "country_no");
+		ChartOfAccountsView chartOfAccountsView = chartofaccountsService
+				.getChartOfAccountsViewWithoutScrPriv(loginUsersView, cash.getAccNo());
+		if (chartOfAccountsView == null)
+			throw new ValidationException("not_exist", "acc_no");
+		if (chartOfAccountsView.getSub() == null || !chartOfAccountsView.getSub()
+				|| chartOfAccountsView.getAccType() == null || !chartOfAccountsView.getAccType().equals("2"))
+			throw new ValidationException("cash_acc");
+		if (chartOfAccountsView.getInactive())
+			throw new ValidationException("is_inactive", "acc_no", chartOfAccountsView.getAccNo());
+		BranchesView branchesView = branchesService.getBranchesViewWithoutScrPriv(loginUsersView, cash.getBranchNo());
+		if (branchesView == null)
+			throw new ValidationException("not_exist", "branch_no");
+		// Database validation for details
+		Set<String> accountCurrencySet = new HashSet<>();
+		for (AccountsCurrencyView accountsCurrencyView : chartOfAccountsView.getAccountCurrencyList()) {
+			accountCurrencySet.add(accountsCurrencyView.getCurCode());
+			if (cashInHandView.getCashDtlList().get(0).getAccCurr().equals(accountsCurrencyView.getCurCode())) {
+				if (!accountsCurrencyView.getUsed()) {
+					throw new ValidationException("is_inactive", "currency_code", accountsCurrencyView.getUsed());
+				}
+			}
 		}
-		// Update the user
-		Timestamp update_date = new Timestamp(new Date().getTime());
-		branch.setModifyDate(update_date);
-		branch.setModifyUser(loginUsersView.getUserId());
-		branchDAO.updateBranch(branch);
+		Set<String> valuesSetForAdd = new HashSet<>();
+		Set<String> DBValuesSetForAdd;
+		Map<String, Object> parameters = new HashMap<>();
+		CashInHandDtl cashInHandDtl;
+		parameters.put("cashNo", cashInHandView.getCashNo());
+		for (CashInHandDtlView obj : cashInHandView.getCashDtlList()) {
+			cashInHandDtl = getCashInHandDtlFromCashInHandDtlView(obj);
+			cashInHandDtl.setAddDate(add_date);
+			cashInHandDtl.setAddUser(loginUsersView.getUserId());
+			cashInHandDtl.setModifyDate(null);
+			cashInHandDtl.setModifyUser(null);
+			if (cashInHandDtl.getInactive()) {
+				cashInHandDtl.setInactiveUser(loginUsersView.getUserId());
+			} else {
+				cashInHandDtl.setInactiveUser(null);
+				cashInHandDtl.setInactiveReason(null);
+			}
+			cashInHandDtlForAddList.add(cashInHandDtl);
+			if (valuesSetForAdd.contains(cashInHandDtl.getAccCurr())) {
+				throw new DetailValidationException("already_exist_detail", "currency", obj.getAccCurr(), "cash_no",
+						cashInHandDtl.getCashNo());
+			} else {
+				valuesSetForAdd.add(cashInHandDtl.getAccCurr());
+			}
+			if (!accountCurrencySet.contains(cashInHandDtl.getAccCurr()))
+				throw new ValidationException("invalid", "currency");
+		}
+
+		DBValuesSetForAdd = generalDAO.getThemIfExist("cash_in_hand_dtl", "cash_no = :cashNo", parameters, "acc_curr",
+				valuesSetForAdd);
+		if (DBValuesSetForAdd != null && !DBValuesSetForAdd.isEmpty())
+			throw new DetailValidationException("already_exist_detail", "currency", DBValuesSetForAdd.toArray()[0],
+					"cash_no", cashInHandView.getCashNo());
+		// Add the cashInHandl
+		cash.setAddDate(add_date);
+		cash.setAddUser(loginUsersView.getUserId());
+		cash.setModifyDate(null);
+		cash.setModifyUser(null);
+		if (cash.getInactive()) {
+			cash.setInactiveUser(loginUsersView.getUserId());
+		} else {
+			cash.setInactiveUser(null);
+			cash.setInactiveReason(null);
+		}
+		cashDAO.addCashInHand(cash, cashInHandDtlForAddList);
+		generateCashInHandPrivsForAllUsers(loginUsersView, cash.getCashNo(), cashInHandDtlForAddList.get(0).getAccCurr(), add_date);
 	}
 
 	@Override
 	@Transactional
-	public void deleteBranches(UsersView loginUsersView, Integer branchesNo) {
+	public void updateCashInHand(UsersView loginUsersView, CashInHandView cashInHandView) {
 		// Check module, form, privileges
 		if (!loginUsersView.getSuperAdmin()) {
 			if (loginUsersView.getAdminUser()) {
-				coreValidationService.activeModule(Forms.COMPANIES_AND_BRANCHES);
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
 			} else {
-				coreValidationService.activeModuleAndForm(Forms.COMPANIES_AND_BRANCHES);
-				coreValidationService.activeFlagDetail(FlagDetails.BRANCHES);
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
 			}
-			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.COMPANIES_AND_BRANCHES,
-					FormsActions.INCLUDE);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.VIEW);
-			coreValidationService.validateHasFlagDetailPrivilege(loginUsersView, FlagDetails.BRANCHES,
-					FlagsActions.DELETE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.MODIFY);
+		}
+		Timestamp add_date = new Timestamp(new Date().getTime());
+		List<CashInHandDtl> cashInHandDtlForAddList = new ArrayList<>();
+		List<CashInHandDtl> cashInHandDtlForUpdateList = new ArrayList<>();
+		List<CashInHandDtl> cashInHandDtlForDeleteList = new ArrayList<>();
+		// Non-database validation
+		coreValidationService.notNull(cashInHandView.getCashNo(), "cash_no");
+		coreValidationService.greaterThanOrEqualZero(cashInHandView.getCashNo(), "cash_no");
+		coreValidationService.notNull(cashInHandView.getBranchNo(), "branch_no");
+		coreValidationService.greaterThanOrEqualZero(cashInHandView.getBranchNo(), "branch_no");
+		coreValidationService.notNull(cashInHandView.getCashDName(), "name");
+		coreValidationService.notBlank(cashInHandView.getCashDName(), "name");
+		if ((cashInHandView.getCashFName() != null) && cashInHandView.getCashFName().isBlank())
+			cashInHandView.setCashFName(null);
+		coreValidationService.notNull(cashInHandView.getAccNo(), "acc_no");
+		coreValidationService.greaterThanOrEqualZero(cashInHandView.getAccNo(), "acc_no");
+		coreValidationService.notNull(cashInHandView.getInactive(), "inactive");
+		coreValidationService.notNull(cashInHandView.getPos(), "pos");
+		// Non-database validation for details
+		if (cashInHandView.getCashDtlList() != null) {
+			for (CashInHandDtlView obj : cashInHandView.getCashDtlList()) {
+				obj.setCashNo(cashInHandView.getCashNo());
+				coreValidationService.notNull(obj.getAccCurr(), "currency_code");
+				coreValidationService.notBlank(obj.getAccCurr(), "currency_code");
+				coreValidationService.notNull(obj.getAccNo(), "acc_no");
+				coreValidationService.greaterThanOrEqualZero(obj.getAccNo(), "acc_no");
+				coreValidationService.notNull(obj.getInactive(), "inactive");
+				if (!obj.getAction().equals("delete") && !obj.getAccNo().equals(cashInHandView.getAccNo()))
+					throw new ValidationException("invalid", "acc_no");
+				switch (obj.getAction()) {
+				case "add":
+				case "update":
+				case "delete":
+					break;
+				default:
+					throw new DetailValidationException("invalid_detail", "action", obj.getAction(), "currency_code",
+							obj.getAccCurr());
+				}
+			}
+		}
+		// Database validation
+		CashInHand cash = getCashInHandFromCashInHandView(cashInHandView);
+		Map<String, Object> conditions = new HashMap<>();
+		conditions.put("cash_no", cash.getCashNo());
+		if (!generalDAO.isEntityExist("cash_in_hand", conditions))
+			throw new ValidationException("not_exist", "cash_no");
+		conditions.clear();
+		conditions.put("cash_d_name", cash.getCashDName());
+		String exceptionCondition = null;
+		exceptionCondition = " and cash_no != " + cash.getCashNo();
+		if (generalDAO.isEntityExist("cash_in_hand", conditions, exceptionCondition))
+			throw new ValidationException("already_exist", "name");
+		conditions.clear();
+		conditions.put("cash_f_name", cash.getCashFName());
+		if (cash.getCashFName() != null && generalDAO.isEntityExist("cash_in_hand", conditions, exceptionCondition))
+			throw new ValidationException("already_exist", "foreign_name");
+		conditions.clear();
+		ChartOfAccountsView chartOfAccountsView = chartofaccountsService
+				.getChartOfAccountsViewWithoutScrPriv(loginUsersView, cash.getAccNo());
+		if (chartOfAccountsView == null)
+			throw new ValidationException("not_exist", "acc_no");
+		if (chartOfAccountsView.getSub() == null || !chartOfAccountsView.getSub()
+				|| chartOfAccountsView.getAccType() == null || !chartOfAccountsView.getAccType().equals("2"))
+			throw new ValidationException("cash_acc");
+		if (chartOfAccountsView.getInactive())
+			throw new ValidationException("is_inactive", "acc_no", chartOfAccountsView.getAccNo());
+		BranchesView branchesView = branchesService.getBranchesViewWithoutScrPriv(loginUsersView, cash.getBranchNo());
+		if (branchesView == null)
+			throw new ValidationException("not_exist", "branch_no");
+		// Database validation for details
+		Set<String> accountCurrencySet = new HashSet<>();
+		for (AccountsCurrencyView accountsCurrencyView : chartOfAccountsView.getAccountCurrencyList()) {
+			accountCurrencySet.add(accountsCurrencyView.getCurCode());
+			if (cashInHandView.getCashDtlList() != null && !cashInHandView.getCashDtlList().isEmpty()) {
+				for (CashInHandDtlView cashDtlView : cashInHandView.getCashDtlList()) {
+					if (!cashDtlView.getAction().equals("delete")
+							&& cashDtlView.getAccCurr().equals(accountsCurrencyView.getCurCode())
+							&& !accountsCurrencyView.getUsed()) {
+						throw new ValidationException("is_inactive", "currency_code", accountsCurrencyView.getUsed());
+					}
+				}
+			}
+		}
+		if (chartOfAccountsView.getInactive() && !cash.getInactive()) {
+			throw new ValidationException("cash_account_inactive");
+		}
+		if (cashInHandView.getCashDtlList() != null) {
+			Set<String> valuesSetForAdd = new HashSet<>();
+			Set<String> DBValuesSetForAdd;
+			Set<String> valuesSetForModifyOrDelete = new HashSet<>();
+			Set<String> DBValuesSetForModifyOrDelete;
+			Map<String, Object> parameters = new HashMap<>();
+			CashInHandDtl cashInHandDtl;
+			parameters.put("cashNo", cashInHandView.getCashNo());
+			parameters.put("accNo", cashInHandView.getAccNo());
+			for (CashInHandDtlView obj : cashInHandView.getCashDtlList()) {
+				cashInHandDtl = getCashInHandDtlFromCashInHandDtlView(obj);
+				switch (obj.getAction()) {
+				case "add":
+					cashInHandDtl.setAddDate(add_date);
+					cashInHandDtl.setAddUser(loginUsersView.getUserId());
+					cashInHandDtl.setModifyDate(null);
+					cashInHandDtl.setModifyUser(null);
+					if (cashInHandDtl.getInactive()) {
+						cashInHandDtl.setInactiveUser(loginUsersView.getUserId());
+					} else {
+						cashInHandDtl.setInactiveUser(null);
+						cashInHandDtl.setInactiveReason(null);
+					}
+					cashInHandDtlForAddList.add(cashInHandDtl);
+					if (valuesSetForAdd.contains(obj.getAccCurr())) {
+						throw new DetailValidationException("already_exist_detail", "currency", obj.getAccCurr(),
+								"cash_no", cashInHandDtl.getCashNo());
+					} else {
+						valuesSetForAdd.add(cashInHandDtl.getAccCurr());
+					}
+					if (!accountCurrencySet.contains(cashInHandDtl.getAccCurr()))
+						throw new ValidationException("invalid", "currency");
+					break;
+				case "update":
+					cashInHandDtl.setModifyDate(add_date);
+					cashInHandDtl.setModifyUser(loginUsersView.getUserId());
+					CashInHandDtlView DBCashInHandDtlView = cashDAO.getCashInHandDtlViewList(cash.getCashNo()).get(0);
+					if (DBCashInHandDtlView.getInactive() && !cashInHandDtl.getInactive()) {
+						cashInHandDtl.setInactiveUser(null);
+						cashInHandDtl.setInactiveReason(null);
+
+					} else if (!DBCashInHandDtlView.getInactive() && cashInHandDtl.getInactive()) {
+						cashInHandDtl.setInactiveUser(loginUsersView.getUserId());
+					} else {
+						cashInHandDtl.setInactiveUser(DBCashInHandDtlView.getInactiveUser());
+						cashInHandDtl.setInactiveReason(DBCashInHandDtlView.getInactiveReason());
+					}
+					cashInHandDtlForUpdateList.add(cashInHandDtl);
+					if (valuesSetForAdd.contains(obj.getAccCurr()))
+						throw new DetailValidationException("already_exist_detail", "currency", obj.getAccCurr(),
+								"bank_no", cashInHandDtl.getCashNo());
+					valuesSetForModifyOrDelete.add(cashInHandDtl.getAccCurr());
+					if (!accountCurrencySet.contains(cashInHandDtl.getAccCurr()))
+						throw new ValidationException("invalid", "currency");
+					break;
+				case "delete":
+					cashInHandDtlForDeleteList.add(cashInHandDtl);
+					valuesSetForModifyOrDelete.add(cashInHandDtl.getAccCurr());
+					break;
+				}
+			}
+			if (!valuesSetForAdd.isEmpty()) {
+				DBValuesSetForAdd = generalDAO.getThemIfExist("cash_in_hand_dtl",
+						"cash_no = :cashNo and acc_no = :accNo", parameters, "acc_curr", valuesSetForAdd);
+				if (DBValuesSetForAdd != null && !DBValuesSetForAdd.isEmpty())
+					throw new DetailValidationException("already_exist_detail", "currency",
+							DBValuesSetForAdd.toArray()[0], "cash_no", cashInHandView.getCashNo());
+			}
+			parameters.remove("accNo");
+			if (!valuesSetForModifyOrDelete.isEmpty()) {
+				DBValuesSetForModifyOrDelete = generalDAO.getThemIfExist("cash_in_hand_dtl", "cash_no = :cashNo",
+						parameters, "acc_curr", valuesSetForModifyOrDelete);
+				if (DBValuesSetForModifyOrDelete != null) {
+					for (String curCode : valuesSetForModifyOrDelete) {
+						if (!DBValuesSetForModifyOrDelete.contains(curCode))
+							throw new DetailValidationException("not_exist_detail", "currency", curCode, "cash_no",
+									cashInHandView.getCashNo());
+					}
+				}
+			}
+
+		}
+		// Update the bank
+		CashInHandView DBCashInHandView = cashDAO.getCashInHandView(loginUsersView, cash.getCashNo());
+		if (DBCashInHandView.getInactive() && !cash.getInactive()) {
+			cash.setInactiveUser(null);
+			cash.setInactiveReason(null);
+
+		} else if (!DBCashInHandView.getInactive() && cash.getInactive()) {
+			cash.setInactiveUser(loginUsersView.getUserId());
+		} else {
+			cash.setInactiveUser(DBCashInHandView.getInactiveUser());
+			cash.setInactiveReason(DBCashInHandView.getInactiveReason());
+		}
+		cash.setModifyDate(add_date);
+		cash.setModifyUser(loginUsersView.getUserId());
+		cashDAO.updateCashInHand(cash, cashInHandDtlForAddList, cashInHandDtlForDeleteList, cashInHandDtlForUpdateList);
+		// validate exactly one detail
+		conditions.clear();
+		conditions.put("cash_no", cash.getCashNo());
+		if (generalDAO.getCount("cash_in_hand_dtl", conditions, null) != 1)
+			throw new ValidationException("exactly_one_record", "cash");
+	}
+
+	@Override
+	@Transactional
+	public void deleteCashInHand(UsersView loginUsersView, Integer cashInHandNo) {
+		// Check module, form, privileges
+		if (!loginUsersView.getSuperAdmin()) {
+			if (loginUsersView.getAdminUser()) {
+				coreValidationService.activeModule(Forms.CASH_IN_HAND);
+			} else {
+				coreValidationService.activeModuleAndForm(Forms.CASH_IN_HAND);
+			}
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.INCLUDE);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.VIEW);
+			coreValidationService.validateHasFormPrivilege(loginUsersView, Forms.CASH_IN_HAND, FormsActions.DELETE);
 		}
 		// Non-database validation
-		coreValidationService.notNull(branchesNo, "branch_no");
-		coreValidationService.greaterThanOrEqualZero(branchesNo, "branch_no");
+		coreValidationService.notNull(cashInHandNo, "cash_no");
+		coreValidationService.greaterThanOrEqualZero(cashInHandNo, "cash_no");
 		// Database validation
 		Map<String, Object> conditions = new HashMap<>();
-		conditions.put("branch_no", branchesNo);
-		if (!generalDAO.isEntityExist("branches", conditions))
-			throw new ValidationException("not_exist", "branch_no");
-		// delete the usersbranches
+		conditions.put("cash_no", cashInHandNo);
+		if (!generalDAO.isEntityExist("cash_in_hand", conditions))
+			throw new ValidationException("not_exist", "cash_no");
+		// delete the bank
 		try {
-			branchDAO.deleteBranch(branchesNo);
+			cashDAO.deleteCashInHand(cashInHandNo);
 		} catch (Exception e) {
-			throw new ValidationException("used_somewhere", "branch_no");
+			throw new ValidationException("used_somewhere", "cash_no");
 		}
 	}
 
 	@Override
-	public void generateBranchesPrivsForAllUsers(Integer branchesNo, Timestamp currentDate) {
+	public void generateCashInHandPrivsForAllUsers(UsersView loginUsersView, Integer cashInHandNo, String AccCurr,
+			Timestamp currentDate) {
 		/*
 		 * $$$$$$$$$$$$___Do not forget to add in
 		 * MasterDataPrivilegesService___$$$$$$$$$$$$
 		 */
 		// PREPARE VARAIBLES
-		List<BranchesPriv> branchesPrivList = new ArrayList<>();
-		BranchesPriv branchesPriv;
+		List<CashInHandPriv> cashInHandlPrivList = new ArrayList<>();
+		CashInHandPriv cashInHandlPriv;
 		boolean viewPriv = true;
 		boolean addPriv = true;
 		// LOOP OVER ALL USERS
@@ -591,90 +643,78 @@ public class CashServiceImpl implements CashService {
 					viewPriv = false;
 					addPriv = false;
 				}
-				branchesPriv = new BranchesPriv();
-				branchesPriv.setAddDate(currentDate);
-				branchesPriv.setAddPriv(addPriv);
-				branchesPriv.setAddUser(1);
-				branchesPriv.setBranchNo(branchesNo);
-				branchesPriv.setModifyDate(null);
-				branchesPriv.setModifyUser(null);
-				branchesPriv.setUserId(usersView.getUserId());
-				branchesPriv.setViewPriv(viewPriv);
-				branchesPrivList.add(branchesPriv);
+				if (loginUsersView != null && loginUsersView.getUserId().equals(usersView.getUserId())) {
+					viewPriv = true;
+					addPriv = true;
+				}
+				cashInHandlPriv = new CashInHandPriv();
+				cashInHandlPriv.setAccCurr(AccCurr);
+				cashInHandlPriv.setCashNo(cashInHandNo);
+				cashInHandlPriv.setUserId(usersView.getUserId());
+				cashInHandlPriv.setAddDate(currentDate);
+				cashInHandlPriv.setAddUser(1);
+				cashInHandlPriv.setModifyDate(null);
+				cashInHandlPriv.setModifyUser(null);
+				cashInHandlPriv.setAddPriv(addPriv);
+				cashInHandlPriv.setViewPriv(viewPriv);
+				cashInHandlPrivList.add(cashInHandlPriv);
 			}
 		}
 		// LOOP OVER PRIVS TO SAVE THEM
-		for (BranchesPriv priv : branchesPrivList) {
-			branchDAO.addBranchesPriv(priv);
+		for (CashInHandPriv priv : cashInHandlPrivList) {
+			cashDAO.addCashInHandsPriv(priv);
 		}
 	}
 
-	public Branch getBranchFromBranchesView(BranchesView branchesView) {
-		Branch branch = new Branch();
+	public CashInHand getCashInHandFromCashInHandView(CashInHandView cashInHandView) {
+		CashInHand cash = new CashInHand();
 		try {
-			branch.setAddDate(branchesView.getAddDate());
-			branch.setAddUser(branchesView.getAddUser());
-			branch.setModifyDate(branchesView.getModifyDate());
-			branch.setModifyUser(branchesView.getModifyUser());
-			branch.setBranchDName(Utils.escapeLiteral(null, branchesView.getBranchDName(), true).toString());
-			if (branchesView.getBranchFName() == null)
-				branch.setBranchFName(branchesView.getBranchFName());
+			cash.setAccNo(cashInHandView.getAccNo());
+			cash.setAddDate(cashInHandView.getAddDate());
+			cash.setAddUser(cashInHandView.getAddUser());
+			cash.setBranchNo(cashInHandView.getBranchNo());
+			cash.setCashDName(Utils.escapeLiteral(null, cashInHandView.getCashDName(), true).toString());
+			if (cashInHandView.getCashFName() == null)
+				cash.setCashFName(cashInHandView.getCashFName());
 			else
-				branch.setBranchFName(Utils.escapeLiteral(null, branchesView.getBranchFName(), true).toString());
-			branch.setBranchNo(branchesView.getBranchNo());
-			branch.setCountryNo(branchesView.getCountryNo());
-			branch.setShortcutD(Utils.escapeLiteral(null, branchesView.getShortcutD(), true).toString());
-			if (branchesView.getShortcutF() == null)
-				branch.setShortcutF(branchesView.getShortcutF());
+				cash.setCashFName(Utils.escapeLiteral(null, cashInHandView.getCashFName(), true).toString());
+			cash.setCashNo(cashInHandView.getCashNo());
+			cash.setInactive(cashInHandView.getInactive());
+			if (cashInHandView.getInactiveReason() == null)
+				cash.setInactiveReason(cashInHandView.getInactiveReason());
 			else
-				branch.setShortcutF(Utils.escapeLiteral(null, branchesView.getShortcutF(), true).toString());
-			if (branchesView.getBranchDAddress() == null)
-				branch.setBranchDAddress(branchesView.getBranchDAddress());
-			else
-				branch.setBranchDAddress(Utils.escapeLiteral(null, branchesView.getBranchDAddress(), true).toString());
-			if (branchesView.getBranchFAddress() == null)
-				branch.setBranchFAddress(branchesView.getBranchFAddress());
-			else
-				branch.setBranchFAddress(Utils.escapeLiteral(null, branchesView.getBranchFAddress(), true).toString());
-			if (branchesView.getReportDHeader1() == null)
-				branch.setReportDHeader1(branchesView.getReportDHeader1());
-			else
-				branch.setReportDHeader1(Utils.escapeLiteral(null, branchesView.getReportDHeader1(), true).toString());
-			if (branchesView.getReportFHeader1() == null)
-				branch.setReportFHeader1(branchesView.getReportFHeader1());
-			else
-				branch.setReportFHeader1(Utils.escapeLiteral(null, branchesView.getReportFHeader1(), true).toString());
-			if (branchesView.getReportDHeader2() == null)
-				branch.setReportDHeader2(branchesView.getReportDHeader2());
-			else
-				branch.setReportDHeader2(Utils.escapeLiteral(null, branchesView.getReportDHeader2(), true).toString());
-			if (branchesView.getReportFHeader2() == null)
-				branch.setReportFHeader2(branchesView.getReportFHeader2());
-			else
-				branch.setReportFHeader2(Utils.escapeLiteral(null, branchesView.getReportFHeader2(), true).toString());
-			if (branchesView.getReportDHeader3() == null)
-				branch.setReportDHeader3(branchesView.getReportDHeader3());
-			else
-				branch.setReportDHeader3(Utils.escapeLiteral(null, branchesView.getReportDHeader3(), true).toString());
-			if (branchesView.getReportFHeader3() == null)
-				branch.setReportFHeader3(branchesView.getReportFHeader3());
-			else
-				branch.setReportFHeader3(Utils.escapeLiteral(null, branchesView.getReportFHeader3(), true).toString());
-			if (branchesView.getTelephoneNo() == null)
-				branch.setTelephoneNo(branchesView.getTelephoneNo());
-			else
-				branch.setTelephoneNo(Utils.escapeLiteral(null, branchesView.getTelephoneNo(), true).toString());
-			branch.setCapital(branchesView.getCapital());
-			branch.setCityNo(branchesView.getCityNo());
-			branch.setCompanyNo(branchesView.getCompanyNo());
-			branch.setCrNo(branchesView.getCrNo());
-			branch.setLogo(branchesView.getLogo());
-			branch.setProvinceNo(branchesView.getProvinceNo());
-			branch.setTaxNo(branchesView.getTaxNo());
+				cash.setInactiveReason(Utils.escapeLiteral(null, cashInHandView.getInactiveReason(), true).toString());
+			cash.setInactiveUser(cashInHandView.getInactiveUser());
+			cash.setModifyDate(cashInHandView.getModifyDate());
+			cash.setModifyUser(cashInHandView.getModifyUser());
+			cash.setPos(cashInHandView.getPos());
 		} catch (SQLException e) {
 			throw new UnauthorizedException("resource");
 		}
-		return branch;
+		return cash;
+	}
+
+	public CashInHandDtl getCashInHandDtlFromCashInHandDtlView(CashInHandDtlView cashInHandDtlView) {
+		CashInHandDtl cashInHandDtl = new CashInHandDtl();
+		try {
+			cashInHandDtl.setAccCurr(Utils.escapeLiteral(null, cashInHandDtlView.getAccCurr(), true).toString());
+			cashInHandDtl.setAccNo(cashInHandDtlView.getAccNo());
+			cashInHandDtl.setAddDate(cashInHandDtlView.getAddDate());
+			cashInHandDtl.setAddUser(cashInHandDtlView.getAddUser());
+			cashInHandDtl.setCashNo(cashInHandDtlView.getCashNo());
+			cashInHandDtl.setInactive(cashInHandDtlView.getInactive());
+			if (cashInHandDtlView.getInactiveReason() == null)
+				cashInHandDtl.setInactiveReason(cashInHandDtlView.getInactiveReason());
+			else
+				cashInHandDtl.setInactiveReason(
+						Utils.escapeLiteral(null, cashInHandDtlView.getInactiveReason(), true).toString());
+			cashInHandDtl.setInactiveUser(cashInHandDtlView.getInactiveUser());
+			cashInHandDtl.setModifyDate(cashInHandDtlView.getModifyDate());
+			cashInHandDtl.setModifyUser(cashInHandDtlView.getModifyUser());
+		} catch (SQLException e) {
+			throw new UnauthorizedException("resource");
+		}
+		return cashInHandDtl;
 	}
 
 }

@@ -101,6 +101,18 @@ public class BranchesServiceImpl implements BranchesService {
 		}
 		return branchesView;
 	}
+	
+	@Override
+	public BranchesView getBranchesViewWithoutScrPriv(UsersView loginUsersView, Integer branchesNo) {
+		// Return requested data
+		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin())
+			loginUsersView = null;
+		BranchesView branchesView = branchDAO.getBranchView(loginUsersView, branchesNo);
+		if (branchesView == null) {
+			throw new ValidationException("not_exist", "branch_no");
+		}
+		return branchesView;
+	}
 
 	@Override
 	@Transactional

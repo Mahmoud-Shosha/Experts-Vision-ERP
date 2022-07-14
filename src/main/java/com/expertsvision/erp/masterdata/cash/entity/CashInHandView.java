@@ -31,7 +31,6 @@ public class CashInHandView implements Serializable {
 	@Column(name = "acc_f_name")
 	private String accFName;
 
-	@Id
 	@JsonProperty("acc_no")
 	@Column(name = "acc_no")
 	private Integer accNo;
@@ -69,9 +68,10 @@ public class CashInHandView implements Serializable {
 	private String cashDName;
 
 	@JsonProperty("cash_f_name")
-	@Column(name = "cash_f_no")
-	private String cashFNo;
+	@Column(name = "cash_f_name")
+	private String cashFName;
 
+	@Id
 	@JsonProperty("cash_no")
 	@Column(name = "cash_no")
 	private Integer cashNo;
@@ -220,12 +220,12 @@ public class CashInHandView implements Serializable {
 		this.cashDName = cashDName;
 	}
 
-	public String getCashFNo() {
-		return this.cashFNo;
+	public String getCashFName() {
+		return this.cashFName;
 	}
 
-	public void setCashFNo(String cashFNo) {
-		this.cashFNo = cashFNo;
+	public void setCashFName(String cashFName) {
+		this.cashFName = cashFName;
 	}
 
 	public Integer getCashNo() {
@@ -321,7 +321,7 @@ public class CashInHandView implements Serializable {
 		return "CashInHandView [accDName=" + accDName + ", accFName=" + accFName + ", accNo=" + accNo + ", addDate="
 				+ addDate + ", addUser=" + addUser + ", addUserDName=" + addUserDName + ", addUserFName=" + addUserFName
 				+ ", branchDName=" + branchDName + ", branchFName=" + branchFName + ", branchNo=" + branchNo
-				+ ", cashDName=" + cashDName + ", cashFNo=" + cashFNo + ", cashNo=" + cashNo + ", inactive=" + inactive
+				+ ", cashDName=" + cashDName + ", cashFName=" + cashFName + ", cashNo=" + cashNo + ", inactive=" + inactive
 				+ ", inactiveReason=" + inactiveReason + ", inactiveUser=" + inactiveUser + ", inactiveUserDName="
 				+ inactiveUserDName + ", inactiveUserFName=" + inactiveUserFName + ", modifyDate=" + modifyDate
 				+ ", modifyUser=" + modifyUser + ", modifyUserDName=" + modifyUserDName + ", modifyUserFName="

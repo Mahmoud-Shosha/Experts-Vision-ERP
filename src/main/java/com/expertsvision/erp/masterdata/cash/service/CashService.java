@@ -6,35 +6,35 @@ import java.util.List;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.MultiplePages;
+import com.expertsvision.erp.core.utils.PreData;
 import com.expertsvision.erp.core.utils.SinglePage;
-import com.expertsvision.erp.masterdata.branches.dto.BranchesViewFilter;
-import com.expertsvision.erp.masterdata.branches.entity.BranchesView;
+import com.expertsvision.erp.masterdata.cash.dto.CashInHandViewFilter;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandView;
 
 public interface CashService {
 		
-	List<BranchesView> getBranchesViewList(UsersView loginusersView);
+	List<CashInHandView> getCashInHandViewList(UsersView loginusersView);
 	
-	BranchesView getBranchesView(UsersView loginUsersView, Integer branchesNo);
+	CashInHandView getCashInHandView(UsersView loginUsersView, Integer cashInHandNo);
 	
-	SinglePage<BranchesView> getBranchesViewSinglePage(UsersView loginUsersView, long pageNo);
+	SinglePage<CashInHandView> getCashInHandViewSinglePage(UsersView loginUsersView, long pageNo);
 	
-	SinglePage<BranchesView> getBranchesViewLastPage(UsersView loginUsersView);
+	SinglePage<CashInHandView> getCashInHandViewLastPage(UsersView loginUsersView);
 	
-	Long getBranchesViewSinglePageNo(UsersView loginUsersView, Integer branchesNo);
+	Long getCashInHandViewSinglePageNo(UsersView loginUsersView, Integer cashInHandNo);
 	
-	MultiplePages<BranchesView> getBranchesViewMultiplePages(UsersView loginUsersView, long pageNo);
+	MultiplePages<CashInHandView> getCashInHandViewMultiplePages(UsersView loginUsersView, long pageNo);
 	
-	MultiplePages<BranchesView> getBranchesViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, 
-																		   BranchesViewFilter branchesViewFilter);
+	MultiplePages<CashInHandView> getCashInHandViewFilteredMultiplePages(UsersView loginUsersView, long pageNo, CashInHandViewFilter cashInHandViewFilter);
 	
-	Object getNextPK(UsersView loginUsersView);
+	PreData preAdd(UsersView loginUsersView);
 	
-	void addBranches(UsersView loginUsersView, BranchesView branchesView);
+	void addCashInHand(UsersView loginUsersView, CashInHandView cashInHandView);
 	
-	void updateBranches(UsersView loginUsersView, BranchesView branchesView);
+	void updateCashInHand(UsersView loginUsersView, CashInHandView cashInHandView);
 	
-	void deleteBranches(UsersView loginUsersView, Integer branchesNo);
+	void deleteCashInHand(UsersView loginUsersView, Integer cashInHandNo);
 
-	void generateBranchesPrivsForAllUsers(Integer branchesNo, Timestamp currentDate);
+	void generateCashInHandPrivsForAllUsers(UsersView loginUsersView, Integer cashInHandNo, String AccCurr,Timestamp currentDate);
 	
 }

@@ -8,8 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * The persistent class for the cash_in_hand_dtl_view database table.
@@ -38,10 +41,6 @@ public class CashInHandDtlView implements Serializable {
 	@JsonProperty("acc_no")
 	@Column(name = "acc_no")
 	private Integer accNo;
-
-	@JsonProperty("active")
-	@Column(name = "active")
-	private Boolean active;
 
 	@JsonProperty("add_date")
 	@Column(name = "add_date")
@@ -108,6 +107,11 @@ public class CashInHandDtlView implements Serializable {
 	@Column(name = "modify_user_f_name")
 	private String modifyUserFName;
 
+	@Transient
+	@JsonProperty("action")
+	@JsonInclude(Include.NON_NULL)
+	private String action;
+
 	public CashInHandDtlView() {
 	}
 
@@ -141,14 +145,6 @@ public class CashInHandDtlView implements Serializable {
 
 	public void setAccNo(Integer accNo) {
 		this.accNo = accNo;
-	}
-
-	public Boolean getActive() {
-		return this.active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
 	}
 
 	public Timestamp getAddDate() {
@@ -279,16 +275,23 @@ public class CashInHandDtlView implements Serializable {
 		this.modifyUserFName = modifyUserFName;
 	}
 
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
 	@Override
 	public String toString() {
 		return "CashInHandDtlView [accCurr=" + accCurr + ", accDName=" + accDName + ", accFName=" + accFName
-				+ ", accNo=" + accNo + ", active=" + active + ", addDate=" + addDate + ", addUser=" + addUser
-				+ ", addUserDName=" + addUserDName + ", addUserFName=" + addUserFName + ", cashNo=" + cashNo
-				+ ", currencyDName=" + currencyDName + ", currencyFName=" + currencyFName + ", inactive=" + inactive
-				+ ", inactiveReason=" + inactiveReason + ", inactiveUser=" + inactiveUser + ", inactiveUserDName="
-				+ inactiveUserDName + ", inactiveUserFName=" + inactiveUserFName + ", modifyDate=" + modifyDate
-				+ ", modifyUser=" + modifyUser + ", modifyUserDName=" + modifyUserDName + ", modifyUserFName="
-				+ modifyUserFName + "]";
+				+ ", accNo=" + accNo + ", addDate=" + addDate + ", addUser=" + addUser + ", addUserDName="
+				+ addUserDName + ", addUserFName=" + addUserFName + ", cashNo=" + cashNo + ", currencyDName="
+				+ currencyDName + ", currencyFName=" + currencyFName + ", inactive=" + inactive + ", inactiveReason="
+				+ inactiveReason + ", inactiveUser=" + inactiveUser + ", inactiveUserDName=" + inactiveUserDName
+				+ ", inactiveUserFName=" + inactiveUserFName + ", modifyDate=" + modifyDate + ", modifyUser="
+				+ modifyUser + ", modifyUserDName=" + modifyUserDName + ", modifyUserFName=" + modifyUserFName + "]";
 	}
 
 }

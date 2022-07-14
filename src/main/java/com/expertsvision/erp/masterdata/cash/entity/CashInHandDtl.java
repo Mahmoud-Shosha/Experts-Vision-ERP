@@ -31,9 +31,6 @@ public class CashInHandDtl implements Serializable {
 	@Column(name = "acc_no")
 	private Integer accNo;
 
-	@Column(name = "active")
-	private Boolean active;
-
 	@Column(name = "add_date")
 	private Timestamp addDate;
 
@@ -64,14 +61,6 @@ public class CashInHandDtl implements Serializable {
 
 	public void setAccNo(Integer accNo) {
 		this.accNo = accNo;
-	}
-
-	public Boolean getActive() {
-		return this.active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
 	}
 
 	public Timestamp getAddDate() {
@@ -148,7 +137,7 @@ public class CashInHandDtl implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CashInHandDtl [cashNo=" + cashNo + ", accCurr=" + accCurr + ", accNo=" + accNo + ", active=" + active
+		return "CashInHandDtl [cashNo=" + cashNo + ", accCurr=" + accCurr + ", accNo=" + accNo 
 				+ ", addDate=" + addDate + ", addUser=" + addUser + ", inactive=" + inactive + ", inactiveReason="
 				+ inactiveReason + ", inactiveUser=" + inactiveUser + ", modifyDate=" + modifyDate + ", modifyUser="
 				+ modifyUser + "]";

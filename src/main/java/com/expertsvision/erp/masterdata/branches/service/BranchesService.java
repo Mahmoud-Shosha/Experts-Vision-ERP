@@ -16,6 +16,8 @@ public interface BranchesService {
 	
 	BranchesView getBranchesView(UsersView loginUsersView, Integer branchesNo);
 	
+	BranchesView getBranchesViewWithoutScrPriv(UsersView loginUsersView, Integer branchesNo);
+	
 	SinglePage<BranchesView> getBranchesViewSinglePage(UsersView loginUsersView, long pageNo);
 	
 	SinglePage<BranchesView> getBranchesViewLastPage(UsersView loginUsersView);

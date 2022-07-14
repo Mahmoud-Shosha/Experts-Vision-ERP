@@ -77,5 +77,8 @@
 		<class>com.expertsvision.erp.masterdata.cash.entity.CashInHandDtlView</class>
 		<class>com.expertsvision.erp.masterdata.cash.entity.CashInHandPriv</class>
 		<class>com.expertsvision.erp.masterdata.cash.entity.CashInHandView</class>
+		<class>com.expertsvision.erp.masterdata.inventory.maingroups.entity.MainGroup</class>
+		<class>com.expertsvision.erp.masterdata.inventory.maingroups.entity.MainGroupPriv</class>
+		<class>com.expertsvision.erp.masterdata.inventory.maingroups.entity.MainGroupView</class>
 	</persistence-unit>
 </persistence>

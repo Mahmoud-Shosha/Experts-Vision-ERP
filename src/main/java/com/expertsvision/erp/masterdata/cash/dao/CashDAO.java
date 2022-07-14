@@ -7,7 +7,9 @@ import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.masterdata.cash.dto.CashInHandViewFilter;
 import com.expertsvision.erp.masterdata.cash.entity.CashInHand;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandDtl;
 import com.expertsvision.erp.masterdata.cash.entity.CashInHandDtlView;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandPriv;
 import com.expertsvision.erp.masterdata.cash.entity.CashInHandView;
 
 public interface CashDAO {
@@ -31,11 +33,12 @@ public interface CashDAO {
 
 	Object getNextPK();
 
-	void addCashInHand(CashInHand cashInHand);
+	void addCashInHand(CashInHand cashInHand, List<CashInHandDtl> cashInHandDtlList);
 
-	// void addCashInHandsPriv(CashInHandPriv banksPriv);
+	void addCashInHandsPriv(CashInHandPriv cashInHandPriv);
 
-	void updateCashInHand(CashInHand cashInHand);
+	void updateCashInHand(CashInHand cashInHand, List<CashInHandDtl> cashInHandDtlForAddList,
+			List<CashInHandDtl> cashInHandDtlForDeleteList, List<CashInHandDtl> cashInHandDtlForUpdateList);
 
 	void deleteCashInHand(Integer cashNo);
 

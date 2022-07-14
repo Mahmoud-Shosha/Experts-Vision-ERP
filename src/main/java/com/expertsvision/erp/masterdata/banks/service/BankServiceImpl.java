@@ -264,8 +264,8 @@ public class BankServiceImpl implements BankService {
 		coreValidationService.greaterThanOrEqualZero(banksView.getBankNo(), "bank_no");
 		coreValidationService.notNull(banksView.getBankDName(), "name");
 		coreValidationService.notBlank(banksView.getBankDName(), "name");
-		if ((banksView.getAccFName() != null) && banksView.getAccFName().isBlank())
-			banksView.setAccFName(null);
+		if ((banksView.getBankFName() != null) && banksView.getBankFName().isBlank())
+			banksView.setBankFName(null);
 		coreValidationService.notNull(banksView.getAccountNo(), "acc_no");
 		coreValidationService.greaterThanOrEqualZero(banksView.getAccountNo(), "acc_no");
 		coreValidationService.notNull(banksView.getInactive(), "inactive");

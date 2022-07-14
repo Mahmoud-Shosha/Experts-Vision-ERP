@@ -16,6 +16,13 @@ public class CashInHandDtlPK implements Serializable {
 
 	private Integer accNo;
 
+	public CashInHandDtlPK(Integer cashNo, Integer accNo, String accCurr) {
+		super();
+		this.cashNo = cashNo;
+		this.accCurr = accCurr;
+		this.accNo = accNo;
+	}
+
 	public CashInHandDtlPK() {
 	}
 

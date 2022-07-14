@@ -17,7 +17,10 @@ import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
 import com.expertsvision.erp.masterdata.cash.dto.CashInHandViewFilter;
 import com.expertsvision.erp.masterdata.cash.entity.CashInHand;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandDtl;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandDtlPK;
 import com.expertsvision.erp.masterdata.cash.entity.CashInHandDtlView;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandPriv;
 import com.expertsvision.erp.masterdata.cash.entity.CashInHandView;
 
 @Repository
@@ -30,9 +33,11 @@ public class CashDAOImpl implements CashDAO {
 			+ "					LEFT JOIN cash_in_hand_view AS cash_in_hand_view ON cash_in_hand_view.cash_no = priv.cash_no "
 			+ "					LEFT JOIN cash_in_hand_dtl AS cash_in_hand_dtl ON cash_in_hand_dtl.cash_no = priv.cash_no "
 			+ "					LEFT JOIN accounts_priv AS accounts_priv ON accounts_priv.user_id = :userId AND accounts_priv.acc_no = cash_in_hand_view.acc_no AND accounts_priv.acc_curr = cash_in_hand_dtl.acc_curr "
-			+ "					LEFT JOIN branches_priv AS branches_priv ON branches_priv.user_id = :userId "
+			+ "					LEFT JOIN branches_priv AS branches_priv ON branches_priv.user_id = :userId  and branches_priv.branch_no = cash_in_hand_view.branch_no "
 			+ "					WHERE priv.user_id = :userId AND priv.view_priv = true AND accounts_priv.view_priv = true AND branches_priv.view_priv = true "
 			+ "					ORDER BY (cash_in_hand_view.cash_no) ";
+	
+	
 
 	@Override
 	public List<CashInHandView> getAllCashInHandViewList(UsersView loginUsersView) {
@@ -270,7 +275,7 @@ public class CashDAOImpl implements CashDAO {
 	@Override
 	public Object getNextPK() {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = "SELECT max(cash_no) + 1 FROM cashInHands";
+		String sql = "SELECT max(cash_no) + 1 FROM cash_in_hand";
 		@SuppressWarnings("unchecked")
 		Query<Object> query = session.createNativeQuery(sql);
 		Object nextPK = query.getSingleResult();
@@ -280,20 +285,27 @@ public class CashDAOImpl implements CashDAO {
 	}
 
 	@Override
-	public void addCashInHand(CashInHand cashInHand) {
+	public void addCashInHand(CashInHand cashInHand, List<CashInHandDtl> cashInHandDtlList) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(cashInHand);
 		session.flush();
+		if (cashInHandDtlList != null) {
+			for (CashInHandDtl obj : cashInHandDtlList) {
+				session.save(obj);
+			}
+			session.flush();
+		}
 	}
 
-//	@Override
-//	public void addCashInHandsPriv(CashInHandPriv cashInHandPriv) {
-//		Session session = sessionFactory.getCurrentSession();
-//		session.save(cashInHandPriv);
-//	}
+	@Override
+	public void addCashInHandsPriv(CashInHandPriv cashInHandPriv) {
+		Session session = sessionFactory.getCurrentSession();
+		session.save(cashInHandPriv);
+	}
 
 	@Override
-	public void updateCashInHand(CashInHand cashInHand) {
+	public void updateCashInHand(CashInHand cashInHand, List<CashInHandDtl> cashInHandDtlForAddList,
+			List<CashInHandDtl> cashInHandDtlForDeleteList, List<CashInHandDtl> cashInHandDtlForUpdateList) {
 		Session session = sessionFactory.getCurrentSession();
 		CashInHand DBCashInHand = session.get(CashInHand.class, cashInHand.getCashNo());
 		DBCashInHand.setAccNo(cashInHand.getAccNo());
@@ -308,6 +320,37 @@ public class CashDAOImpl implements CashDAO {
 		DBCashInHand.setModifyUser(cashInHand.getModifyUser());
 		DBCashInHand.setPos(cashInHand.getPos());
 		session.merge(DBCashInHand);
+		session.flush();
+		// Add the details
+		if (cashInHandDtlForAddList != null) {
+			for (CashInHandDtl obj : cashInHandDtlForAddList) {
+				session.save(obj);
+			}
+		}
+		// Update the details
+		if (cashInHandDtlForUpdateList != null) {
+			for (CashInHandDtl obj : cashInHandDtlForUpdateList) {
+				CashInHandDtl DBCashInHandDtl = session.get(CashInHandDtl.class,
+						new CashInHandDtlPK(obj.getCashNo(), obj.getAccNo(), obj.getAccCurr()));
+				DBCashInHandDtl.setInactive(obj.getInactive());
+				DBCashInHandDtl.setInactiveReason(obj.getInactiveReason());
+				DBCashInHandDtl.setInactiveUser(obj.getInactiveUser());
+				DBCashInHandDtl.setModifyDate(obj.getModifyDate());
+				DBCashInHandDtl.setModifyUser(obj.getModifyUser());
+				session.merge(DBCashInHandDtl);
+			}
+		}
+		// Delete the details
+		if (cashInHandDtlForDeleteList != null) {
+			String sql = "DELETE FROM cash_in_hand_dtl WHERE cash_no = :cashNo AND acc_no = :accNo AND acc_curr = :accCurr";
+			Query<?> query = session.createNativeQuery(sql);
+			query.setParameter("cashNo", cashInHand.getCashNo());
+			for (CashInHandDtl obj : cashInHandDtlForDeleteList) {
+				query.setParameter("accNo", obj.getAccNo());
+				query.setParameter("accCurr", obj.getAccCurr());
+				query.executeUpdate();
+			}
+		}
 		session.flush();
 	}
 
