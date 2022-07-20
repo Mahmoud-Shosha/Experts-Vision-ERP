@@ -1,8 +1,6 @@
 package com.expertsvision.erp.masterdata.chartofaccounts.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 
 public class ChartOfAccountsViewFilter {
 
@@ -20,9 +18,15 @@ public class ChartOfAccountsViewFilter {
 
 	@JsonProperty("parent_acc")
 	private Integer parentAcc;
-	
+
 	@JsonProperty("bs")
 	private Boolean bs;
+
+	@JsonProperty("acc_type")
+	private String accType;
+
+	@JsonProperty("inactive")
+	private Boolean inactive;
 
 	public Integer getAccNo() {
 		return accNo;
@@ -72,10 +76,26 @@ public class ChartOfAccountsViewFilter {
 		this.bs = bs;
 	}
 
+	public String getAccType() {
+		return accType;
+	}
+
+	public void setAccType(String accType) {
+		this.accType = accType;
+	}
+
+	public Boolean getInactive() {
+		return inactive;
+	}
+
+	public void setInactive(Boolean inactive) {
+		this.inactive = inactive;
+	}
+
 	@Override
 	public String toString() {
 		return "ChartOfAccountsViewFilter [accNo=" + accNo + ", accDName=" + accDName + ", accFName=" + accFName
 				+ ", sub=" + sub + ", parentAcc=" + parentAcc + ", bs=" + bs + "]";
 	}
-	
+
 }

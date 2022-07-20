@@ -163,6 +163,8 @@ public class ChartofaccountsDAOImpl implements ChartofaccountsDAO {
 		filters.put("bs", chartOfAccountsViewFilter.getBs());
 		filters.put("parent_acc", chartOfAccountsViewFilter.getParentAcc());
 		filters.put("sub", chartOfAccountsViewFilter.getSub());
+		filters.put("acc_type", chartOfAccountsViewFilter.getAccType());
+		filters.put("inactive", chartOfAccountsViewFilter.getInactive());
 		String filterQuery = GenerateSql.generateFilterQuery("chart_of_accounts_view", filters);
 		if (pageNo > 0) {
 			sql = filterQuery + " LIMIT 30 OFFSET :Offset";
