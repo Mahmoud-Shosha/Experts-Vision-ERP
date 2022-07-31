@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.core.utils.Addable;
 import com.expertsvision.erp.core.utils.GenerateSql;
+import com.expertsvision.erp.core.utils.Inactivable;
 import com.expertsvision.erp.core.utils.Modifyable;
 import com.expertsvision.erp.core.utils.MultiplePages;
 import com.expertsvision.erp.core.utils.SinglePage;
@@ -246,6 +247,22 @@ public class MasterWithPrivDAO<MasterEntity, MasterEntityView> {
 			addable.setAddDate(add_date);
 			addable.setAddUser(loginUser.getUserId());
 		}
+		if (masterEntity instanceof Modifyable) {
+			Modifyable modifyable = (Modifyable) masterEntity;
+			modifyable.setModifyDate(null);
+			modifyable.setModifyUser(null);
+		}
+		if (masterEntity instanceof Inactivable) {
+			Inactivable inactivable = (Inactivable) masterEntity;
+			if (inactivable.getInactive()) {
+				inactivable.setInactiveUser(loginUser.getUserId());
+				inactivable.setInactiveDate(add_date);
+			} else {
+				inactivable.setInactiveUser(null);
+				inactivable.setInactiveReason(null);
+				inactivable.setInactiveDate(null);
+			}
+		}
 		session.save(masterEntity);
 	}
 
@@ -267,7 +284,7 @@ public class MasterWithPrivDAO<MasterEntity, MasterEntityView> {
 		}
 	}
 
-	public void updateDBMasterEntity(MasterEntity DBMasterEntity) {
+	public void updateDBMasterEntity(MasterEntity masterEntity, MasterEntity DBMasterEntity) {
 		Session session = sessionFactory.getCurrentSession();
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Timestamp update_date = new Timestamp(new Date().getTime());
@@ -275,6 +292,19 @@ public class MasterWithPrivDAO<MasterEntity, MasterEntityView> {
 			Modifyable modifyable = (Modifyable) DBMasterEntity;
 			modifyable.setModifyDate(update_date);
 			modifyable.setModifyUser(loginUser.getUserId());
+		}
+		if (masterEntity instanceof Inactivable) {
+			Inactivable inactivableMasterEntity = (Inactivable) masterEntity;
+			Inactivable inactivableDBMasterEntity = (Inactivable) DBMasterEntity;
+			if (inactivableDBMasterEntity.getInactive() && !inactivableMasterEntity.getInactive()) {
+				inactivableDBMasterEntity.setInactiveUser(null);
+				inactivableDBMasterEntity.setInactiveReason(null);
+				inactivableDBMasterEntity.setInactiveDate(null);
+			} else if (!inactivableDBMasterEntity.getInactive() && inactivableMasterEntity.getInactive()) {
+				inactivableDBMasterEntity.setInactiveUser(loginUser.getUserId());
+				inactivableDBMasterEntity.setInactiveDate(update_date);
+				inactivableDBMasterEntity.setInactiveReason(inactivableMasterEntity.getInactiveReason());
+			}
 		}
 		session.merge(DBMasterEntity);
 	}

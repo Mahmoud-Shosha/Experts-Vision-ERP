@@ -85,7 +85,7 @@ public class MainGroupDAOImpl extends MasterWithPrivDAO<MainGroup, MainGroupView
 		MainGroup DBMainGroup = getDBMasterEntity(mainGroup.getGroupCode());
 		DBMainGroup.setGroupDName(mainGroup.getGroupDName());
 		DBMainGroup.setGroupFName(mainGroup.getGroupFName());
-		updateDBMasterEntity(DBMainGroup);
+		updateDBMasterEntity(mainGroup, DBMainGroup);
 	}
 
 	@Override

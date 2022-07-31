@@ -16,6 +16,11 @@ public class CashInHandPrivPK implements Serializable {
 
 	private Integer cashNo;
 
+	public CashInHandPrivPK(Integer userId, Integer cashNo) {
+		this.userId = userId;
+		this.cashNo = cashNo;
+	}
+
 	public CashInHandPrivPK() {
 	}
 

@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * The persistent class for the cash_in_hand_priv database table.
  * 
@@ -21,32 +23,41 @@ public class CashInHandPriv implements Serializable {
 
 	@Id
 	@Column(name = "user_id")
+	@JsonProperty("user_id")
 	private Integer userId;
 
 	@Id
 	@Column(name = "acc_curr")
+	@JsonProperty("acc_curr")
 	private String accCurr;
 
 	@Column(name = "add_date")
+	@JsonProperty("add_date")
 	private Timestamp addDate;
 
 	@Column(name = "add_priv")
+	@JsonProperty("add_priv")
 	private Boolean addPriv;
 
 	@Column(name = "add_user")
+	@JsonProperty("add_user")
 	private Integer addUser;
 
 	@Id
 	@Column(name = "cash_no")
+	@JsonProperty("cash_no")
 	private Integer cashNo;
 
 	@Column(name = "modify_date")
+	@JsonProperty("modify_date")
 	private Timestamp modifyDate;
 
 	@Column(name = "modify_user")
+	@JsonProperty("modify_user")
 	private Integer modifyUser;
 
 	@Column(name = "view_priv")
+	@JsonProperty("view_priv")
 	private Boolean viewPriv;
 
 	public CashInHandPriv() {

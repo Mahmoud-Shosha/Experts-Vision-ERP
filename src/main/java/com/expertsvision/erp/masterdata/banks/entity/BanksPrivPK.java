@@ -16,6 +16,12 @@ public class BanksPrivPK implements Serializable {
 
 	private Integer bankNo;
 
+	public BanksPrivPK(Integer userId, Integer bankNo) {
+		super();
+		this.userId = userId;
+		this.bankNo = bankNo;
+	}
+
 	public BanksPrivPK() {
 	}
 

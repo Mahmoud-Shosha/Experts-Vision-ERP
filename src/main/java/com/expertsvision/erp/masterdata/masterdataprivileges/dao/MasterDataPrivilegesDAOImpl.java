@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
 import com.expertsvision.erp.masterdata.banks.dto.BankVirtualPK;
+import com.expertsvision.erp.masterdata.cash.dto.CashInHandVirtualPK;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsCurrencyPK;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivFilter;
@@ -22,6 +23,8 @@ import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BanksPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BanksPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CashesPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CashesPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivFilter;
 
@@ -529,28 +532,36 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 		}
 		return costCenterPrivDTOList;
 	}
-	
+
 	// $$$$$$$$$$$$$$$ For BanksPriv $$$$$$$$$$$$$$$
 
 	@Override
 	public List<BankVirtualPK> getBanksVirtualPK() {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = "SELECT bankNo, accCurr FROM BanksDtl";
-		Query query = session.createQuery(hql, BankVirtualPK.class);
+		Query query = session.createQuery(hql);
 		@SuppressWarnings("unchecked")
-		List<BankVirtualPK> result = query.getResultList();
-		return result;
+		List<Object[]> result = query.getResultList();
+		List<BankVirtualPK> bankVirtualPKList = new ArrayList<>();
+		for (Object[] objArr : result) {
+			bankVirtualPKList.add(new BankVirtualPK((Integer) objArr[0], (String) objArr[1]));
+		}
+		return bankVirtualPKList;
 	}
 
 	@Override
 	public List<BankVirtualPK> getBanksVirtualPKFromPrivsTable(Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = "SELECT bankNo, accCurr FROM BanksPriv WHERE userId = :userId";
-		Query query = session.createQuery(hql, BankVirtualPK.class);
+		Query query = session.createQuery(hql);
 		query.setParameter("userId", userId);
 		@SuppressWarnings("unchecked")
-		List<BankVirtualPK> result = query.getResultList();
-		return result;
+		List<Object[]> result = query.getResultList();
+		List<BankVirtualPK> bankVirtualPKList = new ArrayList<>();
+		for (Object[] objArr : result) {
+			bankVirtualPKList.add(new BankVirtualPK((Integer) objArr[0], (String) objArr[1]));
+		}
+		return bankVirtualPKList;
 	}
 
 	@Override
@@ -676,5 +687,158 @@ public class MasterDataPrivilegesDAOImpl implements MasterDataPrivilegesDAO {
 		return banksPrivDTOList;
 	}
 
+	// $$$$$$$$$$$$$$$ For CashInHandPriv $$$$$$$$$$$$$$$
+
+	@Override
+	public List<CashInHandVirtualPK> getCashesVirtualPK() {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "SELECT cashNo, accCurr FROM CashInHandDtl";
+		Query query = session.createQuery(hql);
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = query.getResultList();
+		List<CashInHandVirtualPK> cashInHandVirtualPKList = new ArrayList<>();
+		for (Object[] objArr : result) {
+			cashInHandVirtualPKList.add(new CashInHandVirtualPK((Integer) objArr[0], (String) objArr[1]));
+		}
+		return cashInHandVirtualPKList;
+	}
+
+	@Override
+	public List<CashInHandVirtualPK> getCashesVirtualPKFromPrivsTable(Integer userId) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "SELECT cashNo, accCurr FROM CashInHandPriv WHERE userId = :userId";
+		Query query = session.createQuery(hql);
+		query.setParameter("userId", userId);
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = query.getResultList();
+		List<CashInHandVirtualPK> cashInHandVirtualPKList = new ArrayList<>();
+		for (Object[] objArr : result) {
+			cashInHandVirtualPKList.add(new CashInHandVirtualPK((Integer) objArr[0], (String) objArr[1]));
+		}
+		return cashInHandVirtualPKList;
+	}
+
+	@Override
+	public List<Object[]> getCashesPrivs(Integer userId) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "SELECT cashNo, accCurr, addPriv, viewPriv FROM CashInHandPriv WHERE userId = :userId";
+		Query query = session.createQuery(hql);
+		query.setParameter("userId", userId);
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = query.getResultList();
+		return result;
+	}
+
+	@Override
+	public List<Object[]> getCashesPrivs(Set<Integer> userIdList, Set<Integer> cashNoList) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "SELECT user_id, cash_no, add_priv, view_priv FROM cash_in_hand_priv "
+				+ "WHERE user_id IN :userIdList AND cash_no IN :cashNoList";
+		Query query = session.createNativeQuery(hql);
+		query.setParameter("userIdList", userIdList);
+		query.setParameter("cashNoList", cashNoList);
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = query.getResultList();
+		return result;
+	}
+
+	@Override
+	@Transactional
+	public List<CashesPrivDTO> getCashesPrivs(UsersView loginUser, CashesPrivFilter filter) {
+		// prepare the queryString
+		String queryString;
+		List<CashesPrivDTO> cashesPrivDTOList = new ArrayList<>();
+		Object[] objArr;
+		CashesPrivDTO cashesPrivDTO;
+		StringBuilder sb = new StringBuilder();
+		if (loginUser.getAdminUser() || loginUser.getSuperAdmin())
+			sb.append("SELECT m.*, true AS can_change_add_priv, true AS can_change_view_priv, ");
+		else
+			sb.append("SELECT m.*, n.add_priv AS can_change_add_priv, n.view_priv AS can_change_view_priv, ");
+		sb.append("_user.user_d_name AS user_d_name, _user.user_f_name AS user_f_name, ")
+				.append("_group.admin_group AS admin_group, ")
+				.append("add_user.user_d_name AS add_user_d_name, add_user.user_f_name AS add_user_f_name, ")
+				.append("modify_user.user_d_name As modify_user_d_name, modify_user.user_f_name As modify_user_f_name, ")
+				.append("cashes.cash_d_name AS cash_d_name, cashes.cash_f_name AS cash_f_name ")
+				.append("FROM cash_in_hand_priv AS m ");
+		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
+			sb.append("LEFT JOIN cash_in_hand_priv n ON n.user_id = :managerUserId AND n.cash_no = m.cash_no ");
+		sb.append("LEFT JOIN cash_in_hand AS cashes ON m.cash_no = cashes.cash_no ")
+				.append("LEFT JOIN users AS _user ON m.user_id = _user.user_id ")
+				.append("LEFT JOIN users_groups AS _group ON _user.group_no = _group.group_no ")
+				.append("LEFT JOIN users AS add_user ON m.add_user = add_user.user_id ")
+				.append("LEFT JOIN users AS modify_user ON m.modify_user = modify_user.user_id WHERE 1 = 1");
+		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
+			sb.append(" AND n.view_priv = true ");
+		if (filter.getToCashNo() != null) {
+			sb.append(" AND m.cash_no BETWEEN :fromCashNo AND :toCashhNo ");
+		} else if (filter.getFromCashNo() != null) {
+			sb.append(" AND m.cash_no = :fromCashNo ");
+		}
+		if (filter.getToUserId() != null) {
+			sb.append(" AND m.user_id BETWEEN :fromUserId AND :toUserId ");
+		} else if (filter.getFromUserId() != null) {
+			sb.append(" AND m.user_id = :fromUserId ");
+		}
+		if (filter.getGroupNo() != null) {
+			sb.append(" AND m.user_id IN (SELECT user_id FROM users WHERE group_no = :groupNo) ");
+		}
+		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin())) {
+			sb.append(" AND m.user_id IN ");
+			sb.append(filterBySubordinatesQueryWhere);
+		}
+		sb.append(" ORDER BY cash_no, user_id ");
+		queryString = sb.toString();
+		// prepare the query
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.createNativeQuery(queryString);
+		if (filter.getToCashNo() != null) {
+			query.setParameter("fromCashNo", filter.getFromCashNo());
+			query.setParameter("toCashNo", filter.getToCashNo());
+		} else if (filter.getFromCashNo() != null) {
+			query.setParameter("fromCashNo", filter.getFromCashNo());
+		}
+		if (filter.getToUserId() != null) {
+			query.setParameter("fromUserId", filter.getFromUserId());
+			query.setParameter("toUserId", filter.getToUserId());
+		} else if (filter.getFromUserId() != null) {
+			query.setParameter("fromUserId", filter.getFromUserId());
+		}
+		if (filter.getGroupNo() != null) {
+			query.setParameter("groupNo", filter.getGroupNo());
+		}
+		if (!(loginUser.getAdminUser() || loginUser.getSuperAdmin()))
+			query.setParameter("managerUserId", loginUser.getUserId());
+		// get the result list
+		@SuppressWarnings("unchecked")
+		List<Object> result = query.getResultList();
+		for (Object obj : result) {
+			objArr = (Object[]) obj;
+			cashesPrivDTO = new CashesPrivDTO();
+			cashesPrivDTO.setUserId((Integer) objArr[0]);
+			cashesPrivDTO.setCashNo((Integer) objArr[1]);
+			cashesPrivDTO.setAccCurr((String) objArr[2]);
+			cashesPrivDTO.setAddPriv((Boolean) objArr[3]);
+			cashesPrivDTO.setViewPriv((Boolean) objArr[4]);
+			cashesPrivDTO.setAddUser((Integer) objArr[5]);
+			cashesPrivDTO.setAddDate((Timestamp) objArr[6]);
+			cashesPrivDTO.setModifyUser((Integer) objArr[7]);
+			cashesPrivDTO.setModifyDate((Timestamp) objArr[8]);
+			cashesPrivDTO.setCanChangeAddPriv((Boolean) objArr[9]);
+			cashesPrivDTO.setCanChangeViewPriv((Boolean) objArr[10]);
+			cashesPrivDTO.setUserDName((String) objArr[11]);
+			cashesPrivDTO.setUserFName((String) objArr[12]);
+			cashesPrivDTO.setAdminGroup((Boolean) (objArr[13] == null ? false : objArr[13]));
+			cashesPrivDTO.setAddUserDName((String) objArr[14]);
+			cashesPrivDTO.setAddUserFName((String) objArr[15]);
+			cashesPrivDTO.setModifyUserDName((String) objArr[16]);
+			cashesPrivDTO.setModifyUserFName((String) objArr[17]);
+			cashesPrivDTO.setCashDName((String) objArr[18]);
+			cashesPrivDTO.setCashFName((String) objArr[19]);
+			// set branchesPrivDTO data
+			cashesPrivDTOList.add(cashesPrivDTO);
+		}
+		return cashesPrivDTOList;
+	}
 
 }

@@ -14,13 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.expertsvision.erp.core.response.Response;
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.masterdata.banks.entity.BanksPriv;
 import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandPriv;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv;
 import com.expertsvision.erp.masterdata.costcenters.entity.CostCenterPriv;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivFilter;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BanksPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BanksPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CashesPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CashesPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.service.MasterDataPrivilegesService;
@@ -78,6 +84,35 @@ public class MasterDataPrivilegesController {
 		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		masterDataPrivilegesService.updateCostCenterPriv(loginUser, costCenterPrivList);
 		return response.response("updated", "cost_ceneter_prvs", HttpStatus.OK);
+	}
+
+	@PostMapping("/banks")
+	public ResponseEntity<Object> getBankPrivs(@RequestBody BanksPrivFilter banksPrivFilter) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<BanksPrivDTO> banksPrivDTOList = masterDataPrivilegesService.getBanksPrivs(loginUser, banksPrivFilter);
+		return response.response(banksPrivDTOList, HttpStatus.OK);
+	}
+
+	@PutMapping("/banks")
+	public ResponseEntity<Object> updateBankPriv(@RequestBody List<BanksPriv> banksPrivList) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		masterDataPrivilegesService.updateBanksPriv(loginUser, banksPrivList);
+		return response.response("updated", "banks_prvs", HttpStatus.OK);
+	}
+
+	@PostMapping("/cashes")
+	public ResponseEntity<Object> getCostCenterPrivs(@RequestBody CashesPrivFilter cashesPrivFilters) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<CashesPrivDTO> cashesPrivDTOList = masterDataPrivilegesService.getCashesPrivs(loginUser,
+				cashesPrivFilters);
+		return response.response(cashesPrivDTOList, HttpStatus.OK);
+	}
+
+	@PutMapping("/cashes")
+	public ResponseEntity<Object> updateCashesPriv(@RequestBody List<CashInHandPriv> cashInHandPrivList) {
+		UsersView loginUser = (UsersView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		masterDataPrivilegesService.updateCashesPriv(loginUser, cashInHandPrivList);
+		return response.response("updated", "cashes_prvs", HttpStatus.OK);
 	}
 
 }

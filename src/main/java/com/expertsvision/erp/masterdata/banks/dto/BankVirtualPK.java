@@ -7,6 +7,12 @@ public class BankVirtualPK {
 	private Integer bankNo;
 	private String accCurr;
 
+	public BankVirtualPK(Integer bankNo, String accCurr) {
+		super();
+		this.bankNo = bankNo;
+		this.accCurr = accCurr;
+	}
+
 	public Integer getBankNo() {
 		return bankNo;
 	}

@@ -4,13 +4,19 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.expertsvision.erp.core.user.entity.UsersView;
+import com.expertsvision.erp.masterdata.banks.entity.BanksPriv;
 import com.expertsvision.erp.masterdata.branches.entity.BranchesPriv;
+import com.expertsvision.erp.masterdata.cash.entity.CashInHandPriv;
 import com.expertsvision.erp.masterdata.chartofaccounts.entity.AccountsPriv;
 import com.expertsvision.erp.masterdata.costcenters.entity.CostCenterPriv;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.AccountsPrivFilter;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BanksPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BanksPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.BranchesPrivFilter;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CashesPrivDTO;
+import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CashesPrivFilter;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivDTO;
 import com.expertsvision.erp.masterdata.masterdataprivileges.dto.CostCenterPrivFilter;
 
@@ -45,4 +51,12 @@ public interface MasterDataPrivilegesService {
 	List<CostCenterPrivDTO> getCostCenterPrivs(UsersView loginUser, CostCenterPrivFilter filter);
 
 	void updateCostCenterPriv(UsersView loginUser, List<CostCenterPriv> costCenterPrivList);
+
+	List<BanksPrivDTO> getBanksPrivs(UsersView loginUser, BanksPrivFilter filter);
+
+	void updateBanksPriv(UsersView loginUser, List<BanksPriv> banksPrivList);
+
+	List<CashesPrivDTO> getCashesPrivs(UsersView loginUser, CashesPrivFilter filter);
+
+	void updateCashesPriv(UsersView loginUser, List<CashInHandPriv> cashInHandPrivList);
 }

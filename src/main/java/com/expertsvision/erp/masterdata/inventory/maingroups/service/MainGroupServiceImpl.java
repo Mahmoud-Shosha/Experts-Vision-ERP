@@ -189,9 +189,9 @@ public class MainGroupServiceImpl extends MasterWithPrivService implements MainG
 		MainGroup mainGroup = new MainGroup();
 		mainGroup.setAddDate(mainGroupView.getAddDate());
 		mainGroup.setAddUser(mainGroupView.getAddUser());
-		mainGroup.setGroupCode(escapeMandatoryString(mainGroup.getGroupCode()));
-		mainGroup.setGroupDName(escapeMandatoryString(mainGroup.getGroupDName()));
-		mainGroup.setGroupFName(escapeOptionalString(mainGroup.getGroupFName()));
+		mainGroup.setGroupCode(escapeMandatoryString(mainGroupView.getGroupCode()));
+		mainGroup.setGroupDName(escapeMandatoryString(mainGroupView.getGroupDName()));
+		mainGroup.setGroupFName(escapeOptionalString(mainGroupView.getGroupFName()));
 		mainGroup.setModifyDate(mainGroupView.getModifyDate());
 		mainGroup.setModifyUser(mainGroupView.getModifyUser());
 		return mainGroup;
