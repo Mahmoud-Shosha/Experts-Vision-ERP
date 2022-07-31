@@ -550,7 +550,12 @@ public class BankServiceImpl implements BankService {
 
 		}
 		// Update the bank
-		BanksView DBBanksView = bankDAO.getBankView(loginUsersView, bank.getBankNo());
+		BanksView DBBanksView;
+		if (loginUsersView.getAdminUser() || loginUsersView.getSuperAdmin()) {
+			DBBanksView = bankDAO.getBankView(null, bank.getBankNo());
+		} else {
+			DBBanksView = bankDAO.getBankView(loginUsersView, bank.getBankNo());
+		}
 		if (DBBanksView.getInactive() && !bank.getInactive()) {
 			bank.setInactiveUser(null);
 			bank.setInactiveReason(null);
